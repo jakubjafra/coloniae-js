@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+
+		<link href="http://localhost/__MINE__/coloniae/styles/reset.css" rel="stylesheet" media="screen">
+		<link href="http://localhost/__MINE__/coloniae/styles/main.css" rel="stylesheet" media="screen">
+
+		<title>coloniae</title>
+
+		<script data-main="scripts/main" src="__externals/require.js"></script>
+	</head>
+
+	<body>
+		<canvas id="canvas3d" width="1000px" height="500px">
+		</canvas>
+
+		<div id="on_canvas">
+			<div ng-controller="CoinsViewer" class="center_all_inside" id="top_left">
+				<img src="imgs/gui/coin.png"><span>{{coins | number:0}}</span>
+			</div>
+
+			<div ng-controller="OwnedIslandResourcesViewer" ng-show="hoverOnIsland" id="top_center" style="width: 240px; margin-left:-120px;">
+				<div class="center_all_inside">
+					<img src="imgs/gui/tool.png"><span style="width: 50px;">{{tool | number:0}}</span>
+					<img src="imgs/gui/wood.png"><span style="width: 50px;">{{wood | number:0}}</span>
+					<img src="imgs/gui/brick.png"><span>{{brick | number:0}}</span>
+				</div>
+			</div>
+
+			<div ng-controller="IslandPopulationViewer" ng-show="hoverOnIsland" class="center_all_inside" id="top_right">
+				<img src="imgs/gui/population.png"><span style="width: 50px;">{{population | number:0}}</span>
+			</div>
+
+			<div id="time" ng-controller="TimeCtrl">
+				<select ng-model="timeController.timeFlowSpeed">
+					<option value="0">&times; 0</option>
+					<option value="1">&times; 1</option>
+					<option value="4">&times; 4</option>
+					<option value="16">&times; 16</option>
+				</select>
+			</div>
+
+			<div id="HouseDlg" ng-controller="HouseCtrl">
+				<b> {{ building.structName }} </b> <a href="#" onclick="return false;" ng-click="close();">close</a><br/>
+				<hr>
+				{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}<br/>
+				content: {{ houseGroup.contentLevel }} (#{{ houseGroup.contentRaw | number:2 }})<br/>
+				tax: {{ houseGroup.baseIncome + houseGroup.taxDiff }} <button ng-click="houseGroup.taxDiff = houseGroup.taxDiff + 1;">+</button> <button ng-click="houseGroup.taxDiff = houseGroup.taxDiff - 1;">-</button>
+			</div>
+
+			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl">
+				<b> {{ building.structName }} </b> <a href="#" onclick="return false;" ng-click="close();">close</a><br/>
+				<hr>
+				income: {{ income | number:0 }}<br/>
+				maintenance: {{ maintenance | number:0 }}<br/>
+				balance: <u>{{ income - maintenance | number:0 }}</u> / min <br/>
+				<br/>
+				<ul class="productlist">
+					<li ng-repeat="slot in storage">{{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}</li>
+				</ul>
+			</div>
+
+			<div id="ProductionBuildingDlg" ng-controller="ProductionBuildingCtrl">
+				<b> {{ building.structName }} </b> <a href="#" onclick="return false;" ng-click="close();">close</a><br/>
+				<hr>
+				effectivity: {{ (effectivity * 100) | number:0 }}% <br/>
+				maitenanace: {{ maintenance }}<br/>
+				<br/>
+				stock:<br/>
+				<ul class="productlist" style="height: 50px;">
+					<li ng-repeat="slot in storage">{{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}</li>
+				</ul>
+			</div>
+
+			<div id="toolbox">
+				<div ng-controller="BuildCtrl" id="buildhandler" class="handler" ng-click="showBuildDlg(); buildModeStateChange();">
+					<div class="background_transparent_color"></div>
+					<img src="imgs/gui/build.png">
+				</div>
+
+				<div ng-controller="BuildCtrl" id="removehandler" class="handler" ng-click="showRemoveDlg(); startRemoveMode();">
+					<div class="background_transparent_color"></div>
+					<img src="imgs/gui/remove.png">
+				</div>
+			</div>
+
+			<div ng-controller="BuildCtrl" id="buildmenu" ng-click="buildModeStateChange()">
+				<div id="buildlistleft" ng-click="scrollLeft(100);">
+					<img src="imgs/gui/left.png">
+				</div>
+				<div id="buildlist">
+					<div id="buildlistscrooll" style="width: {{allBuildings.length * 55}}px;">
+						<div ng-repeat="building in allBuildings" value="{{$index}}" class="buildlistitem" ng-click="chooseBuilding(); $event.stopPropagation();">
+							<img ng-src="{{building.name | putBuildingImage}}" title="{{buidling.name}}" width="53px" height="50px">
+						</div>
+					</div>
+				</div>
+				<div id="buildlistright" ng-click="scrollRight(100);">
+					<img src="imgs/gui/right.png">
+				</div>
+			</div>
+
+			<div id="intro">
+				Welcome!<br/>
+				<br/>
+				This game is clone of old strategy <b>Anno 1602</b>. Copyrights for graphics, design and so on are held by the Ubisoft company. This game is written only for education purposes.<br/>
+				<br/>
+				For now, this is early alpha. You can only build a small colony on one island. However this micro economics works well, and i think you can have fun building your city :)<br/>
+				<br/>
+				...
+			</div>
+		</div>
+
+		
+</html>

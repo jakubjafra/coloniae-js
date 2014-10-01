@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+
+		<link href="http://localhost/__MINE__/coloniae/styles/reset.css" rel="stylesheet" media="screen">
+
+		<title>atlas tool</title>
+
+		<script src="http://localhost/__MINE__/coloniae/__externals/dropzone.js"></script>
+		<script src="http://localhost/__MINE__/coloniae/__externals/jquery-2.1.1.min.js"></script>
+
+		<script>
+
+		var images = [];
+
+		function redraw(){
+			var canvas = $("#preview222")[0];
+			var ctx = canvas.getContext("2d");
+
+			console.clear();
+
+			canvas.height = parseInt($("#preview222").height());
+			canvas.width = parseInt($("#preview222").width());
+
+			canvas.width = canvas.width;
+
+			images.sort(function(a,b){
+				return b.height - a.height;
+			});
+
+			var x = 0;
+			var y = 0;
+
+			var max_y_in_this_line = 0;
+
+			var jsondatas = {};
+
+			var key;
+			for(key in images){
+				var image = images[key].img;
+
+				if(max_y_in_this_line < image.height)
+					max_y_in_this_line = image.height;
+
+				if((x + image.width) >= $("#preview222").width()){
+					y += max_y_in_this_line + 5;
+					max_y_in_this_line = 0;
+
+					if(y >= $("#preview222").height()){
+						console.log("for width=" + $("#preview222").width() + " -> height is not enough");
+					}
+
+					x = 0;
+				}
+
+				ctx.drawImage(image, x, y);
+				
+
+				jsondatas[image.__xxx___] = {x: x, y: y, w: image.width, h: image.height};
+
+				x += image.width;
+			}
+
+			$("#output").html(JSON.stringify(jsondatas));
+		}
+
+
+
+		Dropzone.options.myAwesomeDropzone = {
+			  accept: function(file, done) {
+			    var img = new Image();
+
+			   img.onload = function(){
+			   		images.push({height: this.height, img: this});
+			   		redraw();
+			   };
+
+			   var kkk = /^(.*)\./.exec(file.name);
+
+			   img.src = (window.URL || window.webkitURL).createObjectURL(file);
+			   img.__xxx___ = kkk[1];
+
+			    done("nah");
+			  }
+			};
+
+			$(function(){
+
+				$("#abc").keyup(function(){
+				var width = parseInt($("#abc").val());
+
+				$("#preview222").width(width + "px");
+
+				redraw();
+			});
+
+			$("#abc2").keyup(function(){
+				var height = parseInt($("#abc2").val());
+
+				$("#preview222").height(height + "px");
+
+				redraw();
+			});
+
+			
+
+			});
+
+		</script>
+	</head>
+
+	<body>
+		atlas tool<br/>
+		<br/>
+		width=<input id="abc" type="text" value="300" />
+		height=<input id="abc2" type="text" value="300" />
+		<br/>
+		<canvas id="preview222" style="width: 300px; height: 300px; background-color: pink; border: 1px solid blue;">
+		</canvas>
+		<br/>
+		<div id="output">
+		</div>
+		<br/>
+		<form action="none" class="dropzone" id="my-awesome-dropzone"></form>
+	</body>
+</html>
