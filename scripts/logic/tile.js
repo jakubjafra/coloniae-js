@@ -127,14 +127,10 @@ function createMap(x, y){
 
 				if(i == 0 || i == 5 || j == 0 || j == 5)
 					tile.terrainLevel = HILLSIDE;
-				else {
+				else
 					tile.terrainLevel = MOUTAIN;
-					tile.terrainType = {
-						craftable: true,
-						x: (_X_ + 1),
-						y: (_Y_ + 1)
-					};
-				}
+
+				tile.terrainType = tiles.coords(_X_ + 1, _Y_ + 1);
 			}
 		}
 	}

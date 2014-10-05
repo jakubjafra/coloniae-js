@@ -105,13 +105,26 @@ var Farm = ProductionBuilding.extend(function(){
 		this.storage.catagories[OUTPUT] = INVALID_ID;
 	};
 
+	this.goodOnes = 0;
+	this.totalOnes = 0;
+	
+	this.forEachTileInRadius = function(tile){
+		if(tile.terrainLevel >= 2 && tile.buildingData !== this){
+			if(tile.buildingData == null){
+				if(this.requiredCrop == null)
+					this.goodOnes++;
+			} else
+				if(tile.buildingData.structName == this.requiredCrop)
+					this.goodOnes++;
+		}
+	}
+
 	this.calculateEffectivity = function(){
-		var goodOnes = 0;
-		var totalOnes = 0;
+		this.goodOnes = 0;
+		this.totalOnes = 0;
 
 		var radius = Math.ceil(this.harvestRadius);
 
-		// lista już sprawdzoncyh
 		var checked = {};
 		for(var k = 0; k < this.tilesUnder.length; k++){
 			var underTile = this.tilesUnder[k];
@@ -129,22 +142,16 @@ var Farm = ProductionBuilding.extend(function(){
 					if(checked[tile.index] == undefined){
 						checked[tile.index] = true;
 
-						if(tile.terrainLevel >= 2 && tile.buildingData !== this){
-							totalOnes++;
+						if(tile.buildingData !== this)
+							this.totalOnes++;
 
-							if(tile.buildingData == null){
-								if(this.requiredCrop == null)
-									goodOnes++;
-							} else
-								if(tile.buildingData.structName == this.requiredCrop)
-									goodOnes++;
-						}
+						this.forEachTileInRadius(tile);
 					}
 				}
 			}
 		}
 
-		this.effectivity = goodOnes / totalOnes;
+		this.effectivity = this.goodOnes / this.totalOnes;
 	};
 
 	this.calculateProduction = function(delta){

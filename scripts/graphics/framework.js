@@ -7,6 +7,20 @@ TODO: zamienić .images na .resourcesToLoad (img, txt, ...)
 */
 
 define(['jquery', 'jquery-mousewheel'], function($){
+	function initFpsCounter(){
+		var stats = new Stats();
+		stats.setMode(0); // 0: fps, 1: ms
+
+		// Align top-left
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.right = '0px';
+		stats.domElement.style.bottom = '100px';
+
+		$("#on_canvas").append(stats.domElement);
+
+		return stats;
+	}
+
 	return function(wrapper){
 		console.assert(typeof wrapper === "object");
 
@@ -26,6 +40,8 @@ define(['jquery', 'jquery-mousewheel'], function($){
 		// ~~~
 
 		this._ = wrapper;
+
+		this.stats = initFpsCounter();
 
 		// ~~~
 
@@ -71,12 +87,16 @@ define(['jquery', 'jquery-mousewheel'], function($){
 			newTime = (new Date()).getTime();
 			delta = (newTime - oldTime) / 1000;
 
+			this.stats.begin();
+
 			wrapper.onUpdate(delta);
 			wrapper.onRender(delta, context, loadedImages);
 
-			requestAnimationFrame(this.step);
+			this.stats.end();
 
 			oldTime = newTime;
+
+			requestAnimationFrame(this.step);
 		}, this);
 
 		this.start = function(){
@@ -91,7 +111,6 @@ define(['jquery', 'jquery-mousewheel'], function($){
 					loadedImagesCount++;
 					if(loadedImagesCount >= wrapper.images.length){
 						console.log('...done loading images, lauching game');
-						// console.clear();
 
 						oldTime = (new Date()).getTime();
 						requestAnimationFrame(this.step);

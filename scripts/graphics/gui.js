@@ -216,15 +216,16 @@ define(['angular', '../graphics', 'extend', 'underscore', '../logic'], function(
 			$scope.callback.removeMode = false;
 
 			$scope.choosedBuilding = this.building.index;
+			$scope.side = NORTH;
 
 			var choosed = parseInt($scope.choosedBuilding);
 			if(choosed >= 0){
 				var structure = structsClass[choosed];
 
 				if(structure.name == "Iron mine" || structure.name == "Quarry") // "quickfix"
-					$scope.callback.testBuilding = new structure.class(0, 0, null, undefined, WEST);
-				else
-					$scope.callback.testBuilding = new structure.class(0, 0, null);
+					$scope.side = WEST;
+				
+				$scope.callback.testBuilding = new structure.class(0, 0, null, undefined, $scope.side);
 
 				$scope.callback.testBuilding.__structId = choosed;
 			}

@@ -25,11 +25,6 @@ var Building = Structure.extend(function(){
 
 	// nie wolno nadpisywać konstruktora w budynkach!
 	this.constructor = function(x, y, ghostOrCountry, isFree, rotation){
-		if(ghostOrCountry == undefined){
-			console.log('cannot make building without country');
-			return;
-		}
-
 		var countryId = tiles[x][y].countryId;
 		if(this.__baseConstructor__(x, y, ghostOrCountry, isFree, function(tile){
 					// budynek rozszerza teretorium gracza

@@ -5,20 +5,6 @@ graphics.js
 */
 
 define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.json'], function($, Stats, framework, atlasJSON){
-	function initFpsCounter(){
-		var stats = new Stats();
-		stats.setMode(0); // 0: fps, 1: ms
-
-		// Align top-left
-		stats.domElement.style.position = 'absolute';
-		stats.domElement.style.right = '0px';
-		stats.domElement.style.bottom = '100px';
-
-		$("#on_canvas").append(stats.domElement);
-
-		return stats;
-	}
-
 	return  new framework(new function(){
 		this.cameraPosition = { x: 500, y: 0 };
 
@@ -126,10 +112,12 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 					if(this.buildMode && this.testBuilding != undefined){
 						var structure = structsClass[this.testBuilding.__structId];
 
-						if(structure.name == "Iron mine" || structure.name == "Quarry") // "quickfix"
-							new structure.class(clickedTile.x, clickedTile.y, countries[0], undefined, WEST);
-						else
-							new structure.class(clickedTile.x, clickedTile.y, countries[0]);
+						var side = this.testBuilding.rotation;
+
+						// if(structure.name == "Iron mine" || structure.name == "Quarry") // "quickfix"
+						// 	side = WEST;
+
+						new structure.class(clickedTile.x, clickedTile.y, countries[0], undefined, side);
 
 						wasAnyAction = true;
 					}
@@ -164,6 +152,14 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 					porters[tiles.index(porter.position)] = (porter.origin instanceof Marketplace ? 1 : 2);
 			}
 
+			var screenSize = tiles.coords(ctx.canvas.width, ctx.canvas.height);
+			var screenMarginSize = 100;
+
+			var toDrawArray = [];
+
+			var toDrawBuildings = {};
+			var toDrawMoutains = {};
+
 			var margin = 1;
 
 			// TODO: rysować tylko widoczne tilesy...
@@ -172,13 +168,49 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 					var posX = this.cameraPosition.x + x * -32 + y * 32;
 					var posY = this.cameraPosition.y + y * 16 + x * 16;
 
+					var outOfScreen = (posX < -screenMarginSize || posY < -screenMarginSize || posX > (screenSize.x + screenMarginSize) || posY > (screenSize.y + screenMarginSize));
+
+					function drawRawAtlasTile(atlasName, mode){
+						toDrawArray.push({
+							atlasName: atlasName,
+							x: x,
+							y: y,
+							screenX: posX,
+							screenY: posY,
+							isVisible: !outOfScreen,
+							specialMode: _.clone(mode)
+						});
+					}
+
+					function drawAtlasTile(atlasName, tile, mode){
+						drawRawAtlasTile(atlasName, mode);
+
+						if(tile != undefined){
+							if(!outOfScreen && tile.buildingData != null)
+								toDrawBuildings[tile.buildingData.structureId] = true;
+
+							if(!outOfScreen && tile.terrainLevel >= HILLSIDE && tile.terrainType != undefined)
+								toDrawMoutains[tiles.index(tile.terrainType)] = true;
+						}
+					}
+
+					// ~~~
+
 					if(!tiles.exsist(x, y)){
-						drawAtlasTile("sea1", posX, posY);
+						if(!outOfScreen)
+							drawAtlasTile("sea1", undefined);
+
 						continue;
 					}
 
 					var tile = tiles[x][y];
 					var tileImage = "";
+
+					if(outOfScreen){
+						if(!(tile.terrainLevel >= HILLSIDE ||
+							(tile.buildingData != undefined && tile.buildingData.width > 1 && tile.buildingData.height > 1)))
+							continue;
+					}
 
 					// (1) teren:
 
@@ -313,16 +345,45 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 
 					// ~~~
 
-					function drawAtlasTile(atlasName, x, y){
-						var coords = atlas[atlasName];
+					if(tileImage != undefined){
+						drawAtlasTile(tileImage, tile);
 
-						if(coords == undefined)
-							return;
+						// special drawing for special modes:
 
-						// rysuje się zawsze od początku tilesa
-						x = x - (coords.w / 2);
-						y = y - coords.h;
+						if((this.buildMode || this.removeMode) && tile.countryId != 0){
+							drawAtlasTile(tileImage, tile, {
+								"globalCompositeOperation": "multiply"
+							});
+						}
 
+						if(this.hoveredTile != undefined &&
+						   tiles.at(this.hoveredTile).buildingData != undefined &&
+						   tiles.at(this.hoveredTile).buildingData == tile.buildingData){
+							drawAtlasTile(tileImage, tile, {
+								"globalCompositeOperation": "lighter",
+								"globalAlpha": (this.removeMode ? 0.5 : 0.1)
+							});
+						}
+					}
+
+					// draw porter, if any
+					if(porters[tile.index] != undefined)
+						drawRawAtlasTile("placeholder_porter" + porters[tile.index]);
+				}
+			}
+
+			for(var i = 0; i < toDrawArray.length; i++){
+				function realDrawAtlasTile(atlasName, x, y, mode){
+					var coords = atlas[atlasName];
+
+					if(coords == undefined)
+						return;
+
+					// rysuje się zawsze od początku tilesa
+					x = x - (coords.w / 2);
+					y = y - coords.h;
+
+					function drawImage(){
 						ctx.drawImage(
 							resources["atlas"],
 							coords.x, coords.y, coords.w, coords.h,
@@ -330,47 +391,46 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 						);
 					}
 
-					if(tileImage != undefined){
-						drawAtlasTile(tileImage, posX, posY);
+					if(mode == undefined)
+						drawImage();
+					else {
+						ctx.save();
 
-						// special drawing for special modes:
-
-						if((this.buildMode || this.removeMode) && tile.countryId != 0){
-							ctx.save();
-							ctx.globalCompositeOperation = "multiply";
-							drawAtlasTile(tileImage, posX, posY);
-							ctx.restore();
+						for(var key in mode){
+							ctx[key] = mode[key];
 						}
 
-						if(this.hoveredTile != undefined &&
-						   tiles.at(this.hoveredTile).buildingData != undefined &&
-						   tiles.at(this.hoveredTile).buildingData == tile.buildingData){
-							ctx.save();
-							ctx.globalCompositeOperation = "lighter";
-							ctx.globalAlpha = (this.removeMode ? 0.5 : 0.1);
-							drawAtlasTile(tileImage, posX, posY);
-							ctx.restore();
-						}
+						drawImage();
+
+						ctx.restore();
 					}
-
-					// draw porter, if any
-					if(porters[tile.index] != undefined)
-						drawAtlasTile("placeholder_porter" + porters[tile.index], posX, posY);
 				}
+
+				var item = toDrawArray[i];
+
+				if(tiles.exsist(item.x, item.y)){
+					var tile = tiles[item.x][item.y];
+
+					if(tile != undefined){
+						if(tile.buildingData != null &&
+							!(tile.buildingData.structureId in toDrawBuildings))
+							continue;
+
+						if(tile.terrainLevel >= HILLSIDE && tile.terrainType != undefined &&
+							!(tiles.index(tile.terrainType) in toDrawMoutains))
+							continue;
+					}
+				}
+
+				realDrawAtlasTile(item.atlasName, item.screenX, item.screenY, item.specialMode);
 			}
 		};
 
 		this.timeFlowSpeed = 4;
-
-		var stats = initFpsCounter();
-
+		
 		this.onUpdate = function(delta){
-			stats.begin();
-
 			if(this.gameStarted)
 				update(delta, this.timeFlowSpeed);
-
-			stats.end();
 		};
 	});
 });

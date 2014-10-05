@@ -520,50 +520,42 @@
 	"buffers":
 	[
 		{
-			"file": "index.html",
-			"settings":
-			{
-				"buffer_size": 4344,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "scripts/main.js",
-			"settings":
-			{
-				"buffer_size": 2624,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "scripts/logic.js",
-			"settings":
-			{
-				"buffer_size": 2383,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "scripts/logic/gameDefinitions.js",
-			"settings":
-			{
-				"buffer_size": 22505,
-				"line_ending": "Unix"
-			}
-		},
-		{
 			"file": "scripts/graphics.js",
 			"settings":
 			{
-				"buffer_size": 9715,
+				"buffer_size": 10486,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "__backup/old3d.js",
+			"file": "index.html",
 			"settings":
 			{
-				"buffer_size": 12318,
+				"buffer_size": 4844,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "styles/main.css",
+			"settings":
+			{
+				"buffer_size": 4714,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "scripts/logic/storage.js",
+			"settings":
+			{
+				"buffer_size": 2374,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "scripts/graphics/framework.js",
+			"settings":
+			{
+				"buffer_size": 3245,
 				"line_ending": "Unix"
 			}
 		}
@@ -614,29 +606,34 @@
 	"expanded_folders":
 	[
 		"/var/www/html/__MINE__/coloniae",
-		"/var/www/html/__MINE__/coloniae/__externals",
 		"/var/www/html/__MINE__/coloniae/scripts",
+		"/var/www/html/__MINE__/coloniae/scripts/graphics",
 		"/var/www/html/__MINE__/coloniae/scripts/logic",
 		"/var/www/html/__MINE__/coloniae/styles"
 	],
 	"file_history":
 	[
+		"/var/www/html/__MINE__/coloniae/scripts/graphics/gui.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/building.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/structure.js",
+		"/var/www/html/__MINE__/coloniae/index.html",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/tile.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic.js",
+		"/var/www/html/__MINE__/coloniae/scripts/main.js",
+		"/var/www/html/__MINE__/coloniae/__release/scripts/main.js",
+		"/var/www/html/__MINE__/coloniae/__release/scripts/logic.js",
+		"/var/www/html/__MINE__/coloniae/__release/index.html",
+		"/var/www/html/__MINE__/coloniae/scripts/graphics.js",
 		"/var/www/html/__MINE__/coloniae/styles/main.css",
+		"/var/www/html/__MINE__/coloniae/__backup/old3d.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/gameDefinitions.js",
 		"/var/www/html/__MINE__/coloniae/scripts/logic/houseGroup.js",
 		"/var/www/html/__MINE__/coloniae/scripts/logic/storage.js",
-		"/var/www/html/__MINE__/coloniae/scripts/graphics/gui.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/gameDefinitions.js",
 		"/var/www/html/__MINE__/coloniae/scripts/logic/productionBuilding.js",
 		"/var/www/html/__MINE__/coloniae/scripts/graphics/framework.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/building.js",
-		"/var/www/html/__MINE__/coloniae/scripts/graphics.js",
 		"/var/www/html/__MINE__/coloniae/scripts/logic/island.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/structure.js",
 		"/var/www/html/__MINE__/coloniae/scripts/logic/storageBuilding.js",
 		"/var/www/html/__MINE__/coloniae/tools/atlas/index.html",
-		"/var/www/html/__MINE__/coloniae/scripts/main.js",
-		"/var/www/html/__MINE__/coloniae/index.html",
 		"/var/www/html/coloniae/scripts/require.js",
 		"/var/www/html/coloniae/scripts/graphics/gui.js",
 		"/var/www/html/coloniae/scripts/graphics/old3d.js",
@@ -743,12 +740,7 @@
 		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet5.xml",
 		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet6.xml",
 		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet7.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet8.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet9.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet10.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet11.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet13.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet12.xml"
+		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet8.xml"
 	],
 	"find":
 	{
@@ -766,6 +758,10 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"forEachBuildingTile",
+			"tilesUnder",
+			"makeRequiredTerrainMap",
+			"callHandler",
 			"sign",
 			"si",
 			"hardUpda",
@@ -889,11 +885,7 @@
 			".choosed",
 			"__changeOrbitRadius",
 			"sort",
-			".camera",
-			"camera\n",
-			".camera\n",
-			");\n",
-			"outlinematerial"
+			".camera"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -974,24 +966,157 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 2,
 			"sheets":
 			[
 				{
 					"buffer": 0,
-					"file": "index.html",
+					"file": "scripts/graphics.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4344,
+						"buffer_size": 10486,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								357,
-								357
+								9268,
+								9268
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 4995.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "index.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4844,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1585,
+								1585
 							]
 						],
 						"settings":
@@ -1101,164 +1226,30 @@
 							"codeintel_tooltips": "popup",
 							"sublime_auto_complete": true,
 							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"translate_tabs_to_spaces": false,
-							"word_wrap": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 0.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 4,
-					"type": "text"
-				},
-				{
-					"buffer": 1,
-					"file": "scripts/main.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2624,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								559,
-								559
-							]
-						],
-						"settings":
-						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 140.0,
+						"translation.y": 360.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
 					"buffer": 2,
-					"file": "scripts/logic.js",
+					"file": "styles/main.css",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 2383,
+						"buffer_size": 4714,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								571,
-								571
+								1190,
+								1190
 							]
 						],
 						"settings":
@@ -1367,31 +1358,31 @@
 							},
 							"codeintel_tooltips": "popup",
 							"sublime_auto_complete": true,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
+							"syntax": "Packages/CSS/CSS.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1440.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
 					"buffer": 3,
-					"file": "scripts/logic/gameDefinitions.js",
+					"file": "scripts/logic/storage.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 22505,
+						"buffer_size": 2374,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2458,
-								2458
+								2089,
+								2089
 							]
 						],
 						"settings":
@@ -1504,7 +1495,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1170.0,
+						"translation.y": 810.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -1512,19 +1503,19 @@
 				},
 				{
 					"buffer": 4,
-					"file": "scripts/graphics.js",
+					"file": "scripts/graphics/framework.js",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 9715,
+						"buffer_size": 3245,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3585,
-								3585
+								2564,
+								2564
 							]
 						],
 						"settings":
@@ -1637,39 +1628,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 4476.0,
+						"translation.y": 977.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 5,
-					"file": "__backup/old3d.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 12318,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								143,
-								143
-							]
-						],
-						"settings":
-						{
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 2520.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
+					"stack_index": 4,
 					"type": "text"
 				}
 			]

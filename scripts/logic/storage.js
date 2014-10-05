@@ -76,6 +76,7 @@ var Storage = Class.extend(function(){
 				return this.remove(type, Infinity);
 
 			this.slots[type].quantity -= quantity;
+			wasQuantity = quantity;
 		}
 
 		return wasQuantity;

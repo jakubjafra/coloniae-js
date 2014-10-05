@@ -853,6 +853,36 @@ var GoldMine = buildable("Gold mine", Farm.extend(function(){
 	};
 }));
 
+var FishermanHut = buildable("Fisherman hut", Farm.extend(function(){
+	this.width = 1;
+	this.height = 1;
+
+	this.requiredResources = makeRequiredResources(100, 5, 0, 3);
+	this.operatingCost = makeOperatingCost(5, 0);
+
+	this.harvestRadius = 5;
+	this.requiredCrop = "__WATER_TILES__"; // see 'forEachTileInRadius'
+
+	this.baseProduction = 0.75 / 60;
+
+	this.makeRequiredTerrainMap = function(){
+		this.createPlainTerrainMap(1, 1);
+
+		this.requiredTerrainMap[0][0] = 1;
+	};
+
+	this.onBuild = function(){
+		this.super.onBuild();
+
+		this.storage.catagories[OUTPUT] = FOOD_ID;
+	};
+
+	this.forEachTileInRadius = function(tile){
+		if(tile.terrainLevel < COAST)
+			this.goodOnes++;
+	};
+}));
+
 // ~~~
 
 // civilianUnit.js

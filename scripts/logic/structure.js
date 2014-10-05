@@ -110,31 +110,7 @@ function canBeBuild(x, y, building){
 					return false;
 		}
 	}
-
-
-	/*
-	for(var i = (building.width - Object.keys(building.requiredTerrainMap).length); i < building.width; i++){
-		for(var j = (building.height - Object.keys(building.requiredTerrainMap[i]).length); j < building.height; j++){
-			var tileX = x + i - offsetX;
-			var tileY = y + j - offsetY;
-
-			if(!(tileX >= 0 && tileX < tiles.size.x) ||
-			   !(tileY >= 0 && tileY < tiles.size.y)){
-				return false;
-			}
-
-			var tile = tiles[tileX][tileY];
-
-			if(building.requiredTerrainMap[i][j] != tile.terrainLevel)
-				return false;
-
-			if(tile.buildingData != null)
-				if(tile.buildingData.canBeOverwritten == false)
-					return false;
-		}
-	}
-	*/
-
+	
 	return true;
 }
 
