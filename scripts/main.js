@@ -58,6 +58,8 @@ require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// external
 			$("head").append('<script src="scripts/logic/storage.js"></script>');
 			$("head").append('<script src="scripts/logic/country.js"></script>');
 			$("head").append('<script src="scripts/logic/island.js"></script>');
+			$("head").append('<script src="scripts/logic/map.js"></script>');
+			$("head").append('<script src="scripts/logic/ship.js"></script>');
 			$("head").append('<script src="scripts/logic/structure.js"></script>');
 			$("head").append('<script src="scripts/logic/building.js"></script>');
 			$("head").append('<script src="scripts/logic/houseGroup.js"></script>');

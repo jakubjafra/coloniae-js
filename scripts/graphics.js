@@ -53,9 +53,12 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			});
 
 			return tiles.at(arr[0][1]);
-		}
+		};
 
 		this.hoveredTile = undefined;
+
+		// cokolwiek klikniętego przez usera (może to być budynek, statek, etc.)
+		this.choosedSth = undefined;
 
 		var moveMap = false;
 		var wasMoved = false;
@@ -103,33 +106,50 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			if(!wasMoved){
 				var clickedTile = this.getTileOnScreen(x, y);
 
-				if(clickedTile != undefined){
-					console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")");
+				if(clickedTile != undefined && this.choosedSth instanceof Ship){
+					if(clickedTile.terrainLevel < SHALLOW){
+						console.log("moving ship /#" + this.choosedSth.id + "/ to (" + clickedTile.x + ", " + clickedTile.y + ")");
 
-					var wasAnyAction = false;
+						this.choosedSth.moveTo(tiles.coords(clickedTile));
+					}
+
+					// jak kliknięto w wyspę to usuwamy zaznaczenie na jednostce
+					if(clickedTile.islandId != INVALID_ID)
+						this.choosedSth = undefined;
+				}
+				/*	tu "else" nie może być bo jeśli mając focusa na statku kliknięto w wyspę
+					to najprawdopodobniej by wybrać jakiś budynek więc nie można blokować tej
+					akcji żadnym "else"
+				else */ if(clickedTile != undefined){
+					console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")");
 
 					// budowa budynku
 					if(this.buildMode && this.testBuilding != undefined){
 						var structure = structsClass[this.testBuilding.__structId];
 
-						var side = this.testBuilding.rotation;
-
-						// if(structure.name == "Iron mine" || structure.name == "Quarry") // "quickfix"
-						// 	side = WEST;
-
-						new structure.class(clickedTile.x, clickedTile.y, countries[0], undefined, side);
-
-						wasAnyAction = true;
+						new structure.class(clickedTile.x,
+											clickedTile.y,
+											countries[0],
+											undefined,
+											this.testBuilding.rotation);
 					}
 
 					// usunięcie budynku
-					if(this.removeMode && clickedTile.buildingData != null){
+					if(this.removeMode && clickedTile.buildingData != null)
 						clickedTile.buildingData.remove();
-						wasAnyAction = true;
-					}
 
-					if(!wasAnyAction)
-						this.clickHandler(x, y);
+					// zaznaczenie jednostki
+					if(clickedTile.unitId != INVALID_ID)
+						this.choosedSth = ships[clickedTile.unitId];
+
+					// kliknięcie w budynek
+					if(clickedTile.buildingData != undefined)
+						this.choosedSth = clickedTile.buildingData;
+
+					// TODO: Usunąć to gówno.
+					// Przemyśleć jak, przydałby się na pewno jakiś "global controller" do tego typu
+					// zmiennych jak this.choosedSth (może zmiana paradygmatu GUI?)
+					this.clickHandler(x, y);
 				}
 				else
 					console.log("out of board click");
@@ -140,6 +160,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
 			var porters = {}; // [porterPosition] -> porterType
+			var toDrawShips = {};
 
 			// update porters positions to display
 			for(var i = 0; i < civilianUnits.length; i++){
@@ -160,13 +181,18 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			var toDrawBuildings = {};
 			var toDrawMoutains = {};
 
-			var margin = 1;
+			var margin = 0;
+
+			var posX, posY;
+			function calculateTilePosition(x, y){
+				posX = this.cameraPosition.x + x * -32 + y * 32;
+				posY = this.cameraPosition.y + y * 16 + x * 16;
+			}
 
 			// TODO: rysować tylko widoczne tilesy...
 			for(var x = -margin; x < tiles.size.x + margin; x++){
 				for(var y = -margin; y < tiles.size.y + margin; y++){
-					var posX = this.cameraPosition.x + x * -32 + y * 32;
-					var posY = this.cameraPosition.y + y * 16 + x * 16;
+					calculateTilePosition.call(this, x, y);
 
 					var outOfScreen = (posX < -screenMarginSize || posY < -screenMarginSize || posX > (screenSize.x + screenMarginSize) || posY > (screenSize.y + screenMarginSize));
 
@@ -288,25 +314,13 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 						if(building instanceof House)
 							name = name + (building.type + 1).toString(); // house<level>_...
 						else
-							name = name + building.rotation; // <buildingname><side>
+							name = name + Math.floor(building.rotation / 10); // <buildingname><side>
 
 						switch(building.structName){
 							case "Road":
 								return buildSpecialTileName(name, function(tile){
 									return (tile.buildingData instanceof Road ? 'r' : 'n');
 								});
-
-							// TODO: zamienić "harbor1.png" na "harbor1_0_0.png" i nie będzie tego switcha...
-							case "Harbor":
-							case "Tree field":
-							case "Grain field":
-							case "Cocoa field":
-							case "Sugarcane field":
-							case "Wine field":
-							case "Spice field":
-							case "Tobacco field":
-							case "Cotton field":
-								return name;
 
 							default:
 								return name + "_" + offset.x + "_" + offset.y;
@@ -372,6 +386,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 				}
 			}
 
+			// faktyczne wyświetlanie
 			for(var i = 0; i < toDrawArray.length; i++){
 				function realDrawAtlasTile(atlasName, x, y, mode){
 					var coords = atlas[atlasName];
@@ -380,7 +395,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 						return;
 
 					// rysuje się zawsze od początku tilesa
-					x = x - (coords.w / 2);
+					x = x - Math.floor(coords.w / 2);
 					y = y - coords.h;
 
 					function drawImage(){
@@ -424,6 +439,23 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 
 				realDrawAtlasTile(item.atlasName, item.screenX, item.screenY, item.specialMode);
 			}
+
+			for(var j = 0; j < ships.length; j++){
+				var ship = ships[j];
+
+				if(ship == undefined)
+					continue;
+
+				calculateTilePosition.call(this, ship.position.x, ship.position.y);
+
+				var shipXMovement = ship.rotationVector.x * ((ship.lastMoveTime) / 1);
+				var shipYMovement = ship.rotationVector.y * ((ship.lastMoveTime) / 1);
+
+				posX += Math.ceil(shipXMovement * -32 + shipYMovement * 32);
+				posY += Math.ceil(shipYMovement * 16 + shipXMovement * 16);
+
+				realDrawAtlasTile("ship_smalltrade_" + ship.rotation, posX, posY);
+			}
 		};
 
 		this.timeFlowSpeed = 4;
@@ -434,6 +466,8 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 		};
 	});
 });
+
+// TODO: to poniżej jest tak mega chujowe...
 
 var hardUpdateInterval = 1.0; // co sekundę
 var hardUpdateCount = 0.0;
@@ -452,8 +486,13 @@ function update(delta, timeSpeed){
 		}
 
 		for(var i = 0; i < civilianUnits.length; i++){
-			if(islands[i] != undefined)
+			if(civilianUnits[i] != undefined)
 				civilianUnits[i].hardUpdate(hardUpdateInterval * timeSpeed);
+		}
+
+		for(var i = 0; i < ships.length; i++){
+			if(ships[i] != undefined)
+				ships[i].hardUpdate(hardUpdateInterval * timeSpeed);
 		}
 
 		hardUpdateCount -= hardUpdateInterval;
@@ -472,5 +511,10 @@ function update(delta, timeSpeed){
 	for(var i = 0; i < civilianUnits.length; i++){
 		if(civilianUnits[i] != undefined)
 			civilianUnits[i].softUpdate(delta * timeSpeed);
+	}
+
+	for(var i = 0; i < ships.length; i++){
+		if(ships[i] != undefined)
+			ships[i].softUpdate(delta * timeSpeed);
 	}
 }

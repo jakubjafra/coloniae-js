@@ -12,8 +12,8 @@ var Island = Class.extend(function(){
 	this.mainMarketplaces = {}; // countryId -> marketplaceObj
 
 	// valid for each hardUpdate:
-	this.income = {} // countryId -> income
-	this.maintenance = {} // countryId -> maintenance
+	this.income = {};// countryId -> income
+	this.maintenance = {};// countryId -> maintenance
 
 	this.houseGroups = {}; // countryId -> houseGroup[]
 

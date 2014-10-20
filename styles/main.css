@@ -36,8 +36,8 @@ li {
 
 #canvas3d {
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
 
 	width: 100%;
 	height: 100%;
@@ -47,8 +47,8 @@ li {
 
 #on_canvas {
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
 
 	width: 100%;
 	height: 100%;
@@ -67,20 +67,20 @@ li {
 
 #top_left {
 	position: absolute;
-	top: 0px;
+	top: 0;
 	left: 85px;
 }
 
 #top_center {
 	position: absolute;
-	top: 0px;
+	top: 0;
 	left: 50%;
 }
 
 #top_right {
 	position: absolute;
-	top: 0px;
-	right: 0px;
+	top: 0;
+	right: 0;
 }
 
 .center_all_inside {
@@ -208,7 +208,7 @@ li {
 	width: 80px;
 	height: 85px;
 
-	padding: 0px;
+	padding: 0;
 
 	display: none;
 }
@@ -216,8 +216,8 @@ li {
 #buildcancelmenu:before {
 	content:'';
 	position:absolute;
-    top:0px;
-    left:0px;
+    top:0;
+    left:0;
 	width: 100%;
 	height: 100%;
 	background-color: black;
@@ -263,8 +263,8 @@ li {
 #buildmenu:before {
 	content:'';
 	position:absolute;
-    top:0px;
-    left:0px;
+    top:0;
+    left:0;
 	width: 100%;
 	height: 100%;
 	background-color: black;
@@ -317,8 +317,8 @@ li {
 
 #buildlistscrooll {
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
 
 	background-color: transparent;
 	height: 50px;
@@ -354,8 +354,8 @@ li {
 
 .background_transparent_color {
 	position:absolute;
-    top:0px;
-    left:0px;
+    top:0;
+    left:0;
 	width: 100%;
 	height: 100%;
 	background-color: white;
@@ -372,8 +372,8 @@ li {
 
 #toolbox {
 	position: absolute;
-	top: 0px;
-	left: 0px;
+	top: 0;
+	left: 0;
 
 	width: 74px;
 	height: 100%;
@@ -385,10 +385,13 @@ li {
 #toolbox:before {
 	content:'';
 	position:absolute;
-    top:0px;
-    left:0px;
+    top:0;
+    left:0;
 	width: 100%;
 	height: 100%;
 	background-color: black;
 	opacity: 0.4;
+}
+
+#ProductionBuildingDlg {
 }

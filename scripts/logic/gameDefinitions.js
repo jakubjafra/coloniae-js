@@ -355,7 +355,7 @@ var Marketplace = buildable("Marketplace", StorageBuilding.extend(function(){
 					if(tiles.exsist(underTile.x + i, underTile.y + j)){
 						var tile = tiles.at(underTile.x + i, underTile.y + j);
 
-						if(tile.terrainLevel >= 1)
+						if(tile.terrainLevel >= 1 && this.centerTile().islandId == tile.islandId)
 							tile.countryId = buildingCountryId;
 					}
 				}

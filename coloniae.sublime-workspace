@@ -4,6 +4,50 @@
 		"selected_items":
 		[
 			[
+				"calc",
+				"calculateTilePosition"
+			],
+			[
+				"rotation",
+				"rotationVector"
+			],
+			[
+				"distan",
+				"distanceEuclideanPow"
+			],
+			[
+				"te",
+				"tentative_g_score"
+			],
+			[
+				"neig",
+				"neighbor"
+			],
+			[
+				"terrain",
+				"terrainLevel"
+			],
+			[
+				"for",
+				"forEachTileInRadius"
+			],
+			[
+				"terr",
+				"terrainLevel"
+			],
+			[
+				"hill",
+				"HILLSIDE"
+			],
+			[
+				"toDraw",
+				"toDrawBuildings"
+			],
+			[
+				"atlas",
+				"atlasName"
+			],
+			[
 				"struc",
 				"structName"
 			],
@@ -30,10 +74,6 @@
 			[
 				"images",
 				"imagesArr"
-			],
-			[
-				"atlas",
-				"atlasJSON"
 			],
 			[
 				"im",
@@ -110,10 +150,6 @@
 			[
 				"TAB",
 				"TOBACCO_ID"
-			],
-			[
-				"calc",
-				"calculateEffectivity"
 			],
 			[
 				"struct",
@@ -478,42 +514,6 @@
 			[
 				"bui",
 				"buildingId"
-			],
-			[
-				"ship",
-				"ship_production_points"
-			],
-			[
-				"shi",
-				"ship_production_points"
-			],
-			[
-				"accSho",
-				"accShownPlanet"
-			],
-			[
-				"max",
-				"max_population"
-			],
-			[
-				"play",
-				"playerCiv"
-			],
-			[
-				"pop",
-				"population"
-			],
-			[
-				"accSh",
-				"accShownPlanet"
-			],
-			[
-				"orbi",
-				"orbitingAt_planetId"
-			],
-			[
-				"ch",
-				"onChangeView"
 			]
 		]
 	},
@@ -523,40 +523,42 @@
 			"file": "scripts/graphics.js",
 			"settings":
 			{
-				"buffer_size": 10486,
+				"buffer_size": 13404,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "index.html",
+			"file": "/home/khrone/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
 			"settings":
 			{
-				"buffer_size": 4844,
+				"buffer_size": 99,
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "styles/main.css",
+			"contents": "{\n	// A list of URLs that each contain a JSON file with a list of repositories.\n	// The repositories from these channels are placed in order after the\n	// repositories from the \"repositories\" setting\n	\"channels\": [\n		\"https://sublime.wbond.net/channel.json\"\n	],\n\n	// A list of URLs that contain a packages JSON file. These repositories\n	// are placed in order before repositories from the \"channels\"\n	// setting\n	\"repositories\": [],\n\n	// A list of CA certs needed for domains. The default channel provides a\n	// list of domains and an identifier (the md5 hash) for the CA cert(s)\n	// necessary for each. Not used on Windows since the system CA cert list\n	// is automatically used via WinINet.\n	//\n	// If a custom cert is required for a proxy or for an alternate channel\n	// or repository domain name, it should be added in one of the two forms:\n	//\n	// \"*\": [\"my_identifier\", \"https://example.com/url/of/cert_file\"]\n	// \"*\": [\"my_identifier_2\", \"/absolute/filesystem/path/to/cert_file\"]\n	//\n	// In both cases the literal \"*\" means the cert will be checked to ensure\n	// it is present for accessing any URL. This is necessary for proxy\n	// connections, but also useful if you want to provide you own\n	// Pckage Control.ca-bundle file.\n	//\n	// The \"my_identifier\" and \"my_identifier_2\" can be any unique string\n	// that Package Control can use as a filename, and ensures that it has\n	// merged the cert file with the ca-bundle.crt file in the certs/ directory\n	// since that is what is passed to the downloaders.\n	\"certs\": {\n		\"api.bitbucket.org\": [\"7d0986b90061d60c8c02aa3b1cf23850\", \"https://sublime.wbond.net/certs/7d0986b90061d60c8c02aa3b1cf23850\"],\n		\"api.github.com\": [\"7d0986b90061d60c8c02aa3b1cf23850\", \"https://sublime.wbond.net/certs/7d0986b90061d60c8c02aa3b1cf23850\"],\n		\"bitbucket.org\": [\"7d0986b90061d60c8c02aa3b1cf23850\", \"https://sublime.wbond.net/certs/7d0986b90061d60c8c02aa3b1cf23850\"],\n		\"codeload.github.com\": [\"7d0986b90061d60c8c02aa3b1cf23850\", \"https://sublime.wbond.net/certs/7d0986b90061d60c8c02aa3b1cf23850\"],\n		\"downloads.sourceforge.net\": [\"221e907bdfff70d71cea42361ae209d5\", \"https://sublime.wbond.net/certs/221e907bdfff70d71cea42361ae209d5\"],\n		\"github.com\": [\"7d0986b90061d60c8c02aa3b1cf23850\", \"https://sublime.wbond.net/certs/7d0986b90061d60c8c02aa3b1cf23850\"],\n		\"nodeload.github.com\": [\"7d0986b90061d60c8c02aa3b1cf23850\", \"https://sublime.wbond.net/certs/7d0986b90061d60c8c02aa3b1cf23850\"],\n		\"raw.github.com\": [\"7d0986b90061d60c8c02aa3b1cf23850\", \"https://sublime.wbond.net/certs/7d0986b90061d60c8c02aa3b1cf23850\"],\n		\"sublime.wbond.net\": [\"221e907bdfff70d71cea42361ae209d5\", \"https://sublime.wbond.net/certs/221e907bdfff70d71cea42361ae209d5\"]\n	},\n\n	// Install pre-release versions of packages. If this is false, versions\n	// under 1.0.0 will still be installed. Only packages using the SemVer\n	// -prerelease suffixes will be ignored.\n	\"install_prereleases\": false,\n\n	// If debugging information for HTTP/HTTPS connections should be printed\n	// to the Sublime Text console\n	\"debug\": false,\n\n	// This helps solve naming issues where a repository it not named the\n	// same as the package should be. This is primarily only useful for\n	// GitHub and BitBucket repositories. This mapping will override the\n	// mapping that is retrieved from the repository channels.\n	\"package_name_map\": {},\n\n	// If package install, upgrade and removal info should be submitted to\n	// the channel for aggregated statistics\n	\"submit_usage\": true,\n\n	// The URL to post install, upgrade and removal notices to\n	\"submit_url\": \"https://sublime.wbond.net/submit\",\n\n	// If packages should be automatically upgraded when ST2 starts\n	\"auto_upgrade\": true,\n\n	// If missing packages should be automatically installed when ST2 starts\n	\"install_missing\": true,\n\n	// The minimum frequency in hours in which to check for automatic upgrades,\n	// setting this to 0 will always check for automatic upgrades\n	\"auto_upgrade_frequency\": 1,\n\n	// Packages to not auto upgrade\n	\"auto_upgrade_ignore\": [],\n\n	// Timeout for downloading channels, repositories and packages. Doesn't\n	// have an effect on Windows due to a bug in WinINet.\n	\"timeout\": 30,\n\n	// The number of seconds to cache repository and package info for\n	\"cache_length\": 300,\n\n	// An HTTP proxy server to use for requests. Not used on Windows since the\n	// system proxy configuration is utilized via WinINet.\n	\"http_proxy\": \"\",\n	// An HTTPS proxy server to use for requests - this will inherit from\n	// http_proxy if it is set to \"\" or null and http_proxy has a value. You\n	// can set this to false to prevent inheriting from http_proxy. Not used on\n	// Windows since the system proxy configuration is utilized via WinINet.\n	\"https_proxy\": \"\",\n\n	// Username and password for both http_proxy and https_proxy. May be used\n	// with WinINet to set credentials for system-level proxy config.\n	\"proxy_username\": \"\",\n	\"proxy_password\": \"\",\n\n	// If HTTP responses should be cached to disk\n	\"http_cache\": true,\n\n	// Number of seconds to cache HTTP responses for, defaults to one week\n	\"http_cache_length\": 604800,\n\n	// User agent for HTTP requests. If \"%s\" is present, will be replaced\n	// with the current version.\n	\"user_agent\": \"Sublime Package Control v%s\",\n\n	// Setting this to true will cause Package Control to ignore all git\n	// and hg repositories - this may help if trying to list packages to install\n	// hangs\n	\"ignore_vcs_packages\": false,\n\n	// Custom paths to VCS binaries for when they can't be automatically\n	// found on the system and a package includes a VCS metadata directory\n	\"git_binary\": \"\",\n\n	// This should NOT contain the name of the remote or branch - that will\n	// be automatically determined.\n	\"git_update_command\": [\"pull\", \"--ff\", \"--commit\"],\n\n	\"hg_binary\": \"\",\n\n	// For HG repositories, be sure to use \"default\" as the remote URL.\n	// This is the default behavior when cloning an HG repo.\n	\"hg_update_command\": [\"pull\", \"--update\"],\n\n	// Full path to the openssl binary, if not found on your machine. This is\n	// only used when running the Grab CA Certs command.\n	\"openssl_binary\": \"\",\n\n	// Directories to ignore when creating a package\n	\"dirs_to_ignore\": [\n		\".hg\", \".git\", \".svn\", \"_darcs\", \"CVS\"\n	],\n\n	// Files to ignore when creating a package\n	\"files_to_ignore\": [\n		\".hgignore\", \".gitignore\", \".bzrignore\", \"*.pyc\", \"*.sublime-project\",\n		\"*.sublime-workspace\", \"*.tmTheme.cache\"\n	],\n\n	// Files to include, even if they match a pattern in files_to_ignore\n	\"files_to_include\": [],\n\n	// Files to ignore when creating a binary package. By default binary\n	// packages ship with .pyc files instead of .py files. If an __init__.py\n	// file exists, it will always be included, even if it matches one of\n	// these patterns.\n	\"files_to_ignore_binary\": [\n		\".hgignore\", \".gitignore\", \".bzrignore\", \"*.py\", \"*.sublime-project\",\n		\"*.sublime-workspace\", \"*.tmTheme.cache\"\n	],\n\n	// Files to include for a binary package, even if they match a pattern i\n	// files_to_ignore_binary\n	\"files_to_include_binary\": [\n		\"__init__.py\"\n	],\n\n	// When a package is created, copy it to this folder - defaults to Desktop\n	\"package_destination\": \"\"\n}\n",
+			"file": "/home/khrone/.config/sublime-text-3/Packages/Package Control/Package Control.sublime-settings",
+			"file_size": -1,
+			"file_write_time": -1,
 			"settings":
 			{
-				"buffer_size": 4714,
-				"line_ending": "Windows"
+				"buffer_size": 7104,
+				"line_ending": "Unix",
+				"read_only": true,
+				"scratch": true
 			}
 		},
 		{
-			"file": "scripts/logic/storage.js",
+			"contents": "// Place your settings in the file \"User/Preferences.sublime-settings\", which\n// overrides the settings in here.\n//\n// Settings may also be placed in file type specific options files, for\n// example, in Packages/Python/Python.sublime-settings for python files.\n{\n    // Sets the colors used within the text area\n    \"color_scheme\": \"Packages/Color Scheme - Default/Monokai.tmTheme\",\n\n    // Note that the font_face and font_size are overridden in the platform\n    // specific settings file, for example, \"Preferences (Linux).sublime-settings\".\n    // Because of this, setting them here will have no effect: you must set them\n    // in your User File Preferences.\n    \"font_face\": \"\",\n    \"font_size\": 10,\n\n    // Valid options are \"no_bold\", \"no_italic\", \"no_antialias\", \"gray_antialias\",\n    // \"subpixel_antialias\", \"no_round\" (OS X only), \"gdi\" (Windows only) and\n    // \"directwrite\" (Windows only)\n    \"font_options\": [],\n\n    // Characters that are considered to separate words\n    \"word_separators\": \"./\\\\()\\\"'-:,.;<>~!@#$%^&*|+=[]{}`~?\",\n\n    // Set to false to prevent line numbers being drawn in the gutter\n    \"line_numbers\": true,\n\n    // Set to false to hide the gutter altogether\n    \"gutter\": true,\n\n    // Spacing between the gutter and the text\n    \"margin\": 4,\n\n    // Fold buttons are the triangles shown in the gutter to fold regions of text\n    \"fold_buttons\": true,\n\n    // Hides the fold buttons unless the mouse is over the gutter\n    \"fade_fold_buttons\": true,\n\n    // Columns in which to display vertical rulers\n    \"rulers\": [],\n\n    // Set to true to turn spell checking on by default\n    \"spell_check\": false,\n\n    // The number of spaces a tab is considered equal to\n    \"tab_size\": 4,\n\n    // Set to true to insert spaces when tab is pressed\n    \"translate_tabs_to_spaces\": false,\n\n    // If translate_tabs_to_spaces is true, use_tab_stops will make tab and\n    // backspace insert/delete up to the next tabstop\n    \"use_tab_stops\": true,\n\n    // Set to false to disable detection of tabs vs. spaces on load\n    \"detect_indentation\": true,\n\n    // Calculates indentation automatically when pressing enter\n    \"auto_indent\": true,\n\n    // Makes auto indent a little smarter, e.g., by indenting the next line\n    // after an if statement in C. Requires auto_indent to be enabled.\n    \"smart_indent\": true,\n\n    // Adds whitespace up to the first open bracket when indenting. Requires\n    // auto_indent to be enabled.\n    \"indent_to_bracket\": false,\n\n    // Trims white space added by auto_indent when moving the caret off the\n    // line.\n    \"trim_automatic_white_space\": true,\n\n    // Disables horizontal scrolling if enabled.\n    // May be set to true, false, or \"auto\", where it will be disabled for\n    // source code, and otherwise enabled.\n    \"word_wrap\": \"auto\",\n\n    // Set to a value other than 0 to force wrapping at that column rather than the\n    // window width\n    \"wrap_width\": 0,\n\n    // Set to false to prevent word wrapped lines from being indented to the same\n    // level\n    \"indent_subsequent_lines\": true,\n\n    // Draws text centered in the window rather than left aligned\n    \"draw_centered\": false,\n\n    // Controls auto pairing of quotes, brackets etc\n    \"auto_match_enabled\": true,\n\n    // Word list to use for spell checking\n    \"dictionary\": \"Packages/Language - English/en_US.dic\",\n\n    // Set to true to draw a border around the visible rectangle on the minimap.\n    // The color of the border will be determined by the \"minimapBorder\" key in\n    // the color scheme\n    \"draw_minimap_border\": false,\n\n    // Always visualise the viewport on the minimap, as opposed to only\n    // showing it on mouse over\n    \"always_show_minimap_viewport\": false,\n\n    // If enabled, will highlight any line with a caret\n    \"highlight_line\": false,\n\n    // Valid values are \"smooth\", \"phase\", \"blink\" and \"solid\".\n    \"caret_style\": \"smooth\",\n\n    // These settings control the size of the caret\n    \"caret_extra_top\": 0,\n    \"caret_extra_bottom\": 0,\n    \"caret_extra_width\": 0,\n\n    // Set to false to disable underlining the brackets surrounding the caret\n    \"match_brackets\": true,\n\n    // Set to false if you'd rather only highlight the brackets when the caret is\n    // next to one\n    \"match_brackets_content\": true,\n\n    // Set to false to not highlight square brackets. This only takes effect if\n    // match_brackets is true\n    \"match_brackets_square\": true,\n\n    // Set to false to not highlight curly brackets. This only takes effect if\n    // match_brackets is true\n    \"match_brackets_braces\": true,\n\n    // Set to false to not highlight angle brackets. This only takes effect if\n    // match_brackets is true\n    \"match_brackets_angle\": false,\n\n    // Enable visualization of the matching tag in HTML and XML\n    \"match_tags\": true,\n\n    // Highlights other occurrences of the currently selected text\n    \"match_selection\": true,\n\n    // Additional spacing at the top of each line, in pixels\n    \"line_padding_top\": 0,\n\n    // Additional spacing at the bottom of each line, in pixels\n    \"line_padding_bottom\": 0,\n\n    // Set to false to disable scrolling past the end of the buffer.\n    // On OS X, this value is overridden in the platform specific settings, so\n    // you'll need to place this line in your user settings to override it.\n    \"scroll_past_end\": true,\n\n    // This controls what happens when pressing up or down when on the first\n    // or last line.\n    // On OS X, this value is overridden in the platform specific settings, so\n    // you'll need to place this line in your user settings to override it.\n    \"move_to_limit_on_up_down\": false,\n\n    // Set to \"none\" to turn off drawing white space, \"selection\" to draw only the\n    // white space within the selection, and \"all\" to draw all white space\n    \"draw_white_space\": \"selection\",\n\n    // Set to false to turn off the indentation guides.\n    // The color and width of the indent guides may be customized by editing\n    // the corresponding .tmTheme file, and specifying the colors \"guide\",\n    // \"activeGuide\" and \"stackGuide\"\n    \"draw_indent_guides\": true,\n\n    // Controls how the indent guides are drawn, valid options are\n    // \"draw_normal\" and \"draw_active\". draw_active will draw the indent\n    // guides containing the caret in a different color.\n    \"indent_guide_options\": [\"draw_normal\"],\n\n    // Set to true to removing trailing white space on save\n    \"trim_trailing_white_space_on_save\": false,\n\n    // Set to true to ensure the last line of the file ends in a newline\n    // character when saving\n    \"ensure_newline_at_eof_on_save\": false,\n\n    // Set to true to automatically save files when switching to a different file\n    // or application\n    \"save_on_focus_lost\": false,\n\n    // Save via writing to an alternate file, and then renaming it over the\n    // original file.\n    \"atomic_save\": true,\n\n    // The encoding to use when the encoding can't be determined automatically.\n    // ASCII, UTF-8 and UTF-16 encodings will be automatically detected.\n    \"fallback_encoding\": \"Western (Windows 1252)\",\n\n    // Encoding used when saving new files, and files opened with an undefined\n    // encoding (e.g., plain ascii files). If a file is opened with a specific\n    // encoding (either detected or given explicitly), this setting will be\n    // ignored, and the file will be saved with the encoding it was opened\n    // with.\n    \"default_encoding\": \"UTF-8\",\n\n    // Files containing null bytes are opened as hexadecimal by default\n    \"enable_hexadecimal_encoding\": true,\n\n    // Determines what character(s) are used to terminate each line in new files.\n    // Valid values are 'system' (whatever the OS uses), 'windows' (CRLF) and\n    // 'unix' (LF only).\n    \"default_line_ending\": \"system\",\n\n    // When enabled, pressing tab will insert the best matching completion.\n    // When disabled, tab will only trigger snippets or insert a tab.\n    // Shift+tab can be used to insert an explicit tab when tab_completion is\n    // enabled.\n    \"tab_completion\": true,\n\n    // Enable auto complete to be triggered automatically when typing.\n    \"auto_complete\": true,\n\n    // The maximum file size where auto complete will be automatically triggered.\n    \"auto_complete_size_limit\": 4194304,\n\n    // The delay, in ms, before the auto complete window is shown after typing\n    \"auto_complete_delay\": 50,\n\n    // Controls what scopes auto complete will be triggered in\n    \"auto_complete_selector\": \"source - comment, meta.tag - punctuation.definition.tag.begin\",\n\n    // Additional situations to trigger auto complete\n    \"auto_complete_triggers\": [ {\"selector\": \"text.html\", \"characters\": \"<\"} ],\n\n    // By default, auto complete will commit the current completion on enter.\n    // This setting can be used to make it complete on tab instead.\n    // Completing on tab is generally a superior option, as it removes\n    // ambiguity between committing the completion and inserting a newline.\n    \"auto_complete_commit_on_tab\": false,\n\n    // Controls if auto complete is shown when snippet fields are active.\n    // Only relevant if auto_complete_commit_on_tab is true.\n    \"auto_complete_with_fields\": false,\n\n    // Automatically close HTML and XML tags when </ is entered.\n    \"auto_close_tags\": true,\n\n    // By default, shift+tab will only unindent if the selection spans\n    // multiple lines. When pressing shift+tab at other times, it'll insert a\n    // tab character - this allows tabs to be inserted when tab_completion is\n    // enabled. Set this to true to make shift+tab always unindent, instead of\n    // inserting tabs.\n    \"shift_tab_unindent\": false,\n\n    // If true, the copy and cut commands will operate on the current line\n    // when the selection is empty, rather than doing nothing.\n    \"copy_with_empty_selection\": true,\n\n    // If true, the selected text will be copied into the find panel when it's\n    // shown.\n    // On OS X, this value is overridden in the platform specific settings, so\n    // you'll need to place this line in your user settings to override it.\n    \"find_selected_text\": true,\n\n    // When auto_find_in_selection is enabled, the \"Find in Selection\" flag\n    // will be enabled automatically when multiple lines of text are selected\n    \"auto_find_in_selection\": false,\n\n    // When drag_text is enabled, clicking on selected text will begin a\n    // drag-drop operation. This is not currently implemented under Linux.\n    \"drag_text\": true,\n\n    //\n    // User Interface Settings\n    //\n\n    // The theme controls the look of Sublime Text's UI (buttons, tabs, scroll bars, etc)\n    \"theme\": \"Default.sublime-theme\",\n\n    // Set to 0 to disable smooth scrolling. Set to a value between 0 and 1 to\n    // scroll slower, or set to larger than 1 to scroll faster\n    \"scroll_speed\": 1.0,\n\n    // Controls side bar animation when expanding or collapsing folders\n    \"tree_animation_enabled\": true,\n\n    // Controls animation throughout the application\n    \"animation_enabled\": true,\n\n    // Makes tabs with modified files more visible\n    \"highlight_modified_tabs\": false,\n\n    \"show_tab_close_buttons\": true,\n\n    // Show folders in the side bar in bold\n    \"bold_folder_labels\": false,\n\n    // OS X only: Set to true to disable Lion style full screen support.\n    // Sublime Text must be restarted for this to take effect.\n    \"use_simple_full_screen\": false,\n\n    // OS X only. Valid values are true, false, and \"auto\". Auto will enable\n    // the setting when running on a screen 2560 pixels or wider (i.e., a\n    // Retina display). When this setting is enabled, OpenGL is used to\n    // accelerate drawing. Sublime Text must be restarted for changes to take\n    // effect.\n    \"gpu_window_buffer\": \"auto\",\n\n    // Valid values are \"system\", \"enabled\" and \"disabled\"\n    \"overlay_scroll_bars\": \"system\",\n\n    // Allows tabs to scroll left and right, instead of simply shrinking\n    \"enable_tab_scrolling\": true,\n\n    // Display file encoding in the status bar\n    \"show_encoding\": false,\n\n    // Display line endings in the status bar\n    \"show_line_endings\": false,\n\n    //\n    // Application Behavior Settings\n    //\n\n    // Exiting the application with hot_exit enabled will cause it to close\n    // immediately without prompting. Unsaved modifications and open files will\n    // be preserved and restored when next starting.\n    //\n    // Closing a window with an associated project will also close the window\n    // without prompting, preserving unsaved changes in the workspace file\n    // alongside the project.\n    \"hot_exit\": true,\n\n    // remember_open_files makes the application start up with the last set of\n    // open files. Changing this to false will have no effect if hot_exit is\n    // true\n    \"remember_open_files\": true,\n\n    // remember_full_screen will allow Sublime Text to start in full screen\n    // mode if it was exited in full screen mode. When set to false, Sublime\n    // Text will never start in full screen mode.\n    \"remember_full_screen\": false,\n\n    // Always prompt before reloading a file, even if the file hasn't been\n    // modified. The default behavior is to automatically reload a file if it\n    // hasn't been edited. If a file has unsaved changes, a prompt will always\n    // be shown.\n    \"always_prompt_for_file_reload\": false,\n\n    // OS X only: When files are opened from finder, or by dragging onto the\n    // dock icon, this controls if a new window is created or not.\n    \"open_files_in_new_window\": true,\n\n    // OS X only: This controls if an empty window is created at startup or not.\n    \"create_window_at_startup\": true,\n\n    // Set to true to close windows as soon as the last file is closed, unless\n    // there's a folder open within the window. This is always enabled on OS X,\n    // changing it here won't modify the behavior.\n    \"close_windows_when_empty\": false,\n\n    // Show the full path to files in the title bar.\n    // On OS X, this value is overridden in the platform specific settings, so\n    // you'll need to place this line in your user settings to override it.\n    \"show_full_path\": true,\n\n    // Shows the Build Results panel when building. If set to false, the Build\n    // Results can be shown via the Tools/Build Results menu.\n    \"show_panel_on_build\": true,\n\n    // Preview file contents when clicking on a file in the side bar. Double\n    // clicking or editing the preview will open the file and assign it a tab.\n    \"preview_on_click\": true,\n\n    // folder_exclude_patterns and file_exclude_patterns control which files\n    // are listed in folders on the side bar. These can also be set on a per-\n    // project basis.\n    \"folder_exclude_patterns\": [\".svn\", \".git\", \".hg\", \"CVS\"],\n    \"file_exclude_patterns\": [\"*.pyc\", \"*.pyo\", \"*.exe\", \"*.dll\", \"*.obj\",\"*.o\", \"*.a\", \"*.lib\", \"*.so\", \"*.dylib\", \"*.ncb\", \"*.sdf\", \"*.suo\", \"*.pdb\", \"*.idb\", \".DS_Store\", \"*.class\", \"*.psd\", \"*.db\", \"*.sublime-workspace\"],\n    // These files will still show up in the side bar, but won't be included in\n    // Goto Anything or Find in Files\n    \"binary_file_patterns\": [\"*.jpg\", \"*.jpeg\", \"*.png\", \"*.gif\", \"*.ttf\", \"*.tga\", \"*.dds\", \"*.ico\", \"*.eot\", \"*.pdf\", \"*.swf\", \"*.jar\", \"*.zip\"],\n\n    // File indexing parses all files in the side bar, and builds an index of\n    // their symbols. This is required for Goto Definition to work.\n    \"index_files\": true,\n\n    // index_exclude_patterns indicate which files won't be indexed.\n    \"index_exclude_patterns\": [\"*.log\"],\n\n    // When enabled, anonymised usage data is sent back, assisting Sublime HQ\n    // in making informed decisions about improving Sublime Text. File names\n    // and file contents are never included, but data such as computer\n    // specifications, startup time, installed packages, and edited file types\n    // are. When disabled, telemetry is neither recorded or sent.\n    // A setting of auto will enable telemetry in dev builds, and disable\n    // telemetry in regular builds.\n    \"enable_telemetry\": \"auto\",\n\n    // List any packages to ignore here. When removing entries from this list,\n    // a restart may be required if the package contains plugins.\n    \"ignored_packages\": [\"Vintage\"]\n}\n",
+			"file": "/home/khrone/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+			"file_size": -1,
+			"file_write_time": -1,
 			"settings":
 			{
-				"buffer_size": 2374,
-				"line_ending": "Unix"
-			}
-		},
-		{
-			"file": "scripts/graphics/framework.js",
-			"settings":
-			{
-				"buffer_size": 3245,
-				"line_ending": "Unix"
+				"buffer_size": 16152,
+				"line_ending": "Unix",
+				"read_only": true,
+				"scratch": true
 			}
 		}
 	],
@@ -607,30 +609,37 @@
 	[
 		"/var/www/html/__MINE__/coloniae",
 		"/var/www/html/__MINE__/coloniae/scripts",
-		"/var/www/html/__MINE__/coloniae/scripts/graphics",
-		"/var/www/html/__MINE__/coloniae/scripts/logic",
-		"/var/www/html/__MINE__/coloniae/styles"
+		"/var/www/html/__MINE__/coloniae/scripts/logic"
 	],
 	"file_history":
 	[
-		"/var/www/html/__MINE__/coloniae/scripts/graphics/gui.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/building.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/structure.js",
-		"/var/www/html/__MINE__/coloniae/index.html",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/tile.js",
+		"/home/khrone/.config/sublime-text-3/Packages/User/Distraction Free.sublime-settings",
+		"/home/khrone/.config/sublime-text-3/Packages/User/JSON.sublime-settings",
+		"/home/khrone/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
 		"/var/www/html/__MINE__/coloniae/scripts/logic.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/algorithms.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/ship.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/civilianUnit.js",
+		"/var/www/html/__MINE__/coloniae/scripts/graphics.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/structure.js",
 		"/var/www/html/__MINE__/coloniae/scripts/main.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/gameDefinitions.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/country.js",
+		"/home/khrone/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/tile.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/map.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/building.js",
+		"/var/www/html/__MINE__/coloniae/scripts/graphics/gui.js",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/productionBuilding.js",
+		"/var/www/html/__MINE__/coloniae/scripts/graphics/framework.js",
+		"/var/www/html/__MINE__/coloniae/styles/main.css",
+		"/var/www/html/__MINE__/coloniae/index.html",
+		"/var/www/html/__MINE__/coloniae/scripts/logic/storage.js",
 		"/var/www/html/__MINE__/coloniae/__release/scripts/main.js",
 		"/var/www/html/__MINE__/coloniae/__release/scripts/logic.js",
 		"/var/www/html/__MINE__/coloniae/__release/index.html",
-		"/var/www/html/__MINE__/coloniae/scripts/graphics.js",
-		"/var/www/html/__MINE__/coloniae/styles/main.css",
 		"/var/www/html/__MINE__/coloniae/__backup/old3d.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/gameDefinitions.js",
 		"/var/www/html/__MINE__/coloniae/scripts/logic/houseGroup.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/storage.js",
-		"/var/www/html/__MINE__/coloniae/scripts/logic/productionBuilding.js",
-		"/var/www/html/__MINE__/coloniae/scripts/graphics/framework.js",
 		"/var/www/html/__MINE__/coloniae/scripts/logic/island.js",
 		"/var/www/html/__MINE__/coloniae/scripts/logic/storageBuilding.js",
 		"/var/www/html/__MINE__/coloniae/tools/atlas/index.html",
@@ -674,7 +683,6 @@
 		"/var/www/html/solniczka/js/AstroMechanics.js",
 		"/var/www/html/rogalik/methods.php",
 		"/var/www/html/rogalik/.project",
-		"/home/khrone/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
 		"/var/www/html/solniczka/js/PlanetLoader.js",
 		"/var/www/html/solniczka/styles/main.css",
 		"/var/www/html/solniczka/solniczka.sublime-project",
@@ -732,15 +740,7 @@
 		"/C/Users/Khrone/Desktop/New Text Document.txt",
 		"/E/wamp/www/cards/scripts/index.js",
 		"/E/wamp/www/squares/templates/singin.php",
-		"/E/wamp/www/cards/c.c",
-		"/E/wamp/www/cards/templates/duel.php",
-		"/E/wamp/www/cards/methods.php",
-		"/E/wamp/www/cards/__externals/jquery-1.7.1.min.js",
-		"/E/wamp/www/cards/index.php",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet5.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet6.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet7.xml",
-		"/C/Users/Khrone/Desktop/Kopia MS NOWA v_2013_11/xl/worksheets/sheet8.xml"
+		"/E/wamp/www/cards/c.c"
 	],
 	"find":
 	{
@@ -748,9 +748,10 @@
 	},
 	"find_in_files":
 	{
-		"height": 0.0,
+		"height": 95.0,
 		"where_history":
 		[
+			"/var/www/html/__MINE__/coloniae/scripts"
 		]
 	},
 	"find_state":
@@ -758,6 +759,15 @@
 		"case_sensitive": true,
 		"find_history":
 		[
+			"font",
+			"abs",
+			"/*",
+			"abs",
+			"font",
+			"HILLSIDE",
+			"drawAtlasTile",
+			"craftable",
+			"drawAtlasTile",
 			"forEachBuildingTile",
 			"tilesUnder",
 			"makeRequiredTerrainMap",
@@ -876,16 +886,7 @@
 			"of",
 			"special(",
 			"finished",
-			"bring",
-			"storage",
-			"getXY",
-			"xy",
-			"tileMap",
-			"?>\"><?",
-			".choosed",
-			"__changeOrbitRadius",
-			"sort",
-			".camera"
+			"bring"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -966,7 +967,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 3,
 			"sheets":
 			[
 				{
@@ -975,15 +976,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 10486,
+						"buffer_size": 13404,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								9268,
-								9268
+								2378,
+								2378
 							]
 						],
 						"settings":
@@ -1096,7 +1097,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 4995.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -1104,19 +1105,19 @@
 				},
 				{
 					"buffer": 1,
-					"file": "index.html",
+					"file": "/home/khrone/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4844,
+						"buffer_size": 99,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1585,
-								1585
+								39,
+								39
 							]
 						],
 						"settings":
@@ -1225,297 +1226,30 @@
 							},
 							"codeintel_tooltips": "popup",
 							"sublime_auto_complete": true,
-							"syntax": "Packages/HTML/HTML.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
 						},
 						"translation.x": 0.0,
-						"translation.y": 360.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "styles/main.css",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 4714,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								1190,
-								1190
-							]
-						],
-						"settings":
-						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/CSS/CSS.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 1440.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "scripts/logic/storage.js",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 2374,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								2089,
-								2089
-							]
-						],
-						"settings":
-						{
-							"codeintel": true,
-							"codeintel_config":
-							{
-								"JavaScript":
-								{
-									"codeintel_max_recursive_dir_depth": 2,
-									"codeintel_scan_files_in_project": false,
-									"javascriptExtraPaths":
-									[
-									]
-								},
-								"PHP":
-								{
-									"codeintel_max_recursive_dir_depth": 5,
-									"codeintel_scan_files_in_project": false,
-									"phpExtraPaths":
-									[
-									]
-								},
-								"Python":
-								{
-									"env":
-									{
-									}
-								}
-							},
-							"codeintel_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_live": true,
-							"codeintel_live_enabled_languages":
-							[
-								"JavaScript",
-								"Mason",
-								"XBL",
-								"XUL",
-								"RHTML",
-								"SCSS",
-								"Python",
-								"HTML",
-								"Ruby",
-								"Python3",
-								"XML",
-								"Sass",
-								"XSLT",
-								"Django",
-								"HTML5",
-								"Perl",
-								"CSS",
-								"Twig",
-								"Less",
-								"Smarty",
-								"Node.js",
-								"Tcl",
-								"TemplateToolkit",
-								"PHP"
-							],
-							"codeintel_max_recursive_dir_depth": 10,
-							"codeintel_scan_exclude_dir":
-							{
-								"JavaScript":
-								[
-									"/build/",
-									"/min/"
-								]
-							},
-							"codeintel_scan_files_in_project": true,
-							"codeintel_selected_catalogs":
-							[
-								"PyWin32",
-								"jQuery",
-								"Rails"
-							],
-							"codeintel_snippets": true,
-							"codeintel_syntax_map":
-							{
-								"Python Django": "Python"
-							},
-							"codeintel_tooltips": "popup",
-							"sublime_auto_complete": true,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 810.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
 					"type": "text"
 				},
 				{
-					"buffer": 4,
-					"file": "scripts/graphics/framework.js",
+					"buffer": 2,
+					"file": "/home/khrone/.config/sublime-text-3/Packages/Package Control/Package Control.sublime-settings",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3245,
+						"buffer_size": 7104,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								2564,
-								2564
+								6234,
+								6234
 							]
 						],
 						"settings":
@@ -1624,14 +1358,145 @@
 							},
 							"codeintel_tooltips": "popup",
 							"sublime_auto_complete": true,
-							"syntax": "Packages/JavaScript/JavaScript.tmLanguage",
-							"translate_tabs_to_spaces": false
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
 						},
-						"translation.x": 0.0,
-						"translation.y": 977.0,
+						"translation.x": -0.0,
+						"translation.y": 1887.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/home/khrone/.config/sublime-text-3/Packages/Default/Preferences.sublime-settings",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 16152,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								16152,
+								16152
+							]
+						],
+						"settings":
+						{
+							"codeintel": true,
+							"codeintel_config":
+							{
+								"JavaScript":
+								{
+									"codeintel_max_recursive_dir_depth": 2,
+									"codeintel_scan_files_in_project": false,
+									"javascriptExtraPaths":
+									[
+									]
+								},
+								"PHP":
+								{
+									"codeintel_max_recursive_dir_depth": 5,
+									"codeintel_scan_files_in_project": false,
+									"phpExtraPaths":
+									[
+									]
+								},
+								"Python":
+								{
+									"env":
+									{
+									}
+								}
+							},
+							"codeintel_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_live": true,
+							"codeintel_live_enabled_languages":
+							[
+								"JavaScript",
+								"Mason",
+								"XBL",
+								"XUL",
+								"RHTML",
+								"SCSS",
+								"Python",
+								"HTML",
+								"Ruby",
+								"Python3",
+								"XML",
+								"Sass",
+								"XSLT",
+								"Django",
+								"HTML5",
+								"Perl",
+								"CSS",
+								"Twig",
+								"Less",
+								"Smarty",
+								"Node.js",
+								"Tcl",
+								"TemplateToolkit",
+								"PHP"
+							],
+							"codeintel_max_recursive_dir_depth": 10,
+							"codeintel_scan_exclude_dir":
+							{
+								"JavaScript":
+								[
+									"/build/",
+									"/min/"
+								]
+							},
+							"codeintel_scan_files_in_project": true,
+							"codeintel_selected_catalogs":
+							[
+								"PyWin32",
+								"jQuery",
+								"Rails"
+							],
+							"codeintel_snippets": true,
+							"codeintel_syntax_map":
+							{
+								"Python Django": "Python"
+							},
+							"codeintel_tooltips": "popup",
+							"sublime_auto_complete": true,
+							"syntax": "Packages/JavaScript/JSON.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 405.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
 					"type": "text"
 				}
 			]

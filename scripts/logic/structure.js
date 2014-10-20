@@ -56,7 +56,7 @@ function useRequiredResources(requiredResources, marketplace){
 
 			default:
 				// product
-				console.assert(marketplace.storage.of(i) >= v)
+				console.assert(marketplace.storage.of(i) >= v);
 				marketplace.storage.remove(marketplace.storage.special(i), v);
 				break;
 		}
@@ -115,10 +115,10 @@ function canBeBuild(x, y, building){
 }
 
 // stałe do obrotów
-NORTH = 1;
-// EAST = 2;
-// SOUTH = 3;
-WEST = 4;
+NORTH = 10;
+// EAST = 20;
+// SOUTH = 30;
+WEST = 40;
 
 var structures = [];
 

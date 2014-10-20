@@ -7,10 +7,13 @@ logic.js
 define(['jquery', 'underscore', 'extend',
 		// wczytanie logiki:
 		'./logic/tile',
+		'./logic/algorithms',
 		'./logic/product',
 		'./logic/storage',
 		'./logic/country',
 		'./logic/island',
+		'./logic/map',
+		'./logic/ship',
 		'./logic/structure',
 		'./logic/building',
 		'./logic/houseGroup',
@@ -32,19 +35,15 @@ define(['jquery', 'underscore', 'extend',
 				var playerCountry = new Country();
 				playerCountry.type = PLAYER_COUNTRY;
 
+				var ship = new Ship();
+
+				ship.setPosition(tiles.coords(19, 0));
+				// ship.moveTo(tiles.coords(19, 1));
+
 				playerCountry.coins = 10000; // tymczasowe
 
-				tiles[19][2].countryId = 0;
-				var port = new Port(19, 2, countries[0], true);
-
-				for(var x = 0; x < tiles.size.x; x++){
-					for(var y = 0; y < tiles.size.y; y++){
-						if(tiles[x][y].terrainLevel == PLAINS && Math.random() > 0.55){
-							new TreeFld(x, y, undefined, true);
-						}
-					}
-				}
-
+				tiles[19][4].countryId = 0;
+				var port = new Port(19, 4, countries[0], true);
 				
 				islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(TOOLS_ID), 100); // tymczasowe
 				islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(WOOD_ID), 100); // tymczasowe

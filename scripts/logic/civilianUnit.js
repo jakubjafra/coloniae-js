@@ -26,13 +26,14 @@ var CivilianUnit = Class.extend(function(){
 	this.constructor = function(){
 		this.id = civilianUnits.length;
 		civilianUnits.push(this);
-	}
+	};
 
 	function findRoute(sourceBuilding, targetBuilding){
 		/*
 			Dijkstra
 
 			implementacja algorytmu szukania drogi
+			jest to zmodyfikowany alorytm, używany wyłącznie na potrzeby CivilianUnit!
 
 			Graph - lista wszystkich węzłów
 			source - węzeł startowy
@@ -58,12 +59,15 @@ var CivilianUnit = Class.extend(function(){
 
 			function source_node_with_min_dist(){
 				var searchArr = [];
+				
 				for(var i = 0; i < Q.length; i++){
 					searchArr.push([Q[i], dist[Q[i]]]);
 				}
+
 				searchArr.sort(function(a, b){
 					return a[1] - b[1];
 				});
+				
 				return searchArr[0][0];
 			}
 
@@ -125,12 +129,14 @@ var CivilianUnit = Class.extend(function(){
 
 			return false;
 		}
-
+		
 		function indexAllBuildingTiles(tilesUnderBuilding){
 			var arr = [];
+			
 			$.each(tilesUnderBuilding, function(i,v){
 				arr.push(tiles.index(v));
 			});
+
 			return arr;
 		}
 
@@ -155,9 +161,11 @@ var CivilianUnit = Class.extend(function(){
 		}
 
 		function movementCost(tileA, tileB){
+			// jeżeli tileA=buildingTile && tileB=buildingTile to koszt jest znikomy
 			if(	!(tiles.at(tileA).buildingData instanceof Road) &&
 				!(tiles.at(tileB).buildingData instanceof Road) )
 				return 1;
+			// jeżeli nie to zwykły
 			else
 				return 10;
 		}

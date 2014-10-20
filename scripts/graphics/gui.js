@@ -3,7 +3,9 @@
 gui.js
 
 Dodać tutuaj listę kontrolerów do update i updateować jak wszystko inne.
-Zwracać 'updateHandler' a nie 'app'.
+
+TODO: Usunąć "clickHandler" - gui.js ma być jedynie odzwierciedleniem stanu graphics.js
+a nie samemu wpływać na ten stan...
 
 */
 
@@ -65,28 +67,22 @@ define(['angular', '../graphics', 'extend', 'underscore', '../logic'], function(
 
 	// ~~~
 
-	var clickedBuilding = undefined;
-
 	var buildingDlgs = {
 		"#HouseDlg": "#HouseDlg",
 		"#MarketplaceDlg": "#MarketplaceDlg",
 		"#ProductionBuildingDlg": "#ProductionBuildingDlg"
 	};
 
-	var dlgForwarding = {
-		"Port": "Marketplace"
-	};
-
 	function showBuildingDlg(x, y){
-		if(clickedBuilding == undefined)
+		if(graphics._.choosedSth == undefined || !(graphics._.choosedSth instanceof Building))
 			return;
 
-		var structName = clickedBuilding.structName;
+		var structName = graphics._.choosedSth.structName;
 
-		if(clickedBuilding instanceof Port)
+		if(graphics._.choosedSth instanceof Port)
 			structName = "Marketplace";
 
-		if(clickedBuilding instanceof ProductionBuilding)
+		if(graphics._.choosedSth instanceof ProductionBuilding)
 			structName = "ProductionBuilding";
 
 		var id = ("#" + structName + "Dlg");
@@ -98,7 +94,7 @@ define(['angular', '../graphics', 'extend', 'underscore', '../logic'], function(
 		$(id).show();
 
 		$(id).scope().$apply(function($scope){
-			$scope.building = clickedBuilding;
+			$scope.building = graphics._.choosedSth;
 			registerInfiniteUpdate($scope, $scope.onBuildingBind);
 		});
 	}
@@ -112,7 +108,6 @@ define(['angular', '../graphics', 'extend', 'underscore', '../logic'], function(
 	}
 
 	graphics._.clickHandler = function(x, y){
-		clickedBuilding = graphics._.hoveredTile.buildingData;
 		showBuildingDlg(x, y);
 	};
 
