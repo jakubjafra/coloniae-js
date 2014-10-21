@@ -13,6 +13,7 @@ define(['jquery', 'underscore', 'extend',
 		'./logic/country',
 		'./logic/island',
 		'./logic/map',
+		'./logic/militaryUnit',
 		'./logic/ship',
 		'./logic/structure',
 		'./logic/building',
@@ -23,7 +24,41 @@ define(['jquery', 'underscore', 'extend',
 		'./logic/gameDefinitions'
 		],
 	function(){
+		HARD_UPDATE_INTERVAL = 1.0;
+
+		function updateForAllNotUndefined(object, updateFuncName, param){
+			for(var i = 0; i < object.length; i++)
+				if(object[i] != undefined)
+					object[i][updateFuncName].call(object[i], param);
+		}
+
+		var hardUpdateCount = 0.0;
+
 		return {
+			timeFlowSpeed: 4,
+
+			update: function(delta){
+				// Kolejność update'ów JEST WAŻNA (islands musi być pierwsze).
+
+				hardUpdateCount += delta;
+
+				for(; hardUpdateCount >= HARD_UPDATE_INTERVAL; hardUpdateCount -= HARD_UPDATE_INTERVAL){
+					var gameTimeDelta = HARD_UPDATE_INTERVAL * this.timeFlowSpeed; 
+					
+					updateForAllNotUndefined(islands, 'hardUpdate', gameTimeDelta);
+					updateForAllNotUndefined(structures, 'hardUpdate', gameTimeDelta);
+					updateForAllNotUndefined(civilianUnits, 'hardUpdate', gameTimeDelta);
+					updateForAllNotUndefined(militaryUnits, 'hardUpdate', gameTimeDelta);
+				}
+
+				var gameTimeDelta = delta * this.timeFlowSpeed;
+
+				updateForAllNotUndefined(islands, 'softUpdate', gameTimeDelta);
+				updateForAllNotUndefined(structures, 'softUpdate', gameTimeDelta);
+				updateForAllNotUndefined(civilianUnits, 'softUpdate', gameTimeDelta);
+				updateForAllNotUndefined(militaryUnits, 'softUpdate', gameTimeDelta);
+			},
+
 			// tymczasowe tworzenie planszy:
 			init: function(){
 				console.log("creating map, sample buildings, etc.");
@@ -39,6 +74,7 @@ define(['jquery', 'underscore', 'extend',
 
 				ship.setPosition(tiles.coords(19, 0));
 				// ship.moveTo(tiles.coords(19, 1));
+				ship.countryId = playerCountry.id;
 
 				playerCountry.coins = 10000; // tymczasowe
 

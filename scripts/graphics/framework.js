@@ -2,8 +2,6 @@
 
 framework.js
 
-TODO: zamienić .images na .resourcesToLoad (img, txt, ...)
-
 */
 
 define(['jquery', 'jquery-mousewheel'], function($){
@@ -24,7 +22,7 @@ define(['jquery', 'jquery-mousewheel'], function($){
 	return function(wrapper){
 		console.assert(typeof wrapper === "object");
 
-		wrapper.images = wrapper.images || [];
+		wrapper.resources = wrapper.resources || [];
 		wrapper.fullscreen = wrapper.fullscreen || false;
 
 		wrapper.onUpdate = wrapper.onUpdate || function(){};
@@ -45,8 +43,8 @@ define(['jquery', 'jquery-mousewheel'], function($){
 
 		// ~~~
 
-		var loadedImages = {};
-		var loadedImagesCount = 0;
+		var loadedResources = {};
+		var loadedResourcesCount = 0;
 
 		this.canvas = $("#canvas3d");
 
@@ -90,7 +88,7 @@ define(['jquery', 'jquery-mousewheel'], function($){
 			this.stats.begin();
 
 			wrapper.onUpdate(delta);
-			wrapper.onRender(delta, context, loadedImages);
+			wrapper.onRender(delta, context, loadedResources);
 
 			this.stats.end();
 
@@ -100,16 +98,16 @@ define(['jquery', 'jquery-mousewheel'], function($){
 		}, this);
 
 		this.start = function(){
-			console.log('starting loading requested ' + wrapper.images.length + ' image(s)');
+			console.log('starting loading requested ' + wrapper.resources.length + ' image(s)');
 
-			for(var i = 0; i < wrapper.images.length; i++){
-				var name = wrapper.images[i];
+			for(var i = 0; i < wrapper.resources.length; i++){
+				var name = wrapper.resources[i];
 
-				loadedImages[name] = new Image();
+				loadedResources[name] = new Image(); // TODO: Uwolnić resources od bycia stricte Image.
 
-				loadedImages[name].onload = $.proxy(function(){
-					loadedImagesCount++;
-					if(loadedImagesCount >= wrapper.images.length){
+				loadedResources[name].onload = $.proxy(function(){
+					loadedResourcesCount++;
+					if(loadedResourcesCount >= wrapper.resources.length){
 						console.log('...done loading images, lauching game');
 
 						oldTime = (new Date()).getTime();
@@ -117,7 +115,7 @@ define(['jquery', 'jquery-mousewheel'], function($){
 					}
 				}, this);
 
-				loadedImages[name].src = "imgs/" + name + ".png";
+				loadedResources[name].src = "imgs/" + name + ".png";
 			}
 		};
 	};

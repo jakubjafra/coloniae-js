@@ -9,7 +9,7 @@ a nie samemu wpływać na ten stan...
 
 */
 
-define(['angular', '../graphics', 'extend', 'underscore', '../logic'], function(angular, graphics){
+define(['angular', '../graphics', '../logic', 'extend', 'underscore'], function(angular, graphics, logic){
 	// niestety angular sam nie updateuje zmian z "other sources"
 	// więc trzeba samemu callować zmianę $scopa co jakiś czas
 	function registerInfiniteUpdate(scope, func){
@@ -62,7 +62,7 @@ define(['angular', '../graphics', 'extend', 'underscore', '../logic'], function(
 	// ~~~
 
 	app.controller("TimeCtrl", function($scope){
-		$scope.timeController = graphics._;
+		$scope.timeController = logic;
 	});
 
 	// ~~~

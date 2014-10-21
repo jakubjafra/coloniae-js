@@ -4,7 +4,7 @@ graphics.js
 
 */
 
-define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.json'], function($, Stats, framework, atlasJSON){
+define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.json', './logic'], function($, Stats, framework, atlasJSON, Logic){
 	return  new framework(new function(){
 		this.cameraPosition = { x: 500, y: 0 };
 
@@ -14,7 +14,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 		this.removeMode = false;
 		this.testBuilding = undefined;
 
-		this.images = [ "atlas" ];
+		this.resources = [ "atlas" ];
 		var atlas = JSON.parse(atlasJSON);
 
 		this.fullscreen = true;
@@ -123,6 +123,8 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 				else */ if(clickedTile != undefined){
 					console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")");
 
+					var wasAnyAction = false;
+
 					// budowa budynku
 					if(this.buildMode && this.testBuilding != undefined){
 						var structure = structsClass[this.testBuilding.__structId];
@@ -132,15 +134,20 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 											countries[0],
 											undefined,
 											this.testBuilding.rotation);
+
+						wasAnyAction = true;
 					}
 
 					// usunięcie budynku
-					if(this.removeMode && clickedTile.buildingData != null)
+					if(this.removeMode && clickedTile.buildingData != null){
 						clickedTile.buildingData.remove();
+
+						wasAnyAction = true;
+					}
 
 					// zaznaczenie jednostki
 					if(clickedTile.unitId != INVALID_ID)
-						this.choosedSth = ships[clickedTile.unitId];
+						this.choosedSth = militaryUnits[clickedTile.unitId];
 
 					// kliknięcie w budynek
 					if(clickedTile.buildingData != undefined)
@@ -149,7 +156,8 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 					// TODO: Usunąć to gówno.
 					// Przemyśleć jak, przydałby się na pewno jakiś "global controller" do tego typu
 					// zmiennych jak this.choosedSth (może zmiana paradygmatu GUI?)
-					this.clickHandler(x, y);
+					if(!wasAnyAction)
+						this.clickHandler(x, y);
 				}
 				else
 					console.log("out of board click");
@@ -160,7 +168,6 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
 			var porters = {}; // [porterPosition] -> porterType
-			var toDrawShips = {};
 
 			// update porters positions to display
 			for(var i = 0; i < civilianUnits.length; i++){
@@ -440,8 +447,8 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 				realDrawAtlasTile(item.atlasName, item.screenX, item.screenY, item.specialMode);
 			}
 
-			for(var j = 0; j < ships.length; j++){
-				var ship = ships[j];
+			for(var j = 0; j < militaryUnits.length; j++){
+				var ship = militaryUnits[j];
 
 				if(ship == undefined)
 					continue;
@@ -457,64 +464,10 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 				realDrawAtlasTile("ship_smalltrade_" + ship.rotation, posX, posY);
 			}
 		};
-
-		this.timeFlowSpeed = 4;
 		
 		this.onUpdate = function(delta){
 			if(this.gameStarted)
-				update(delta, this.timeFlowSpeed);
+				Logic.update(delta);
 		};
 	});
 });
-
-// TODO: to poniżej jest tak mega chujowe...
-
-var hardUpdateInterval = 1.0; // co sekundę
-var hardUpdateCount = 0.0;
-function update(delta, timeSpeed){
-	hardUpdateCount += delta;
-	while(hardUpdateCount >= hardUpdateInterval){
-		// KOLEJNOŚĆ JEST WAŻNA - islands musi być pierwsze
-		for(var i = 0; i < islands.length; i++){
-			if(islands[i] != undefined)
-				islands[i].hardUpdate(hardUpdateInterval * timeSpeed);
-		}
-
-		for(var i = 0; i < structures.length; i++){
-			if(structures[i] != undefined)
-				structures[i].hardUpdate(hardUpdateInterval * timeSpeed);
-		}
-
-		for(var i = 0; i < civilianUnits.length; i++){
-			if(civilianUnits[i] != undefined)
-				civilianUnits[i].hardUpdate(hardUpdateInterval * timeSpeed);
-		}
-
-		for(var i = 0; i < ships.length; i++){
-			if(ships[i] != undefined)
-				ships[i].hardUpdate(hardUpdateInterval * timeSpeed);
-		}
-
-		hardUpdateCount -= hardUpdateInterval;
-	}
-
-	for(var i = 0; i < islands.length; i++){
-		if(islands[i] != undefined)
-			islands[i].softUpdate(delta * timeSpeed);
-	}
-
-	for(var i = 0; i < structures.length; i++){
-		if(structures[i] != undefined)
-			structures[i].softUpdate(delta * timeSpeed);
-	}
-
-	for(var i = 0; i < civilianUnits.length; i++){
-		if(civilianUnits[i] != undefined)
-			civilianUnits[i].softUpdate(delta * timeSpeed);
-	}
-
-	for(var i = 0; i < ships.length; i++){
-		if(ships[i] != undefined)
-			ships[i].softUpdate(delta * timeSpeed);
-	}
-}
