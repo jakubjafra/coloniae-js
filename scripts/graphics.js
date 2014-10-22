@@ -164,7 +164,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			}
 		};
 
-		this.onRender = function(delta, ctx, resources){
+		this.onRender = function(delta, ctx, resources){ // TODO: przepisać to
 			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
 			var porters = {}; // [porterPosition] -> porterType
@@ -458,8 +458,8 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 				var shipXMovement = ship.rotationVector.x * ((ship.lastMoveTime) / 1);
 				var shipYMovement = ship.rotationVector.y * ((ship.lastMoveTime) / 1);
 
-				posX += Math.ceil(shipXMovement * -32 + shipYMovement * 32);
-				posY += Math.ceil(shipYMovement * 16 + shipXMovement * 16);
+				posX += (shipXMovement * -32 + shipYMovement * 32);
+				posY += (shipYMovement * 16 + shipXMovement * 16);
 
 				realDrawAtlasTile("ship_smalltrade_" + ship.rotation, posX, posY);
 			}

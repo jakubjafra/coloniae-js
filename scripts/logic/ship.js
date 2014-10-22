@@ -12,10 +12,12 @@ function onlyWaterTilesFilter(tile){
 
 // Statek, porusza się po morzach,
 var Ship = MilitaryUnit.extend(function(){
-	this.setupRoute = function(destination){
+	this.setupRoute = function(destination, source){
+		source = source || this.position;
+
 		// Musi mieć inny algorytm szukania drogi (Dijakstra za droga), etc.
 		return AStar(
-				tiles.index(this.position),
+				tiles.index(source),
 				tiles.index(destination),
 				neighbours(true, onlyWaterTilesFilter)
 			);

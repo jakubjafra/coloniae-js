@@ -88,25 +88,34 @@ var MilitaryUnit = Class.extend(function(){
 	};
 
 	// do dziedziczenia
-	this.setupRoute = function(destination){
+	this.setupRoute = function(destination, source){
 		return [];
 	};
 
 	this.moveTo = function(destination){
-		// TODO: powinien dokończyć ostatni ruch... (by było ładnie :))
+		var wasMovement = false;
+		var sourcePos = this.position;
 
-		this.steps = this.setupRoute(destination);
+		if(this.steps.length > 0){
+			sourcePos = tiles.coords(this.steps[0]);
+			this.steps = [this.steps[0]];
 
-		if(this.steps.length > 0 && tiles.index(this.steps[0]) == tiles.index(this.position)){
-			this.steps.splice(0, 1);
+			wasMovement = true;
 		}
+
+		this.steps.push.apply(this.steps, this.setupRoute(destination, sourcePos));
+
+		if(this.steps.length > 0 && tiles.index(this.steps[0]) == tiles.index(sourcePos))
+			this.steps.splice(0, 1);
 
 		if(this.steps.length == 0)
 			return;
 
 		this.calcRotationVectorForMovement();
 		this.isMoving = true;
-		this.lastMoveTime = 0;
+
+		if(!wasMovement)
+			this.lastMoveTime = 0;
 	};
 
 	this.onStart = function(){};

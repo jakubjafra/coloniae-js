@@ -284,7 +284,7 @@ li {
 
 	background-color: transparent;
 
-	overflow: hidden;
+	/*overflow: hidden;*/
 	cursor: pointer;
 }
 
@@ -298,7 +298,7 @@ li {
 
 	background-color: transparent;
 
-	overflow: hidden;
+	/*overflow: hidden;*/
 	cursor: pointer;
 }
 
@@ -317,8 +317,10 @@ li {
 
 #buildlistscrooll {
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 0px;
+	left: 0px;
+
+	word-wrap: none;
 
 	background-color: transparent;
 	height: 50px;
@@ -327,6 +329,8 @@ li {
 .buildlistitem {
 	position: relative;
 	float: left;
+
+	display: inline-block;
 
 	width: 55px;
 	height: 50px;
