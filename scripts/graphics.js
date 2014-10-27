@@ -62,6 +62,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 
 		var moveMap = false;
 		var wasMoved = false;
+		var lastMouseDown = 0;
 
 		this.onMouseEnter = function(){};
 		this.onMouseLeave = function(){
@@ -96,6 +97,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 		this.onMouseDown = function(x, y){
 			moveMap = true;
 			wasMoved = false;
+			lastMouseDown = (new Date()).getTime();
 		};
 
 		this.clickHandler = function(){};
@@ -103,7 +105,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 		this.onMouseUp = function(x, y){
 			moveMap = false;
 
-			if(!wasMoved){
+			if(!wasMoved || ((new Date()).getTime() - lastMouseDown) < 200){
 				var clickedTile = this.getTileOnScreen(x, y);
 
 				if(clickedTile != undefined && this.choosedSth instanceof Ship){
@@ -317,6 +319,9 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 					function getBuildingImage(building, offset){
 						var name = _.clone(building.structName).replace(/\s/g, '');
 						name = name.toLowerCase();
+
+						if(building instanceof FieldPlant)
+							name = name + (building.isWithered ? "withered" : "");
 
 						if(building instanceof House)
 							name = name + (building.type + 1).toString(); // house<level>_...

@@ -109,12 +109,12 @@ var Farm = ProductionBuilding.extend(function(){
 	this.totalOnes = 0;
 	
 	this.forEachTileInRadius = function(tile){
-		if(tile.terrainLevel >= 2 && tile.buildingData !== this){
+		if(tile.terrainLevel >= PLAINS && tile.buildingData !== this){
 			if(tile.buildingData == null){
 				if(this.requiredCrop == null)
 					this.goodOnes++;
 			} else
-				if(tile.buildingData.structName == this.requiredCrop)
+				if(tile.buildingData.structName == this.requiredCrop && !tile.buildingData.isWithered)
 					this.goodOnes++;
 		}
 	}

@@ -48,8 +48,37 @@ CLOTHES_ID = 			(new Product("Clothes")).id;
 
 // structure.js
 
+var tilesFertility = {}; // tile_index -> fertility array (based on tile.island.fertility)
+
+function getFertilityFor(coords, plant){
+	if(	tilesFertility[tiles.index(coords)] != undefined &&
+		tilesFertility[tiles.index(coords)][plant.structName] != undefined)
+		return tilesFertility[tiles.index(coords)][plant.structName];
+	else {
+		var tile = tiles.at(coords);
+
+		console.assert(tile.islandId != INVALID_ID);
+
+		var fertility = islands[tile.islandId].fertility[plant.structName] || 1;
+		var calcFerility = (Math.random() <= fertility);
+
+		if(tilesFertility[tiles.index(coords)] == undefined)
+			tilesFertility[tiles.index(coords)] = {};
+
+		tilesFertility[tiles.index(coords)][plant.structName] = calcFerility;
+		
+		return calcFerility;
+	}
+}
+
 var FieldPlant = Structure.extend(function(){
 	this.requiredResources = makeRequiredResources(5);
+
+	this.isWithered = false; // czy dane pole jest uschnięte
+
+	this.onBuild = function(){
+		this.isWithered = !getFertilityFor(this.centerTile().index, this);
+	};
 });
 
 var TreeFld = buildable("Tree field", FieldPlant.extend(function(){}));
@@ -507,7 +536,7 @@ var Windmill = buildable("Windmill", Workshop.extend(function(){
 
 		this.storage.catagories[OUTPUT] = FLOUR_ID;
 
-		this.inputConsumption[INPUT_1] = 2;
+		this.inputnnConsumption[INPUT_1] = 2;
 		this.storage.catagories[INPUT_1] = GRAIN_ID;
 	};
 }));

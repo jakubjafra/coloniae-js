@@ -9,13 +9,15 @@ var islands = [];
 var Island = Class.extend(function(){
 	this.id = INVALID_ID;
 
+	this.fertility = {}; // urodzajność (domyślnie jest 1)
+
 	this.mainMarketplaces = {}; // countryId -> marketplaceObj
+
+	this.houseGroups = {}; // countryId -> houseGroup[]
 
 	// valid for each hardUpdate:
 	this.income = {};// countryId -> income
 	this.maintenance = {};// countryId -> maintenance
-
-	this.houseGroups = {}; // countryId -> houseGroup[]
 
 	this.constructor = function(){
 		this.id = islands.length;
