@@ -17,6 +17,9 @@
 		</canvas>
 
 		<div id="on_canvas">
+			<canvas id="canvas_onclick" width="1px" height="1px">
+			</canvas>
+
 			<div ng-controller="CoinsViewer" class="center_all_inside" id="top_left">
 				<img src="imgs/gui/coin.png"><span>{{coins | number:0}}</span>
 			</div>

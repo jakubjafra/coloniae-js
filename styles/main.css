@@ -45,6 +45,19 @@ li {
 	background-color: black;
 }
 
+#canvas_onclick {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	width: 50px;
+	height: 50px;
+
+	background-color: black;
+
+	z-index: 10000;
+}
+
 #on_canvas {
 	position: absolute;
 	top: 0;

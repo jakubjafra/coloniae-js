@@ -536,7 +536,7 @@ var Windmill = buildable("Windmill", Workshop.extend(function(){
 
 		this.storage.catagories[OUTPUT] = FLOUR_ID;
 
-		this.inputnnConsumption[INPUT_1] = 2;
+		this.inputConsumption[INPUT_1] = 2;
 		this.storage.catagories[INPUT_1] = GRAIN_ID;
 	};
 }));
