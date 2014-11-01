@@ -23,10 +23,13 @@ define(['jquery', 'jquery-mousewheel'], function($){
 		console.assert(typeof wrapper === "object");
 
 		wrapper.resources = wrapper.resources || [];
+		wrapper.loadedResources = {};
+
 		wrapper.fullscreen = wrapper.fullscreen || false;
 
 		wrapper.onUpdate = wrapper.onUpdate || function(){};
 		wrapper.onRender = wrapper.onRender || function(){};
+		wrapper.onLoadResources = wrapper.onLoadResources || function(){};
 
 		wrapper.onMouseEnter = wrapper.onMouseEnter || function(){};
 		wrapper.onMouseLeave = wrapper.onMouseLeave || function(){};
@@ -43,7 +46,6 @@ define(['jquery', 'jquery-mousewheel'], function($){
 
 		// ~~~
 
-		var loadedResources = {};
 		var loadedResourcesCount = 0;
 
 		this.canvas = $("#canvas3d");
@@ -88,7 +90,7 @@ define(['jquery', 'jquery-mousewheel'], function($){
 			this.stats.begin();
 
 			wrapper.onUpdate(delta);
-			wrapper.onRender(delta, context, loadedResources);
+			wrapper.onRender(delta, context, wrapper.loadedResources);
 
 			this.stats.end();
 
@@ -103,19 +105,21 @@ define(['jquery', 'jquery-mousewheel'], function($){
 			for(var i = 0; i < wrapper.resources.length; i++){
 				var name = wrapper.resources[i];
 
-				loadedResources[name] = new Image(); // TODO: Uwolnić resources od bycia stricte Image.
+				wrapper.loadedResources[name] = new Image(); // TODO: Uwolnić resources od bycia stricte Image.
 
-				loadedResources[name].onload = $.proxy(function(){
+				wrapper.loadedResources[name].onload = $.proxy(function(){
 					loadedResourcesCount++;
 					if(loadedResourcesCount >= wrapper.resources.length){
 						console.log('...done loading images, lauching game');
+
+						wrapper.onLoadResources(wrapper.loadedResources);
 
 						oldTime = (new Date()).getTime();
 						requestAnimationFrame(this.step);
 					}
 				}, this);
 
-				loadedResources[name].src = "imgs/" + name + ".png";
+				wrapper.loadedResources[name].src = "imgs/" + name + ".png";
 			}
 		};
 	};

@@ -55,6 +55,64 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			return tiles.at(arr[0][1]);
 		};
 
+		var context = undefined;
+		var colorPicking_canvas = document.createElement('canvas');
+
+		// dowolna liczba większa od 0 - potrzebne by odróżniać out-of-board od tilesa (0,0)
+		var COLOR_PICKING_OFFSET = 1;
+
+		function arrFromIntColor(intColor){
+			var arr = [];
+
+			arr[0] = (intColor >> 16) & 0xFF;
+			arr[1] = (intColor >> 8) & 0xFF;
+			arr[2] = intColor & 0xFF;
+
+			return arr;
+		}
+
+		function colorIntFromArr(arr){
+			var intColor;
+
+			intColor = arr[0];
+			intColor = (intColor << 8) + arr[1];
+			intColor = (intColor << 8) + arr[2];
+
+			return intColor;
+		}
+
+		function initColorpicking(resources){
+			colorPicking_canvas.width = resources["atlas"].width;
+			colorPicking_canvas.height = resources["atlas"].height;
+
+			context = colorPicking_canvas.getContext('2d');
+			context.drawImage(resources["atlas"], 0, 0);
+		}
+
+		this.colorPicker = function(x, y){
+			var context = $("#canvas_onclick")[0].getContext("2d");
+
+			var clonedCameraPos = _.clone(this.cameraPosition);
+
+			this.cameraPosition = {
+				x: clonedCameraPos.x - x + context.canvas.width / 2,
+				y: clonedCameraPos.y - y + context.canvas.height / 2
+			};
+			
+			// undefined informuje metodę draw, że należy obsłużyć color picking
+			this.draw(0, context, undefined);
+			
+			this.cameraPosition = clonedCameraPos;
+
+			var clickedTile = undefined; // = this.getTileOnScreen(x, y); <- old method
+
+			var clickedColor = colorIntFromArr(context.getImageData(0, 0, 1, 1).data) - COLOR_PICKING_OFFSET;
+			if(clickedColor >= 0)
+				clickedTile = tiles.at(clickedColor);
+
+			return clickedTile;
+		}
+
 		this.hoveredTile = undefined;
 
 		// cokolwiek klikniętego przez usera (może to być budynek, statek, etc.)
@@ -158,40 +216,20 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 				this.clickHandler(mouseX, mouseY);
 		}
 
-		this.makeClickOnNextOccasion = undefined;
-
 		this.onMouseUp = function(x, y){
 			moveMap = false;
 
 			if(!wasMoved || ((new Date()).getTime() - lastMouseDown) < 200){
-				this.makeClickOnNextOccasion = {x: x, y: y};
+				clickedTile = this.colorPicker(x, y);
+
+				if(clickedTile != undefined){
+					console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")");
+					
+					this.makeClick(clickedTile, x, y);
+				} else
+					console.log("out of board click");
 			}
 		};
-
-		var context = undefined;
-
-		// dowolna liczba większa od 0 - potrzebne by odróżniać out-of-board od tilesa (0,0)
-		var COLOR_PICKING_OFFSET = 1;
-
-		function arrFromIntColor(intColor){
-			var arr = [];
-
-			arr[0] = (intColor >> 16) & 0xFF;
-			arr[1] = (intColor >> 8) & 0xFF;
-			arr[2] = intColor & 0xFF;
-
-			return arr;
-		}
-
-		function colorIntFromArr(arr){
-			var intColor;
-
-			intColor = arr[0];
-			intColor = (intColor << 8) + arr[1];
-			intColor = (intColor << 8) + arr[2];
-
-			return intColor;
-		}
 
 		this.draw = function(delta, ctx, resources){ // TODO: przepisać to
 			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -446,18 +484,18 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			}
 
 			var colorNumber = 0;
-			var context = canvas.getContext('2d');
+			var colorPicking_context = colorPicking_canvas.getContext('2d');
 
 			// faktyczne wyświetlanie
 			for(var i = 0; i < toDrawArray.length; i++){
-				function getSourceImage(){
+				function getSourceImage(coords){
 					if(resources == undefined){
-						context.globalCompositeOperation = 'source-in';
+						colorPicking_context.globalCompositeOperation = 'source-in';
 
-						context.fillStyle = "rgb(" + arrFromIntColor(colorNumber).join(",") + ")";
-						context.fillRect(0, 0, canvas.width, canvas.height);
+						colorPicking_context.fillStyle = "rgb(" + arrFromIntColor(colorNumber).join(",") + ")";
+						colorPicking_context.fillRect(0, 0, colorPicking_canvas.width, colorPicking_canvas.height);
 
-						return context.canvas;
+						return colorPicking_canvas;
 					} else
 						return resources;
 				}
@@ -474,7 +512,7 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 
 					function drawImage(){
 						ctx.drawImage(
-							getSourceImage(),
+							getSourceImage(coords),
 							coords.x, coords.y, coords.w, coords.h,
 							x, y, coords.w, coords.h
 						);
@@ -517,61 +555,17 @@ define(['jquery', 'three-stats', './graphics/framework', 'text!../imgs/atlas.jso
 			}
 		};
 
-		var canvas = document.createElement('canvas');
-
 		this.onRender = function(delta, ctx, resources){
-			if(context == undefined){
-				canvas.width = resources["atlas"].width;
-				canvas.height = resources["atlas"].height;
-
-				context = canvas.getContext('2d');
-				context.drawImage(resources["atlas"], 0, 0);
-			}
-
-			if(this.makeClickOnNextOccasion != undefined){
-				var x = this.makeClickOnNextOccasion.x;
-				var y = this.makeClickOnNextOccasion.y;
-
-				// ~~~
-
-				var context = $("#canvas_onclick")[0].getContext("2d");
-
-				var clonedCameraPos = _.clone(this.cameraPosition);
-				this.cameraPosition = {
-					x: clonedCameraPos.x - x + context.canvas.width / 2,
-					y: clonedCameraPos.y - y + context.canvas.height / 2
-				};
-				
-				this.draw(delta, context, undefined);
-				
-				this.cameraPosition = clonedCameraPos;
-
-				var clickedTile = undefined; // = this.getTileOnScreen(x, y); <- old method
-
-				var clickedColor = colorIntFromArr(context.getImageData(0, 0, 1, 1).data) - COLOR_PICKING_OFFSET;
-				if(clickedColor >= 0)
-					clickedTile = tiles.at(clickedColor);
-
-				// ~~~
-
-				if(clickedTile != undefined){
-					console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")");
-					
-					this.makeClick(clickedTile, x, y);
-				} else
-					console.log("out of board click");
-
-				this.makeClickOnNextOccasion = undefined;
-			}
-
-			// ~~~
-
 			this.draw(delta, ctx, resources["atlas"]);
 		};
 		
 		this.onUpdate = function(delta){
 			if(this.gameStarted)
 				Logic.update(delta);
+		};
+
+		this.onLoadResources = function(resources){
+			initColorpicking(resources);
 		};
 	});
 });
