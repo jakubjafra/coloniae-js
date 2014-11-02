@@ -9,7 +9,7 @@ a nie samemu wpływać na ten stan...
 
 */
 
-define(['angular', '../graphics', '../logic', 'extend', 'underscore'], function(angular, graphics, logic){
+define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'extend', 'underscore'], function(angular, graphics, logic, gameplayState){
 	// niestety angular sam nie updateuje zmian z "other sources"
 	// więc trzeba samemu callować zmianę $scopa co jakiś czas
 	function registerInfiniteUpdate(scope, func){
@@ -32,9 +32,9 @@ define(['angular', '../graphics', '../logic', 'extend', 'underscore'], function(
 
 	app.controller("OwnedIslandResourcesViewer", function($scope){
 		registerInfiniteUpdate($scope, function(){
-			$scope.hoverOnIsland = (graphics._.hoveredTile != undefined) && (graphics._.hoveredTile.countryId != INVALID_ID);
+			$scope.hoverOnIsland = (gameplayState.hoveredTile != undefined) && (gameplayState.hoveredTile.countryId != INVALID_ID);
 			if($scope.hoverOnIsland){
-				var island = islands[graphics._.hoveredTile.islandId];
+				var island = islands[gameplayState.hoveredTile.islandId];
 
 				$scope.tool = island.mainMarketplaces[0].storage.of(TOOLS_ID);
 				$scope.wood = island.mainMarketplaces[0].storage.of(WOOD_ID);
@@ -45,9 +45,9 @@ define(['angular', '../graphics', '../logic', 'extend', 'underscore'], function(
 
 	app.controller("IslandPopulationViewer", function($scope){
 		registerInfiniteUpdate($scope, function(){
-			$scope.hoverOnIsland = (graphics._.hoveredTile != undefined) && (graphics._.hoveredTile.countryId != INVALID_ID);
+			$scope.hoverOnIsland = (gameplayState.hoveredTile != undefined) && (gameplayState.hoveredTile.countryId != INVALID_ID);
 			if($scope.hoverOnIsland){
-				var houseGroups = islands[graphics._.hoveredTile.islandId].houseGroups[0];
+				var houseGroups = islands[gameplayState.hoveredTile.islandId].houseGroups[0];
 
 				$scope.population = 0;
 				if(houseGroups != undefined){
@@ -74,15 +74,15 @@ define(['angular', '../graphics', '../logic', 'extend', 'underscore'], function(
 	};
 
 	function showBuildingDlg(x, y){
-		if(graphics._.choosedSth == undefined || !(graphics._.choosedSth instanceof Building))
+		if(gameplayState.choosedSth == undefined || !(gameplayState.choosedSth instanceof Building))
 			return;
 
-		var structName = graphics._.choosedSth.structName;
+		var structName = gameplayState.choosedSth.structName;
 
-		if(graphics._.choosedSth instanceof Port)
+		if(gameplayState.choosedSth instanceof Port)
 			structName = "Marketplace";
 
-		if(graphics._.choosedSth instanceof ProductionBuilding)
+		if(gameplayState.choosedSth instanceof ProductionBuilding)
 			structName = "ProductionBuilding";
 
 		var id = ("#" + structName + "Dlg");
@@ -94,7 +94,7 @@ define(['angular', '../graphics', '../logic', 'extend', 'underscore'], function(
 		$(id).show();
 
 		$(id).scope().$apply(function($scope){
-			$scope.building = graphics._.choosedSth;
+			$scope.building = gameplayState.choosedSth;
 			registerInfiniteUpdate($scope, $scope.onBuildingBind);
 		});
 	}
@@ -107,7 +107,7 @@ define(['angular', '../graphics', '../logic', 'extend', 'underscore'], function(
 		$(buildingDlgs.join(",")).hide();
 	}
 
-	graphics._.clickHandler = function(x, y){
+	gameplayState.clickHandler = function(x, y){
 		showBuildingDlg(x, y);
 	};
 
@@ -181,7 +181,7 @@ define(['angular', '../graphics', '../logic', 'extend', 'underscore'], function(
 	});
 
 	app.controller("BuildCtrl", function($scope){
-		$scope.callback = graphics._;
+		$scope.callback = gameplayState;
 		
 		$scope.choosedBuilding = -1;
 		$scope.allBuildings = structsClass;

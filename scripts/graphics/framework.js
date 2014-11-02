@@ -4,7 +4,7 @@ framework.js
 
 */
 
-define(['jquery', 'jquery-mousewheel'], function($){
+define(['jquery', 'three-stats', 'jquery-mousewheel'], function($, Stats){
 	function initFpsCounter(){
 		var stats = new Stats();
 		stats.setMode(0); // 0: fps, 1: ms
@@ -38,6 +38,8 @@ define(['jquery', 'jquery-mousewheel'], function($){
 		wrapper.onMouseUp = wrapper.onMouseUp || function(){};
 		wrapper.onMouseWheel = wrapper.onMouseWheel || function(){};
 
+		wrapper.onMouseClick = wrapper.onMouseClick || function(){};
+
 		// ~~~
 
 		this._ = wrapper;
@@ -69,6 +71,9 @@ define(['jquery', 'jquery-mousewheel'], function($){
 		var X = 0;
 		var Y = 0;
 
+		var wasMouseCursorMovedSinceMouseDown = false;
+		var lastMouseDown = 0;
+
 		$(this.canvas).mouseenter($.proxy(wrapper.onMouseEnter, wrapper));
 		$(this.canvas).mouseleave($.proxy(wrapper.onMouseLeave, wrapper));
 		
@@ -76,11 +81,25 @@ define(['jquery', 'jquery-mousewheel'], function($){
 			X = e.pageX - $(this.canvas).offset().left;
 			Y = e.pageY - $(this.canvas).offset().top;
 
+			wasMouseCursorMovedSinceMouseDown = true;
+
 			wrapper.onMouseMove.call(wrapper, X, Y);
 		}, this));
 		
-		$(this.canvas).mousedown(function(){ wrapper.onMouseDown.call(wrapper, X, Y); });
-		$(this.canvas).mouseup(function(){ wrapper.onMouseUp.call(wrapper, X, Y); });
+		$(this.canvas).mousedown(function(){
+			wasMouseCursorMovedSinceMouseDown = false;
+			lastMouseDown = (new Date()).getTime();
+
+			wrapper.onMouseDown.call(wrapper, X, Y);
+		});
+		
+		$(this.canvas).mouseup(function(){
+			wrapper.onMouseUp.call(wrapper, X, Y);
+
+			if(!wasMouseCursorMovedSinceMouseDown || ((new Date()).getTime() - lastMouseDown) < 200)
+				wrapper.onMouseClick.call(wrapper, X, Y);
+		});
+
 		$(this.canvas).mousewheel(function(e){ wrapper.onMouseWheel.call(wrapper, e.deltaY); });
 
 		this.step = $.proxy(function(){

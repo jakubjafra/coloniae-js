@@ -196,6 +196,14 @@ var Structure = Class.extend(function(){
 		return tiles[this.tilesUnder[0].x + offsetX][this.tilesUnder[0].y + offsetY];
 	};
 
+	this.northTile = function(){
+		return tiles[this.tilesUnder[0].x][this.tilesUnder[0].y];
+	};
+
+	this.southTile = function(){
+		return tiles[this.tilesUnder[0].x + this.width - 1][this.tilesUnder[0].y + this.height - 1];
+	};
+
 	// zwraca false jeśli dany tile nie jest tilesem budynku
 	// jeśli jest to zwraca pozycję lokalną względem początku budynku (względem this.tilesUnder[0])
 	this.isUnder = function(tile){
