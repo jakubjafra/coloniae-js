@@ -86,16 +86,16 @@ define(['./graphics/framework', './logic', './graphics/gameplayState', './graphi
 			gameplayState.hoveredTile = picker.byGeometry(x, y);
 
 			// poruszanie kamerą
-			if(moveMap){
-				oldX = oldX || x;
-				oldY = oldY || y;
+			oldX = oldX || x;
+			oldY = oldY || y;
 
+			if(moveMap){
 				gameplayState.cameraPosition.x += (x - oldX);
 				gameplayState.cameraPosition.y += (y - oldY);
-
-				oldX = x;
-				oldY = y;
 			}
+
+			oldX = x;
+			oldY = y;
 
 			// jeśli jesteśmy w build mode trzeba sprawdzić czy wybrany budynek może zostać wybudowany
 			// w aktualnie shoverowanym tilesie
