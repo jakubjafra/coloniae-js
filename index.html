@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
 	<head>
-        <link rel="stylesheet" type="text/css" href="styles/main.css"/>
         <meta charset="utf-8">
 
-		<link href="http://localhost/coloniae/styles/reset.css" rel="stylesheet" media="screen">
-		<link href="http://localhost/coloniae/styles/main.css" rel="stylesheet" media="screen">
+		<link href="styles/reset.css" rel="stylesheet">
+		<link href="styles/main.css" rel="stylesheet">
 
 		<title>coloniae</title>
 
@@ -87,30 +86,28 @@
 				</div>
 			</div>
 
-			<div ng-controller="BuildCtrl" id="buildmenu" ng-click="buildModeStateChange()">
-				<div id="buildlistleft" ng-click="scrollLeft(100);">
-					<img src="imgs/gui/left.png">
-				</div>
+			<div ng-controller="BuildCtrl" id="buildmenu" ng-click="buildModeStateChange();">
 				<div id="buildlist">
-					<div id="buildlistscrooll" style="width: {{allBuildings.length * 55}};">
-						<div ng-repeat="building in allBuildings" value="{{$index}}" class="buildlistitem" ng-click="chooseBuilding(); $event.stopPropagation();">
-							<img ng-src="{{building.name | putBuildingImage}}" title="{{buidling.name}}" width="53px" height="50px">
-						</div>
+					<div ng-repeat="building in allBuildings" value="{{$index}}" class="buildlistitem" ng-click="chooseBuilding(); $event.stopPropagation();">
+						<img ng-src="{{building.name | putBuildingImage}}" title="{{buidling.name}}" width="53px" height="50px">
 					</div>
 				</div>
-				<div id="buildlistright" ng-click="scrollRight(100);">
-					<img src="imgs/gui/right.png">
+				<div class="vertical_line" style="margin-left: 5px; margin-right: 5px;">&nbsp;</div>
+				<div id="building_ext_info" ng-controller="BuildingExtInfo">
+					<h1>{{buildingName}}</h1>
+					<div class="building_side">
+						<div ng-click="changeSide(); $event.stopPropagation();" class="rotation rotation_{{side}}">{{side | rotationLetterByCode}}</div>
+					</div>
+					<div class="building_img">
+						<img ng-src="{{buildingName | putBuildingImage}}" title="{{buildingName}}" width="53px" height="50px">
+					</div>
+					<div class="building_img">
+						<span ng-show="tool != undefined"><img src="imgs/gui/tool.png" width="20px" height="20px">{{tool | number:0}}</span>
+						<span ng-show="wood != undefined"><img src="imgs/gui/wood.png" width="20px" height="20px">{{wood | number:0}}</span>
+						<span ng-show="brick != undefined"><img src="imgs/gui/brick.png" width="20px" height="20px">{{brick | number:0}}</span>
+						<span ng-show="coins != undefined"><img src="imgs/gui/coin.png" width="20px" height="20px">{{coins | number:0}}</span>
+					</div>
 				</div>
-			</div>
-
-			<div id="intro">
-				Welcome!<br/>
-				<br/>
-				This game is clone of old strategy <b>Anno 1602</b>. Copyrights for graphics, design and so on are held by the Ubisoft company. This game is written only for education purposes.<br/>
-				<br/>
-				For now, this is early alpha. You can only build a small colony on one island. However this micro economics works well, and i think you can have fun building your city :)<br/>
-				<br/>
-				...
 			</div>
 		</div>
     </body>

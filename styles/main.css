@@ -15,6 +15,8 @@ main.css
 
 body {
 	overflow: hidden;
+
+	font-family: monospace;
 }
 
 a {
@@ -102,27 +104,6 @@ li {
 
 /* --------------- */
 
-#intro {
-	position: absolute;
-	top: 50px;
-	left: 50%;
-
-	margin-left: -200px;
-
-	width: 400px;
-	height: 500px;
-
-	background-color: rgba(0, 0, 0, 0.9);
-
-	padding: 10px;
-	border-radius: 5px;
-
-	font-family: monospace;
-	font-size: 12px;
-
-	display: none;
-}
-
 #time {
 	position: absolute;
 	right: 20px;
@@ -151,7 +132,6 @@ li {
 
 	display: none;
 
-	font-family: monospace;
 	font-size: 12px;
 }
 
@@ -174,7 +154,6 @@ li {
 
 	display: none;
 
-	font-family: monospace;
 	font-size: 12px;
 }
 
@@ -193,7 +172,6 @@ li {
 
 	display: none;
 
-	font-family: monospace;
 	font-size: 12px;
 }
 
@@ -253,15 +231,17 @@ li {
 
 #buildmenu {
 	position: absolute;
-	top: 250px;
-	left: 100px;
+	bottom: 5px;
 
-	width: 640px;
-	height: 60px;
+	left: 50%;
+	margin-left: -331px;
+
+	width: 762px;
+	height: 200px;
 
 	padding: 10px;
 
-	display: none;
+	display: block; /* <- none */
 }
 
 #buildmenu:before {
@@ -274,60 +254,123 @@ li {
 	background-color: black;
 	opacity: 0.4;
 
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
+	border-radius: 5px;
 }
 
-#buildlistleft {
+.vertical_line {
+	position: relative;
+	display: inline-block;
+	float: left;
+
+	border-left: 2px dotted white;
+
+	width: 0px;
+	height: 100%;
+}
+
+#building_ext_info {
+	position: relative;
+	display: inline-block;
+	float: left;
+
+	width: 200px;
+	height: 200px;
+
+	/*background-color: red;*/
+}
+
+#building_ext_info h1 {
+	height: 30px;
+	vertical-align: middle;
+
+	size: 20px;
+}
+
+#building_ext_info .building_img {
+	width: 100%;
+	z-index: 0;
+
+	text-align: center;
+	vertical-align: middle;
+	line-height: 30px;
+}
+
+#building_ext_info .building_side {
 	position: absolute;
-	bottom: 15px;
-	left: 10px;
+	top: 0px;
+	right: 0px;
 
-	height: 50px;
-	width: 20px;
+	width: 50px;
+	height: 70px;
+}
 
-	background-color: transparent;
+#building_ext_info .rotation {
+	top: 50%;
+	left: 50%;
 
-	/*overflow: hidden;*/
+	margin-top: -15px;
+	margin-left: -15px;
+
+	width: 30px;
+	height: 30px;
+
+	line-height: 30px;
+	vertical-align: middle;
+
+	text-align: center;
+
+	position: relative;
+
 	cursor: pointer;
 }
 
-#buildlistright {
-	position: absolute;
-	bottom: 15px;
-	right: 10px;
+#building_ext_info .rotation_10 {
+	background-color: #B64334; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
 
-	height: 50px;
-	width: 20px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+}
 
-	background-color: transparent;
+#building_ext_info .rotation_20 {
+	background-color: #B68334; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
 
-	/*overflow: hidden;*/
-	cursor: pointer;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+}
+
+#building_ext_info .rotation_30 {
+	background-color: #294E77; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
+
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 0px;
+}
+
+#building_ext_info .rotation_40 {
+	background-color: #278840; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
+
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 15px;
 }
 
 #buildlist {
-	position: absolute;
-	bottom: 15px;
-	left: 30px;
+	position: relative;
+	display:inline-block;
+	float: left;
 
-	height: 50px;
-	width: 600px;
+	height: 200px;
+	width: 550px;
 
 	background-color: transparent;
 
 	overflow: hidden;
-}
-
-#buildlistscrooll {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-
-	word-wrap: none;
-
-	background-color: transparent;
-	height: 50px;
 }
 
 .buildlistitem {
@@ -342,6 +385,8 @@ li {
 	cursor: pointer;
 }
 
+/* ---------------------------------- */
+
 .handler {
 	position: relative;
 
@@ -354,10 +399,6 @@ li {
 	border-radius: 5px;
 
 	cursor: pointer;
-}
-
-.handler:first-child {
-	margin-top: 330px;
 }
 
 .background_transparent_color {
@@ -380,11 +421,11 @@ li {
 
 #toolbox {
 	position: absolute;
-	top: 0;
+	bottom: 0;
 	left: 0;
 
 	width: 74px;
-	height: 100%;
+	height: 200px;
 
 	padding-left: 5px;
 	padding-right: 5px;
@@ -398,7 +439,7 @@ li {
 	width: 100%;
 	height: 100%;
 	background-color: black;
-	opacity: 0.4;
+	opacity: 0;
 }
 
 #ProductionBuildingDlg {

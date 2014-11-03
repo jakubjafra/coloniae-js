@@ -114,12 +114,11 @@ define(['./graphics/framework', './logic', './graphics/gameplayState', './graphi
 
 		this.onMouseClick = function(x, y){
 			clickedTile = picker.byColor(x, y);
-			hoverTile = picker.byGeometry(x, y);
 
 			if(clickedTile != undefined){
 				console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")");
 				
-				makeClick(clickedTile, hoverTile, x, y);
+				makeClick(clickedTile, gameplayState.hoveredTile, x, y);
 			} else
 				console.log("out of board click");
 		};

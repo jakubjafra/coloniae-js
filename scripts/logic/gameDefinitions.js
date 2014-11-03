@@ -100,6 +100,8 @@ var CottonFld = buildable("Cotton field", FieldPlant.extend(function(){}));
 var Quarry = buildable("Quarry", Structure.extend(function(){
 	this.requiredResources = makeRequiredResources(150, 2, undefined, 6);
 
+	this.possibleRotation = [ NORTH, WEST ];
+
 	this.width = 2;
 	this.height = 1;
 
@@ -821,6 +823,8 @@ var Stonemason = buildable("Stonemason", Farm.extend(function(){
 var IronMine = buildable("Iron mine", Farm.extend(function(){
 	this.width = 2;
 	this.height = 1;
+
+	this.possibleRotation = [ NORTH, WEST ];
 
 	this.requiredResources = makeRequiredResources(1000, 20, 5, 10);
 	this.operatingCost = makeOperatingCost(60, 20);

@@ -169,6 +169,9 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 
 	app.filter('putBuildingImage', function(){
 		return function(input){
+			if(input.length == 0)
+				input = "unknown";
+
 			var name = input.replace(/\s/g, '');
 			name = name.toLowerCase();
 
@@ -210,15 +213,17 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 			$scope.callback.buildMode = true;
 			$scope.callback.removeMode = false;
 
-			$scope.choosedBuilding = this.building.index;
-			$scope.side = NORTH;
+			if(this.building != undefined)
+				$scope.choosedBuilding = this.building.index;
 
 			var choosed = parseInt($scope.choosedBuilding);
+
+			$scope.side = NORTH;
+			if($scope.callback.testBuilding != undefined && choosed === $scope.callback.testBuilding.__structId)
+				$scope.side = $scope.callback.testBuilding.rotation;
+			
 			if(choosed >= 0){
 				var structure = structsClass[choosed];
-
-				if(structure.name == "Iron mine" || structure.name == "Quarry") // "quickfix"
-					$scope.side = WEST;
 				
 				$scope.callback.testBuilding = new structure.class(0, 0, null, undefined, $scope.side);
 
@@ -236,11 +241,6 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 			$(handlers.join(",")).removeClass("handler_on");
 
 			if(!isVisible){
-				var left = ($(handler).offset().left - $("#on_canvas").offset().left) + $("#toolbox").width() + 5 - $("#on_canvas").offset().left;
-				var top = ($(handler).offset().top - $("#on_canvas").offset().top);
-
-				$(name).css({"left": left+"px", "top": top+"px"});
-
 				$(name).show();
 				$(handler).addClass("handler_on");
 			}
@@ -256,38 +256,64 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 		$scope.showRemoveDlg = function(){
 			toggleDlgFor(undefined, "#removehandler");
 		};
+	});
 
-		$scope.scrollLeft = function(howMuch){
-			$("#buildlistscrooll").css({ "left": "+=" + howMuch + "px" });
+	app.filter('rotationLetterByCode', function(){
+		return function(input){
+			switch(parseInt(input)){
+				case NORTH: return 'N';
+				case SOUTH: return 'S';
+				case EAST: return 'E';
+				case WEST: return 'W';
+				default: return '?';
+			}
+		};
+	});
 
-			var left = -parseInt($("#buildlistscrooll").css("left"));
+	app.controller("BuildingExtInfo", function($scope){
+		registerInfiniteUpdate($scope, function(){
+			$scope.buildingName = "";
 
-			if(left < 0)
-				$("#buildlistscrooll").css("left", "0px");
-		}
+			$scope.tool = 0;
+			$scope.wood = 0;
+			$scope.brick = 0;
+			$scope.coins = 0;
 
-		$scope.scrollRight = function(howMuch){
-			$("#buildlistscrooll").css({ "left": "-=" + howMuch + "px" });
-			
-			var left = -parseInt($("#buildlistscrooll").css("left"));
+			$scope.rotation = 0;
 
-			var scrollWidth = parseInt($("#buildlistscrooll").width());
-			var scrollVisibleWidth = parseInt($("#buildlist").width());
+			$scope.changeSide = function(){
+				if(gameplayState.testBuilding != undefined){
+					var currentIndex;
+					for(currentIndex = 0; currentIndex < gameplayState.testBuilding.possibleRotation.length; currentIndex++)
+						if(gameplayState.testBuilding.rotation == gameplayState.testBuilding.possibleRotation[currentIndex])
+							break;
 
-			var maxScrollRight = (scrollWidth - scrollVisibleWidth);
+					var newRotation = gameplayState.testBuilding.possibleRotation[
+						(currentIndex + 1) % gameplayState.testBuilding.possibleRotation.length
+					];
 
-			if(left >= maxScrollRight)
-				$("#buildlistscrooll").css("left", "-"+maxScrollRight+"px");
-		}
+					if(newRotation == gameplayState.testBuilding.rotation){
+						console.log("this building cannot be rotated yet");
+						return;
+					}
 
-		$("#buildlist").mousewheel($.proxy(function(event){
-			if(event.deltaY > 0)
-				this.scrollLeft(25);
-			else
-				this.scrollRight(25);
+					gameplayState.testBuilding.rotation = newRotation;
 
-			event.stopPropagation();
-		}, $scope));
+					$scope.chooseBuilding();
+				}
+			};
+
+			if(gameplayState.buildMode && gameplayState.testBuilding != undefined){
+				$scope.buildingName = gameplayState.testBuilding.structName;
+
+				$scope.rotation = gameplayState.testBuilding.rotation;
+
+				$scope.tool = gameplayState.testBuilding.requiredResources[TOOLS_ID];
+				$scope.wood = gameplayState.testBuilding.requiredResources[WOOD_ID];
+				$scope.brick = gameplayState.testBuilding.requiredResources[BRICKS_ID];
+				$scope.coins = gameplayState.testBuilding.requiredResources[INVALID_ID];
+			}
+		});
 	});
 
 	return new function(){

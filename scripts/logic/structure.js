@@ -116,8 +116,8 @@ function canBeBuild(x, y, building){
 
 // stałe do obrotów
 NORTH = 10;
-// EAST = 20;
-// SOUTH = 30;
+EAST = 20;
+SOUTH = 30;
 WEST = 40;
 
 var structures = [];
@@ -138,6 +138,8 @@ var Structure = Class.extend(function(){
 	this.requiredTerrainMap = {};
 	// obrócenie budynku
 	this.rotation = NORTH;
+	// Jakie obroty są możliwe do wykonania na tym obiekcie.
+	this.possibleRotation = [ NORTH ];
 	// Wymagane surowce do wybudowania
 	this.requiredResources = {}; // <- INVALID_ID to monety
 
