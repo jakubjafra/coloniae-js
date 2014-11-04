@@ -13,7 +13,7 @@ cała magia dzieje się w konstruktorze.
 */
 
 // Wszystkie możliwe (i mające sens) do zbudowania na mapie struktury.
-var structsClass = [];
+var structsClass = [ null ];
 function buildable(name, X){
 	structsClass.push({ name: name, class: X, index: structsClass.length });
 	X.prototype.structName = name;
@@ -293,10 +293,10 @@ var Structure = Class.extend(function(){
 			this.structureId = structures.length;
 			structures.push(this);
 
+			this.isGhost = false;
+
 			if(callHandler == undefined)
 				this.onBuild();
-
-			this.isGhost = false;
 		}
 
 		console.log("successfully builded " + this.structName + " @ " + x + ", " + y);

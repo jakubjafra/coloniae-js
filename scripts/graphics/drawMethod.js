@@ -44,6 +44,8 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 		var toDrawMoutains = {};
 
 		var margin = 0;
+		if(isColorpicking)
+			margin = 0;
 
 		var posX, posY;
 		function calculateTilePosition(x, y){

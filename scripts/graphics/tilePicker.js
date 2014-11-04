@@ -109,7 +109,7 @@ define(['../graphics/gameplayState', '../graphics/drawMethod'], function(gamepla
 			var clickedTile = undefined;
 
 			var clickedColor = colorIntFromArr(context.getImageData(0, 0, 1, 1).data) - COLOR_PICKING_OFFSET;
-			if(clickedColor >= 0)
+			if(clickedColor >= 0 && tiles.exsist(clickedColor))
 				clickedTile = tiles.at(clickedColor);
 
 			return clickedTile;

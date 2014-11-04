@@ -77,6 +77,9 @@ var FieldPlant = Structure.extend(function(){
 	this.isWithered = false; // czy dane pole jest uschnięte
 
 	this.onBuild = function(){
+		if(this.isGhost)
+			return;
+
 		this.isWithered = !getFertilityFor(this.centerTile().index, this);
 	};
 });
@@ -318,6 +321,9 @@ var House = buildable("House", Building.extend(function(){
 	this.type = PIONERS;
 
 	this.onBuild = function(){
+		if(this.isGhost)
+			return;
+
 		this.super.onBuild();
 
 		var island = islands[this.centerTile().islandId];
@@ -369,6 +375,9 @@ var Marketplace = buildable("Marketplace", StorageBuilding.extend(function(){
 	};
 
 	this.onBuild = function(){
+		if(this.isGhost)
+			return;
+
 		this.super.onBuild();
 		
 		// marketplacy rozciągają władzę tego państwa na okolicznych regionach
@@ -439,6 +448,9 @@ var Port = buildable("Port", Marketplace.extend(function(){
 	};
 
 	this.onBuild = function(){
+		if(this.isGhost)
+			return;
+
 		this.super.onBuild();
 
 		var offsetX = Math.floor((this.width - 1) / 2);
@@ -630,6 +642,7 @@ var CattleFarm = buildable("Cattle farm", Farm.extend(function(){
 	this.operatingCost = makeOperatingCost(5, 0);
 
 	this.harvestRadius = 2;
+	this.requiredCrop = "__PLAINS_TILES__";
 
 	this.baseProduction = 2.4 / 60;
 
@@ -637,7 +650,12 @@ var CattleFarm = buildable("Cattle farm", Farm.extend(function(){
 		this.super.onBuild();
 
 		this.storage.catagories[OUTPUT] = CATTLE_ID;
-	}
+	};
+
+	this.forEachTileInRadius = function(tile){
+		if(tile.terrainLevel == PLAINS && tile.buildingData == null)
+			this.goodOnes++;
+	};
 }));
 
 var SheepFarm = buildable("Sheep farm", Farm.extend(function(){
@@ -645,6 +663,7 @@ var SheepFarm = buildable("Sheep farm", Farm.extend(function(){
 	this.operatingCost = makeOperatingCost(5, 0);
 
 	this.harvestRadius = 2.5;
+	this.requiredCrop = "__PLAINS_TILES__";
 
 	this.baseProduction = 1.95 / 60;
 
@@ -652,7 +671,12 @@ var SheepFarm = buildable("Sheep farm", Farm.extend(function(){
 		this.super.onBuild();
 
 		this.storage.catagories[OUTPUT] = WOOL_ID;
-	}
+	};
+
+	this.forEachTileInRadius = function(tile){
+		if(tile.terrainLevel == PLAINS && tile.buildingData == null)
+			this.goodOnes++;
+	};
 }));
 
 var Lumberjack = buildable("Lumberjack", Farm.extend(function(){
@@ -830,6 +854,7 @@ var IronMine = buildable("Iron mine", Farm.extend(function(){
 	this.operatingCost = makeOperatingCost(60, 20);
 
 	this.harvestRadius = 0;
+	this.requiredCrop = "__MOUTAIN_TILES__"; // see gui.js
 
 	this.baseProduction = 1.4 / 60;
 
@@ -862,6 +887,7 @@ var GoldMine = buildable("Gold mine", Farm.extend(function(){
 	this.operatingCost = makeOperatingCost(60, 20);
 
 	this.harvestRadius = 0;
+	this.requiredCrop = "__MOUTAIN_TILES__"; // see gui.js
 
 	this.baseProduction = 0.75 / 60;
 

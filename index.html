@@ -36,9 +36,10 @@
 				<select ng-model="timeController.timeFlowSpeed">
 					<option value="0">&times; 0</option>
 					<option value="1">&times; 1</option>
+					<option value="2">&times; 2</option>
 					<option value="4">&times; 4</option>
+					<option value="8">&times; 8</option>
 					<option value="16">&times; 16</option>
-					<option value="16">&times; 1000</option>
 				</select>
 			</div>
 
@@ -75,7 +76,7 @@
 			</div>
 
 			<div id="toolbox">
-				<div ng-controller="BuildCtrl" id="buildhandler" class="handler" ng-click="showBuildDlg(); buildModeStateChange();">
+				<div ng-controller="BuildCtrl" id="buildhandler" class="handler" ng-click="showBuildDlg();">
 					<div class="background_transparent_color"></div>
 					<img src="imgs/gui/build.png">
 				</div>
@@ -91,21 +92,35 @@
 					<div ng-repeat="building in allBuildings" value="{{$index}}" class="buildlistitem" ng-click="chooseBuilding(); $event.stopPropagation();">
 						<img ng-src="{{building.name | putBuildingImage}}" title="{{buidling.name}}" width="53px" height="50px">
 					</div>
+					<div id="buildlist_ontop" ng-show="callback.buildMode">
+						click here to cancel build mode selection
+					</div>
 				</div>
+
 				<div class="vertical_line" style="margin-left: 5px; margin-right: 5px;">&nbsp;</div>
 				<div id="building_ext_info" ng-controller="BuildingExtInfo">
-					<h1>{{buildingName}}</h1>
+					<div class="building_name">
+						{{buildingName}}
+					</div>
 					<div class="building_side">
 						<div ng-click="changeSide(); $event.stopPropagation();" class="rotation rotation_{{side}}">{{side | rotationLetterByCode}}</div>
 					</div>
-					<div class="building_img">
+					<div class="building_img" style="height: 50px;">
 						<img ng-src="{{buildingName | putBuildingImage}}" title="{{buildingName}}" width="53px" height="50px">
 					</div>
-					<div class="building_img">
-						<span ng-show="tool != undefined"><img src="imgs/gui/tool.png" width="20px" height="20px">{{tool | number:0}}</span>
-						<span ng-show="wood != undefined"><img src="imgs/gui/wood.png" width="20px" height="20px">{{wood | number:0}}</span>
-						<span ng-show="brick != undefined"><img src="imgs/gui/brick.png" width="20px" height="20px">{{brick | number:0}}</span>
-						<span ng-show="coins != undefined"><img src="imgs/gui/coin.png" width="20px" height="20px">{{coins | number:0}}</span>
+					<div class="building_img" style="height: 30px;">
+						<span ng-show="tool != undefined"><img style="display: inline-block;" src="imgs/gui/tool.png" width="20px" height="20px">{{tool | number:0}}</span>
+						<span ng-show="wood != undefined"><img style="display: inline-block;" src="imgs/gui/wood.png" width="20px" height="20px">{{wood | number:0}}</span>
+						<span ng-show="brick != undefined"><img style="display: inline-block;" src="imgs/gui/brick.png" width="20px" height="20px">{{brick | number:0}}</span>
+						<span ng-show="coins != undefined"><img style="display: inline-block;" src="imgs/gui/coin.png" width="20px" height="20px">{{coins | number:0}}</span>
+					</div>
+					<div class="building_desc">
+						<div ng-show="isFarm" class="one_line">
+							<img ng-src="{{inputCrop | putBuildingImage}}" title="{{inputCrop}}" style="margin-right: 5px;"><img src="imgs/gui/right.png" style="margin-right: 5px;"><img ng-src="{{output | putProductImage}}" title="{{output}}" width="53px" height="50px">
+						</div>
+						<div ng-show="isWorkshop" class="one_line">
+							<img ng-src="{{input_1 | putProductImage}}" title="{{input_1}}" width="53px" height="50px" style="margin-right: 5px;"><img ng-src="{{input_2 | putProductImage}}" title="{{input_2}}" ng-show="input_2" width="53px" height="50px" style="margin-right: 5px;"><img src="imgs/gui/right.png" style="margin-right: 5px;"><img ng-src="{{output | putProductImage}}" title="{{output}}" width="53px" height="50px">
+						</div>
 					</div>
 				</div>
 			</div>

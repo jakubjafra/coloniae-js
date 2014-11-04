@@ -65,7 +65,9 @@ function bindUsefulMapFunctions(){
 	};
 
 	this.exsist = function(x, y){
-		return (this[x] != undefined && this[x][y] != undefined ? true : false);
+		x = this.coords(x, y);
+
+		return (this[x.x] != undefined && this[x.x][x.y] != undefined ? true : false);
 	};
 
 	// miłe funkcje zamieniajace postać obiektową {x: 1, y: 1} na postać liczbową 101 i odwrotnie

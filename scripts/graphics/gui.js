@@ -169,7 +169,7 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 
 	app.filter('putBuildingImage', function(){
 		return function(input){
-			if(input.length == 0)
+			if(input == undefined || input.length == 0)
 				input = "unknown";
 
 			var name = input.replace(/\s/g, '');
@@ -187,7 +187,7 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 		$scope.callback = gameplayState;
 		
 		$scope.choosedBuilding = -1;
-		$scope.allBuildings = structsClass;
+		$scope.allBuildings = structsClass.slice(1, structsClass.length);
 
 		$scope.startRemoveMode = function(){
 			$scope.callback.buildMode = false;
@@ -214,7 +214,7 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 			$scope.callback.removeMode = false;
 
 			if(this.building != undefined)
-				$scope.choosedBuilding = this.building.index;
+				$scope.choosedBuilding = this.building.index || this.building.__structId;
 
 			var choosed = parseInt($scope.choosedBuilding);
 
@@ -226,6 +226,8 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 				var structure = structsClass[choosed];
 				
 				$scope.callback.testBuilding = new structure.class(0, 0, null, undefined, $scope.side);
+
+				$scope.callback.testBuilding.onBuild();
 
 				$scope.callback.testBuilding.__structId = choosed;
 			}
@@ -270,8 +272,26 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 		};
 	});
 
+	app.filter('putProductImage', function(){
+		return function(input){
+			if(input == undefined || typeof input !== "number")
+				return 'imgs/gui/products/empty.png';
+
+			var productId = parseInt(input);
+			var productName = products[productId].name;
+
+			var name = productName.replace(/\s/g, '');
+			name = name.toLowerCase();
+
+			var image = 'imgs/gui/products/' + name + '.png';
+			return image;
+		};
+	});
+
 	app.controller("BuildingExtInfo", function($scope){
 		registerInfiniteUpdate($scope, function(){
+			var bindedTo = gameplayState.testBuilding;
+
 			$scope.buildingName = "";
 
 			$scope.tool = 0;
@@ -281,37 +301,52 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 
 			$scope.rotation = 0;
 
+			$scope.isFarm = false;
+			$scope.isWorkshop = false;
+
 			$scope.changeSide = function(){
-				if(gameplayState.testBuilding != undefined){
+				if(bindedTo != undefined){
 					var currentIndex;
-					for(currentIndex = 0; currentIndex < gameplayState.testBuilding.possibleRotation.length; currentIndex++)
-						if(gameplayState.testBuilding.rotation == gameplayState.testBuilding.possibleRotation[currentIndex])
+					for(currentIndex = 0; currentIndex < bindedTo.possibleRotation.length; currentIndex++)
+						if(bindedTo.rotation == bindedTo.possibleRotation[currentIndex])
 							break;
 
-					var newRotation = gameplayState.testBuilding.possibleRotation[
-						(currentIndex + 1) % gameplayState.testBuilding.possibleRotation.length
+					var newRotation = bindedTo.possibleRotation[
+						(currentIndex + 1) % bindedTo.possibleRotation.length
 					];
 
-					if(newRotation == gameplayState.testBuilding.rotation){
+					if(newRotation == bindedTo.rotation){
 						console.log("this building cannot be rotated yet");
 						return;
 					}
 
-					gameplayState.testBuilding.rotation = newRotation;
+					bindedTo.rotation = newRotation;
 
 					$scope.chooseBuilding();
 				}
 			};
 
-			if(gameplayState.buildMode && gameplayState.testBuilding != undefined){
-				$scope.buildingName = gameplayState.testBuilding.structName;
+			if(gameplayState.buildMode && bindedTo != undefined){
+				$scope.buildingName = bindedTo.structName;
 
-				$scope.rotation = gameplayState.testBuilding.rotation;
+				$scope.rotation = bindedTo.rotation;
 
-				$scope.tool = gameplayState.testBuilding.requiredResources[TOOLS_ID];
-				$scope.wood = gameplayState.testBuilding.requiredResources[WOOD_ID];
-				$scope.brick = gameplayState.testBuilding.requiredResources[BRICKS_ID];
-				$scope.coins = gameplayState.testBuilding.requiredResources[INVALID_ID];
+				$scope.isFarm = bindedTo instanceof Farm;
+				$scope.isWorkshop = bindedTo instanceof Workshop;
+
+				if(bindedTo instanceof ProductionBuilding){
+					$scope.output = bindedTo.storage.catagories[OUTPUT];
+
+					$scope.input_1 = bindedTo.storage.catagories[INPUT_1];
+					$scope.input_2 = bindedTo.storage.catagories[INPUT_2];
+
+					$scope.inputCrop = bindedTo.requiredCrop;
+				}
+
+				$scope.tool = bindedTo.requiredResources[TOOLS_ID];
+				$scope.wood = bindedTo.requiredResources[WOOD_ID];
+				$scope.brick = bindedTo.requiredResources[BRICKS_ID];
+				$scope.coins = bindedTo.requiredResources[INVALID_ID];
 			}
 		});
 	});
