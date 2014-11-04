@@ -52,7 +52,6 @@ require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// external
 			// kiedy ładuję przez Require. Popierdolone to jest. Tak działa. LOL.
 			// Rozwiązaniem jest podzielenie tego na prawidłowe moduły Require,
 			// ale mi się kurwa nie chce.
-			/*
 			$("head").append('<script src="scripts/logic/tile.js"></script>');
 			$("head").append('<script src="scripts/logic/product.js"></script>');
 			$("head").append('<script src="scripts/logic/storage.js"></script>');
@@ -68,7 +67,6 @@ require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// external
 			$("head").append('<script src="scripts/logic/productionBuilding.js"></script>');
 			$("head").append('<script src="scripts/logic/civilianUnit.js"></script>');
 			$("head").append('<script src="scripts/logic/gameDefinitions.js"></script>');
-			*/
 
 			// ~~~
 
