@@ -238,7 +238,7 @@ li {
 
 	padding: 10px;
 
-	display: block; /* <- none */
+	display: none; /* <- none */
 }
 
 #buildmenu:before {
