@@ -29,6 +29,9 @@ var gameplayState = {
 	// cokolwiek klikniętego przez usera (może to być budynek, statek, etc.)
 	choosedSth: undefined,
 
+	// id budynku ponad którym jest myszka w build mode
+	buildMenuHover: undefined,
+
 	// dla gui.js (usunąć to stąd!)
 	clickHandler: function(){}
 };

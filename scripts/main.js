@@ -54,6 +54,7 @@ require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// external
 			// ale mi się kurwa nie chce.
 			/*
 			$("head").append('<script src="scripts/logic/tile.js"></script>');
+			$("head").append('<script src="scripts/logic/algorithms.js"></script>');
 			$("head").append('<script src="scripts/logic/product.js"></script>');
 			$("head").append('<script src="scripts/logic/storage.js"></script>');
 			$("head").append('<script src="scripts/logic/country.js"></script>');
