@@ -189,6 +189,22 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 		$scope.choosedBuilding = -1;
 		$scope.allBuildings = structsClass.slice(1, structsClass.length);
 
+		$scope.beginHoverBuilding = function(){
+			var index = INVALID_ID;
+			if(this.building != undefined)
+				index = this.building.index || this.building.__structId;
+
+			index = parseInt(index);
+
+			var structure = structsClass[index];
+			gameplayState.buildMenuHover = new structure.class(0, 0, null, undefined);
+			gameplayState.buildMenuHover.onBuild();
+		};
+
+		$scope.endHoverBuilding = function(){
+			gameplayState.buildMenuHover = undefined;
+		};
+
 		$scope.startRemoveMode = function(){
 			$scope.callback.buildMode = false;
 			$scope.callback.removeMode = !$scope.callback.removeMode;
@@ -290,7 +306,11 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 
 	app.controller("BuildingExtInfo", function($scope){
 		registerInfiniteUpdate($scope, function(){
-			var bindedTo = gameplayState.testBuilding;
+			var bindedTo = undefined;
+			if(gameplayState.testBuilding != undefined)
+				bindedTo = gameplayState.testBuilding;
+			else if(gameplayState.buildMenuHover != undefined)
+				bindedTo = gameplayState.buildMenuHover;
 
 			$scope.buildingName = "";
 
@@ -326,7 +346,7 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 				}
 			};
 
-			if(gameplayState.buildMode && bindedTo != undefined){
+			if(bindedTo != undefined){
 				$scope.buildingName = bindedTo.structName;
 
 				$scope.rotation = bindedTo.rotation;

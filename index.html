@@ -89,7 +89,7 @@
 
 			<div ng-controller="BuildCtrl" id="buildmenu" ng-click="buildModeStateChange();">
 				<div id="buildlist">
-					<div ng-repeat="building in allBuildings" value="{{$index}}" class="buildlistitem" ng-click="chooseBuilding(); $event.stopPropagation();">
+					<div ng-repeat="building in allBuildings" value="{{$index}}" class="buildlistitem" ng-click="chooseBuilding(); $event.stopPropagation();" ng-onmouseover="beginHoverBuilding(); $event.stopPropagation();" ng-mouseenter="beginHoverBuilding(); $event.stopPropagation();" ng-mouseleave="endHoverBuilding(); $event.stopPropagation();">
 						<img ng-src="{{building.name | putBuildingImage}}" title="{{buidling.name}}" width="53px" height="50px">
 					</div>
 					<div id="buildlist_ontop" ng-show="callback.buildMode">
