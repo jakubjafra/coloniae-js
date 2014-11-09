@@ -206,21 +206,19 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 				if(!isColorpicking){
 					if( gameplayState.buildMode && gameplayState.testBuilding != undefined &&
 						gameplayState.hoveredTile != undefined && canBeOverwritten && tile.islandId != INVALID_ID ){
-						var offsetX = Math.floor((gameplayState.testBuilding.width - 1) / 2);
-						var offsetY = Math.floor((gameplayState.testBuilding.height - 1) / 2);
 
-						var localX = x - gameplayState.hoveredTile.x + offsetX;
-						var localY = y - gameplayState.hoveredTile.y + offsetY;
+						for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++){
+							var buildingCoords = gameplayState.buildingsToPlacement[i];
 
-						if( localX >= 0 && localX < gameplayState.testBuilding.width &&
-							localY >= 0 && localY < gameplayState.testBuilding.height ){
-							// jeżeli można wybudować w danym miejscu to wyświetla się budynek,
-							// jeśli nie to placeholder (by jakoś to wyglądało)
-							if(gameplayState.testCanBe)
+							var offsetX = Math.floor((gameplayState.testBuilding.width - 1) / 2);
+							var offsetY = Math.floor((gameplayState.testBuilding.height - 1) / 2);
+
+							var localX = x - buildingCoords.x + offsetX;
+							var localY = y - buildingCoords.y + offsetY;
+
+							if( localX >= 0 && localX < gameplayState.testBuilding.width &&
+								localY >= 0 && localY < gameplayState.testBuilding.height ){
 								tileImage = getBuildingImage(gameplayState.testBuilding, tiles.coords(localX, localY));
-							else{
-								if(tile.terrainLevel == gameplayState.testBuilding.requiredTerrainMap[localX][localY])
-									tileImage = "placeholder_moutain";
 							}
 						}
 					}

@@ -66,7 +66,7 @@ li {
 	pointer-events:none;
 
 	color: white;
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 #on_canvas > * {
