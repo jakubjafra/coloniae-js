@@ -218,6 +218,8 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 			$scope.callback.buildMode = false;
 			$scope.callback.removeMode = false;
 
+			$scope.callback.moveMap = false;
+
 			$scope.choosedBuilding = -1;
 
 			$scope.callback.testBuilding = undefined;

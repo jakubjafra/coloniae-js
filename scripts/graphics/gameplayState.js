@@ -11,14 +11,26 @@ var gameplayState = {
 			y: 0
 		},
 
+	// czy poruszamy kamerą gry
+	moveMap: false,
+
 	// czy wybrano jakiś budynek do wybudowania
 	buildMode: false,
 
 	// wybrany budynek do wybudowania gdy się kliknie w miejsce które pozwala go wybudować
 	testBuilding: undefined,
 
-	// informuje czy testBuilding może być postawione hoveredTile
-	testCanBe: false,
+	// testBuilding powielone na obszar wyznaczony przez przeciągnięcie myszką
+	buildingsToPlacement: [],
+
+	// czy używamy przeciągania (jeżeli nie używamy przeciągania to używa się po prostu clik-to-build)
+	useWidePlacement: false,
+
+	// obszar wyznaczony myszką po kliknięciu w trybie buildMode
+	placementRectangle: {
+		begin: tiles.coords(-1, -1),
+		end: tiles.coords(-1, -1)
+	},
 
 	// tryb gdzie kliknięcie w budynek oznacza jego usunięcie
 	removeMode: false,
