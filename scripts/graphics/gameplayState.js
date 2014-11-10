@@ -28,8 +28,8 @@ var gameplayState = {
 
 	// obszar wyznaczony myszką po kliknięciu w trybie buildMode
 	placementRectangle: {
-		begin: tiles.coords(-1, -1),
-		end: tiles.coords(-1, -1)
+		begin: undefined,
+		end: undefined
 	},
 
 	// tryb gdzie kliknięcie w budynek oznacza jego usunięcie
