@@ -44,7 +44,10 @@
 			</div>
 
 			<div id="HouseDlg" ng-controller="HouseCtrl">
-				<b> {{ building.structName }} </b> <a href="#" onclick="return false;" ng-click="close();">close</a><br/>
+				<div class="header">
+					<b> {{ building.structName }} </b>
+					<a href="#" onclick="return false;" ng-click="close();" style="float: right;"> close </a>
+				</div>
 				<hr>
 				{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}<br/>
 				content: {{ houseGroup.contentLevel }} (#{{ houseGroup.contentRaw | number:2 }})<br/>
@@ -52,7 +55,10 @@
 			</div>
 
 			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl">
-				<b> {{ building.structName }} </b> <a href="#" onclick="return false;" ng-click="close();">close</a><br/>
+				<div class="header">
+					<b> {{ building.structName }} </b>
+					<a href="#" onclick="return false;" ng-click="close();" style="float: right;"> close </a>
+				</div>
 				<hr>
 				income: {{ income | number:0 }}<br/>
 				maintenance: {{ maintenance | number:0 }}<br/>
@@ -64,7 +70,15 @@
 			</div>
 
 			<div id="ProductionBuildingDlg" ng-controller="ProductionBuildingCtrl">
-				<b> {{ building.structName }} </b> <a href="#" onclick="return false;" ng-click="close();">close</a><br/>
+				<div class="header">
+					<b> {{ building.structName }} </b>
+					<a href="#" onclick="return false;" ng-click="close();" style="float: right;"> close </a>
+				</div>
+				<hr>
+				<div ng-controller="StaticBuildingExtInfo">
+					<div building-ext-inf-description ng-controller="BuildingExtInfo">
+					</div>
+				</div>
 				<hr>
 				effectivity: {{ (effectivity * 100) | number:0 }}% <br/>
 				maitenanace: {{ maintenance }}<br/>
@@ -90,7 +104,7 @@
 			<div ng-controller="BuildCtrl" id="buildmenu" ng-click="buildModeStateChange();">
 				<div id="buildlist">
 					<div ng-repeat="building in allBuildings" value="{{$index}}" class="buildlistitem" ng-click="chooseBuilding(); $event.stopPropagation();" ng-onmouseover="beginHoverBuilding(); $event.stopPropagation();" ng-mouseenter="beginHoverBuilding(); $event.stopPropagation();" ng-mouseleave="endHoverBuilding(); $event.stopPropagation();">
-						<img ng-src="{{building.name | putBuildingImage}}" title="{{buidling.name}}" width="53px" height="50px">
+						<div building-image name="building.name"></div>
 					</div>
 					<div id="buildlist_ontop" ng-show="callback.buildMode">
 						<span style="background-color: black;"><b>press any key</b> or <b>click here</b> to exit build mode selection</span>
@@ -98,30 +112,9 @@
 				</div>
 
 				<div class="vertical_line" style="margin-left: 5px; margin-right: 5px;">&nbsp;</div>
-				<div id="building_ext_info" ng-controller="BuildingExtInfo">
-					<div class="building_name">
-						{{buildingName}}
-					</div>
-					<div class="building_side">
-						<div ng-click="changeSide(); $event.stopPropagation();" class="rotation rotation_{{side}}">{{side | rotationLetterByCode}}</div>
-					</div>
-					<div class="building_img" style="height: 50px;">
-						<img ng-src="{{buildingName | putBuildingImage}}" title="{{buildingName}}" width="53px" height="50px">
-					</div>
-					<div class="building_img" style="height: 30px;">
-						<span ng-show="tool != undefined"><img style="display: inline-block;" src="imgs/gui/tool.png" width="20px" height="20px">{{tool | number:0}}</span>
-						<span ng-show="wood != undefined"><img style="display: inline-block;" src="imgs/gui/wood.png" width="20px" height="20px">{{wood | number:0}}</span>
-						<span ng-show="brick != undefined"><img style="display: inline-block;" src="imgs/gui/brick.png" width="20px" height="20px">{{brick | number:0}}</span>
-						<span ng-show="coins != undefined"><img style="display: inline-block;" src="imgs/gui/coin.png" width="20px" height="20px">{{coins | number:0}}</span>
-					</div>
-					<div class="building_desc">
-						<div ng-show="isFarm" class="one_line">
-							<img ng-src="{{inputCrop | putBuildingImage}}" title="{{inputCrop}}" style="margin-right: 5px;"><img src="imgs/gui/right.png" style="margin-right: 5px;"><img ng-src="{{output | putProductImage}}" title="{{output}}" width="53px" height="50px">
-						</div>
-						<div ng-show="isWorkshop" class="one_line">
-							<img ng-src="{{input_1 | putProductImage}}" title="{{input_1}}" width="53px" height="50px" style="margin-right: 5px;"><img ng-src="{{input_2 | putProductImage}}" title="{{input_2}}" ng-show="input_2" width="53px" height="50px" style="margin-right: 5px;"><img src="imgs/gui/right.png" style="margin-right: 5px;"><img ng-src="{{output | putProductImage}}" title="{{output}}" width="53px" height="50px">
-						</div>
-					</div>
+
+				<div ng-controller="BuildMenuHoverBuildingExtInfo">
+					<div building-ext-inf-full ng-controller="BuildingExtInfo"></div>
 				</div>
 			</div>
 		</div>

@@ -290,6 +290,14 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 
 			drawRawAtlasTile("ship_smalltrade_" + ship.rotation);
 
+			// zaznacz jakoś że statek jest zaznaczony
+			if(ship === gameplayState.choosedSth && !isColorpicking){
+				drawAtlasTile("ship_smalltrade_" + ship.rotation, tile, {
+					"globalCompositeOperation": "lighter",
+					"globalAlpha": 0.33
+				});
+			}
+
 			posY -= 64;
 			posX += 0;
 

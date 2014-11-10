@@ -46,12 +46,13 @@ require.config({
 console.log('loading dependencies');
 
 require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// externals libs
-			'./logic', './graphics', './graphics/gui'								// local files
+			'./logic', './graphics', './graphics/gui/gui'								// local files
 		],	function($, _a, _b, _, Logic, Graphics, Gui){
 			// ZA CHUJA nie wiem czemu to się nie chce ładować w tej kolejności
 			// kiedy ładuję przez Require. Popierdolone to jest. Tak działa. LOL.
 			// Rozwiązaniem jest podzielenie tego na prawidłowe moduły Require,
 			// ale mi się kurwa nie chce.
+			/*
 			$("head").append('<script src="scripts/logic/tile.js"></script>');
 			$("head").append('<script src="scripts/logic/algorithms.js"></script>');
 			$("head").append('<script src="scripts/logic/product.js"></script>');
@@ -68,6 +69,7 @@ require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// external
 			$("head").append('<script src="scripts/logic/productionBuilding.js"></script>');
 			$("head").append('<script src="scripts/logic/civilianUnit.js"></script>');
 			$("head").append('<script src="scripts/logic/gameDefinitions.js"></script>');
+			*/
 
 			// ~~~
 

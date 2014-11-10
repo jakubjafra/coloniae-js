@@ -84,8 +84,6 @@ define(['jquery', 'three-stats', 'jquery-mousewheel'], function($, Stats){
 		$(this.canvas).mouseleave($.proxy(wrapper.onMouseLeave, wrapper));
 		
 		$(this.canvas).mousemove($.proxy(function(e){
-			console.log(e.target);
-
 			X = e.pageX - $(this.canvas).offset().left;
 			Y = e.pageY - $(this.canvas).offset().top;
 

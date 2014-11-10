@@ -9,7 +9,7 @@ a nie samemu wpływać na ten stan...
 
 */
 
-define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'extend', 'underscore'], function(angular, graphics, logic, gameplayState){
+define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayState', 'extend', 'underscore'], function(angular, graphics, logic, gameplayState){
 	// niestety angular sam nie updateuje zmian z "other sources"
 	// więc trzeba samemu callować zmianę $scopa co jakiś czas
 	function registerInfiniteUpdate(scope, func){
@@ -167,22 +167,6 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 
 	// ~~~
 
-	app.filter('putBuildingImage', function(){
-		return function(input){
-			if(input == undefined || input.length == 0)
-				input = "unknown";
-
-			var name = input.replace(/\s/g, '');
-			name = name.toLowerCase();
-
-			if(name == "port")
-				name += "1";
-
-			var image = 'imgs/gui/buildings/' + name + '.png';
-			return image;
-		};
-	});
-
 	app.controller("BuildCtrl", function($scope){
 		$scope.callback = gameplayState;
 		
@@ -290,68 +274,119 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 		};
 	});
 
-	app.filter('putProductImage', function(){
-		return function(input){
-			if(input == undefined || typeof input !== "number")
-				return 'imgs/gui/products/empty.png';
+	// ~~~
 
-			var productId = parseInt(input);
-			var productName = products[productId].name;
+	function makeBuildingImageLink(input){
+		if(input == undefined || input.length == 0)
+			input = "unknown";
 
-			var name = productName.replace(/\s/g, '');
-			name = name.toLowerCase();
+		var name = input.replace(/\s/g, '');
+		name = name.toLowerCase();
 
-			var image = 'imgs/gui/products/' + name + '.png';
-			return image;
+		if(name == "port")
+			name += "1";
+
+		var image = 'imgs/gui/buildings/' + name + '.png';
+		return image;
+	}
+
+	app.directive("buildingImage", function(){
+		return {
+			scope: {
+				imgName: "=name"
+			},
+			link: function(scope){
+				scope.$watch('imgName', function(){
+					scope.imgSrc = makeBuildingImageLink(scope.imgName);
+				});
+			},
+			replace: true,
+			templateUrl: 'views/image.html'
 		};
 	});
 
+	// ~~~
+
+	function makeProductImageLink(input){
+		if(input == undefined || typeof input !== "number")
+			return 'imgs/gui/products/empty.png';
+
+		var productId = parseInt(input);
+		var productName = products[productId].name;
+
+		var name = productName.replace(/\s/g, '');
+		name = name.toLowerCase();
+
+		var image = 'imgs/gui/products/' + name + '.png';
+		return image;
+	};
+
+	app.directive("productImage", function(){
+		return {
+			scope: {
+				imgName: "=name"
+			},
+			link: function(scope){
+				scope.$watch('imgName', function(){
+					scope.imgSrc = makeProductImageLink(scope.imgName);
+				});
+			},
+			replace: true,
+			templateUrl: 'views/image.html'
+		};
+	});
+
+	// ~~~
+
+	app.directive("buildingExtInfDescription", function(){
+		return {
+			templateUrl: 'views/buildingExtendedInfo/description.html'
+		};
+	});
+
+	app.directive("buildingExtInfFull", function(){
+		return {
+			templateUrl: 'views/buildingExtendedInfo/full.html'
+		};
+	});
+
+	app.controller("BuildMenuHoverBuildingExtInfo", function($scope){
+		$scope.getBuildingToInform = function(){
+			$scope.$$childHead.init(gameplayState.testBuilding || gameplayState.buildMenuHover, true);
+		}
+	});
+
+	app.controller("StaticBuildingExtInfo", function($scope){
+		$scope.getBuildingToInform = function(){
+			$scope.$$childHead.init($scope.building, true);
+		}
+	});
+
 	app.controller("BuildingExtInfo", function($scope){
-		registerInfiniteUpdate($scope, function(){
-			var bindedTo = undefined;
-			if(gameplayState.testBuilding != undefined)
-				bindedTo = gameplayState.testBuilding;
-			else if(gameplayState.buildMenuHover != undefined)
-				bindedTo = gameplayState.buildMenuHover;
+		var bindedTo = undefined;
 
-			$scope.buildingName = "";
+		$scope.init = function(specificBuilding, canBeRotated){
+			bindedTo = specificBuilding;
 
-			$scope.tool = 0;
-			$scope.wood = 0;
-			$scope.brick = 0;
-			$scope.coins = 0;
+			// ~~~
 
-			$scope.rotation = 0;
+			if(bindedTo == undefined){
+				$scope.buildingName = "";
 
-			$scope.isFarm = false;
-			$scope.isWorkshop = false;
+				$scope.tool = 0;
+				$scope.wood = 0;
+				$scope.brick = 0;
+				$scope.coins = 0;
 
-			$scope.changeSide = function(){
-				if(bindedTo != undefined){
-					var currentIndex;
-					for(currentIndex = 0; currentIndex < bindedTo.possibleRotation.length; currentIndex++)
-						if(bindedTo.rotation == bindedTo.possibleRotation[currentIndex])
-							break;
+				$scope.side = 0;
 
-					var newRotation = bindedTo.possibleRotation[
-						(currentIndex + 1) % bindedTo.possibleRotation.length
-					];
-
-					if(newRotation == bindedTo.rotation){
-						console.log("this building cannot be rotated yet");
-						return;
-					}
-
-					bindedTo.rotation = newRotation;
-
-					$scope.chooseBuilding();
-				}
-			};
-
-			if(bindedTo != undefined){
+				$scope.isFarm = false;
+				$scope.isWorkshop = false;
+			}
+			else {
 				$scope.buildingName = bindedTo.structName;
 
-				$scope.rotation = bindedTo.rotation;
+				$scope.side = bindedTo.rotation;
 
 				$scope.isFarm = bindedTo instanceof Farm;
 				$scope.isWorkshop = bindedTo instanceof Workshop;
@@ -369,7 +404,35 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 				$scope.wood = bindedTo.requiredResources[WOOD_ID];
 				$scope.brick = bindedTo.requiredResources[BRICKS_ID];
 				$scope.coins = bindedTo.requiredResources[INVALID_ID];
+
+				if(canBeRotated){
+					$scope.changeSide = function(){
+						if(bindedTo != undefined){
+							var currentIndex;
+							for(currentIndex = 0; currentIndex < bindedTo.possibleRotation.length; currentIndex++)
+								if(bindedTo.rotation == bindedTo.possibleRotation[currentIndex])
+									break;
+
+							var newRotation = bindedTo.possibleRotation[
+								(currentIndex + 1) % bindedTo.possibleRotation.length
+							];
+
+							if(newRotation == bindedTo.rotation){
+								console.log("this building cannot be rotated yet");
+								return;
+							}
+
+							bindedTo.rotation = newRotation;
+
+							$scope.chooseBuilding();
+						}
+					};
+				}
 			}
+		};
+
+		registerInfiniteUpdate($scope, function(){
+			$scope.$parent.getBuildingToInform();
 		});
 	});
 
@@ -377,10 +440,6 @@ define(['angular', '../graphics', '../logic', '../graphics/gameplayState', 'exte
 		this.start = function(){
 			console.log("starting AngularJS");
 			angular.bootstrap(document.body, ["app"]);
-
-			// ~~~
-
-			// ...
 		};
 	};
 });

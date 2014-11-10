@@ -6,7 +6,6 @@ logic.js
 
 define(['jquery', 'underscore', 'extend',
 		// wczytanie logiki:
-		/*
 		'./logic/tile',
 		'./logic/algorithms',
 		'./logic/product',
@@ -23,7 +22,6 @@ define(['jquery', 'underscore', 'extend',
 		'./logic/productionBuilding',
 		'./logic/civilianUnit',
 		'./logic/gameDefinitions'
-		*/
 		],
 	function(){
 		HARD_UPDATE_INTERVAL = 1.0;

@@ -4,7 +4,16 @@ graphics.js
 
 */
 
+KEY_ARROW_UP = 38;
+KEY_ARROW_DOWN = 40;
+KEY_ARROW_LEFT = 37;
+KEY_ARROW_RIGHT = 39;
+
+KEYBOARD_MOVE_MAP_DIFF = 20;
+
 define(['underscore', './graphics/framework', './logic', './graphics/gameplayState', './graphics/drawMethod', './graphics/tilePicker'], function(_, framework, Logic, gameplayState, draw, picker){
+	var wasAnyAction = false;
+
 	function makeClick(clickedTile, hoverTile, mouseX, mouseY){
 		if(gameplayState.choosedSth instanceof Ship){
 			if(clickedTile.terrainLevel < SHALLOW){
@@ -17,29 +26,6 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 			if(clickedTile.islandId != INVALID_ID)
 				gameplayState.choosedSth = undefined;
 		}
-
-		/*	tu "else" nie może być bo jeśli mając focusa na statku kliknięto w wyspę
-		to najprawdopodobniej by wybrać jakiś budynek więc nie można blokować tej
-		akcji żadnym "else" */
-
-		var wasAnyAction = false;
-
-		// budowa budynku - standardowe budowanie na klikanie :)
-/*
-		if(gameplayState.buildMode && gameplayState.testBuilding != undefined){
-			var structure = structsClass[gameplayState.testBuilding.__structId];
-
-			// używa się hoverTile bo clickedTile czasami zwraca złe wyniki nad drzewami
-			// i przez to obsuwa budynek budowany w stronę gracza
-			new structure.class(hoverTile.x,
-								hoverTile.y,
-								countries[0],
-								undefined,
-								gameplayState.testBuilding.rotation);
-
-			wasAnyAction = true;
-		}
-		*/
 
 		// usunięcie budynku
 		if(gameplayState.removeMode && clickedTile.buildingData != null){
@@ -106,8 +92,29 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 
 		this.fullscreen = true;
 
-		this.onKeyUp = function(){
-			endBuildingMode();
+		this.onKeyDown = function(key){};
+		this.onKeyUp = function(key){
+			switch(key){
+				case KEY_ARROW_UP:
+						gameplayState.cameraPosition.y += KEYBOARD_MOVE_MAP_DIFF;
+					break;
+
+				case KEY_ARROW_DOWN:
+						gameplayState.cameraPosition.y -= KEYBOARD_MOVE_MAP_DIFF;
+					break;
+
+				case KEY_ARROW_LEFT:
+						gameplayState.cameraPosition.x += KEYBOARD_MOVE_MAP_DIFF;
+					break;
+
+				case KEY_ARROW_RIGHT:
+						gameplayState.cameraPosition.x -= KEYBOARD_MOVE_MAP_DIFF;
+					break;
+
+				default:
+					endBuildingMode();
+					break;
+			}
 		};
 
 		this.onMouseEnter = function(){};
@@ -174,6 +181,11 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 		this.onMouseUp = function(x, y){
 			gameplayState.moveMap = false;
 
+			// kolejność zawsze jest taka: zdarzenie -> onMouseUp -> onMouseClick
+			// ustawienie tutaj tej zmiennej (i ew. poinformowanie że wybudowano coś)
+			// usuwa buga powowdującego automatyczne klikniecie w nowo wybudowany budynek
+			wasAnyAction = false;
+
 			if(gameplayState.buildMode){
 				// uaktualnij placementRectangle
 				gameplayState.placementRectangle.end = picker.byGeometry(x, y);
@@ -199,6 +211,8 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 				gameplayState.placementRectangle.end = tiles.coords(-1, -1);
 				
 				gameplayState.useWidePlacement = false;
+
+				wasAnyAction = true;
 			}
 		};
 
