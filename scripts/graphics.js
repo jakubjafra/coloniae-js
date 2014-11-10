@@ -58,6 +58,9 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 		var fakeBegin = gameplayState.placementRectangle.begin;
 		var fakeEnd = gameplayState.placementRectangle.end;
 
+		if(fakeBegin == undefined || fakeEnd == undefined)
+			return;
+
 		var begin = _.clone(fakeBegin);
 		var end = _.clone(fakeEnd);
 
