@@ -31,6 +31,9 @@ define(['jquery', 'three-stats', 'jquery-mousewheel'], function($, Stats){
 		wrapper.onRender = wrapper.onRender || function(){};
 		wrapper.onLoadResources = wrapper.onLoadResources || function(){};
 
+		wrapper.onKeyDown = wrapper.onKeyDown || function(){};
+		wrapper.onKeyUp = wrapper.onKeyUp || function(){};
+
 		wrapper.onMouseEnter = wrapper.onMouseEnter || function(){};
 		wrapper.onMouseLeave = wrapper.onMouseLeave || function(){};
 		wrapper.onMouseMove = wrapper.onMouseMove || function(){};
@@ -73,6 +76,9 @@ define(['jquery', 'three-stats', 'jquery-mousewheel'], function($, Stats){
 
 		var wasMouseCursorMovedSinceMouseDown = false;
 		var lastMouseDown = 0;
+
+		$("body").keydown(function(e){ wrapper.onKeyDown.call(wrapper, e.which); });
+		$("body").keyup(function(e){ wrapper.onKeyUp.call(wrapper, e.which); });
 
 		$(this.canvas).mouseenter($.proxy(wrapper.onMouseEnter, wrapper));
 		$(this.canvas).mouseleave($.proxy(wrapper.onMouseLeave, wrapper));

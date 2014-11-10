@@ -4,7 +4,16 @@ graphics.js
 
 */
 
-define(['./graphics/framework', './logic', './graphics/gameplayState', './graphics/drawMethod', './graphics/tilePicker'], function(framework, Logic, gameplayState, draw, picker){
+KEY_ARROW_UP = 38;
+KEY_ARROW_DOWN = 40;
+KEY_ARROW_LEFT = 37;
+KEY_ARROW_RIGHT = 39;
+
+KEYBOARD_MOVE_MAP_DIFF = 20;
+
+define(['underscore', './graphics/framework', './logic', './graphics/gameplayState', './graphics/drawMethod', './graphics/tilePicker'], function(_, framework, Logic, gameplayState, draw, picker){
+	var wasAnyAction = false;
+
 	function makeClick(clickedTile, hoverTile, mouseX, mouseY){
 		if(gameplayState.choosedSth instanceof Ship){
 			if(clickedTile.terrainLevel < SHALLOW){
@@ -16,27 +25,6 @@ define(['./graphics/framework', './logic', './graphics/gameplayState', './graphi
 			// jak kliknięto w wyspę to usuwamy zaznaczenie na jednostce
 			if(clickedTile.islandId != INVALID_ID)
 				gameplayState.choosedSth = undefined;
-		}
-
-		/*	tu "else" nie może być bo jeśli mając focusa na statku kliknięto w wyspę
-		to najprawdopodobniej by wybrać jakiś budynek więc nie można blokować tej
-		akcji żadnym "else" */
-
-		var wasAnyAction = false;
-
-		// budowa budynku
-		if(gameplayState.buildMode && gameplayState.testBuilding != undefined){
-			var structure = structsClass[gameplayState.testBuilding.__structId];
-
-			// używa się hoverTile bo clickedTile czasami zwraca złe wyniki nad drzewami
-			// i przez to obsuwa budynek budowany w stronę gracza
-			new structure.class(hoverTile.x,
-								hoverTile.y,
-								countries[0],
-								undefined,
-								gameplayState.testBuilding.rotation);
-
-			wasAnyAction = true;
 		}
 
 		// usunięcie budynku
@@ -63,19 +51,92 @@ define(['./graphics/framework', './logic', './graphics/gameplayState', './graphi
 			gameplayState.clickHandler(mouseX, mouseY);
 	}
 
+	// dodaje budynki na podstawie prostokąta do gameplayState.buildingsToPlacement
+	function fillBuildingsToPlacement(){
+		gameplayState.buildingsToPlacement = [];
+
+		var fakeBegin = gameplayState.placementRectangle.begin;
+		var fakeEnd = gameplayState.placementRectangle.end;
+
+		if(fakeBegin == undefined || fakeEnd == undefined)
+			return;
+
+		var begin = _.clone(fakeBegin);
+		var end = _.clone(fakeEnd);
+
+		if(begin.x > end.x){
+			begin.x = fakeEnd.x;
+			end.x = fakeBegin.x;
+		}
+
+		if(begin.y > end.y){
+			begin.y = fakeEnd.y;
+			end.y = fakeBegin.y;
+		}
+
+		for(var i = begin.x; i <= end.x; i += gameplayState.testBuilding.width)
+			for(var j = begin.y; j <= end.y; j += gameplayState.testBuilding.height)
+				if(canBeBuild(i, j, gameplayState.testBuilding))
+					gameplayState.buildingsToPlacement.push(tiles.coords(i, j));
+	}
+
+	function endBuildingMode(){
+		gameplayState.placementRectangle.begin = tiles.coords(-1, -1);
+		gameplayState.placementRectangle.end = tiles.coords(-1, -1);
+
+		gameplayState.buildingsToPlacement = [];
+
+		gameplayState.buildMode = false;
+		gameplayState.useWidePlacement = false;
+	}
+
 	return new framework(new function(){
 		this.resources = [ "atlas" ];
 
 		this.fullscreen = true;
 
-		var moveMap = false;
+		this.onKeyDown = function(key){};
+		this.onKeyUp = function(key){
+			switch(key){
+				case KEY_ARROW_UP:
+						gameplayState.cameraPosition.y += KEYBOARD_MOVE_MAP_DIFF;
+					break;
+
+				case KEY_ARROW_DOWN:
+						gameplayState.cameraPosition.y -= KEYBOARD_MOVE_MAP_DIFF;
+					break;
+
+				case KEY_ARROW_LEFT:
+						gameplayState.cameraPosition.x += KEYBOARD_MOVE_MAP_DIFF;
+					break;
+
+				case KEY_ARROW_RIGHT:
+						gameplayState.cameraPosition.x -= KEYBOARD_MOVE_MAP_DIFF;
+					break;
+
+				default:
+					endBuildingMode();
+					break;
+			}
+		};
 
 		this.onMouseEnter = function(){};
 
 		this.onMouseLeave = function(){
 			gameplayState.hoveredTile = undefined;
 
-			moveMap = false;
+			// gameplayState.placementRectangle.end = tiles.coords(-1, -1);
+
+			if(!gameplayState.buildMode)
+				gameplayState.moveMap = false;
+			else {
+				gameplayState.buildingsToPlacement = [];
+
+				gameplayState.placementRectangle.begin = tiles.coords(-1, -1);
+				gameplayState.placementRectangle.end = tiles.coords(-1, -1);
+				
+				gameplayState.useWidePlacement = false;
+			}
 		};
 
 		var oldX = undefined;
@@ -89,7 +150,7 @@ define(['./graphics/framework', './logic', './graphics/gameplayState', './graphi
 			oldX = oldX || x;
 			oldY = oldY || y;
 
-			if(moveMap){
+			if(gameplayState.moveMap && !gameplayState.buildMode){
 				gameplayState.cameraPosition.x += (x - oldX);
 				gameplayState.cameraPosition.y += (y - oldY);
 			}
@@ -97,19 +158,65 @@ define(['./graphics/framework', './logic', './graphics/gameplayState', './graphi
 			oldX = x;
 			oldY = y;
 
-			// jeśli jesteśmy w build mode trzeba sprawdzić czy wybrany budynek może zostać wybudowany
-			// w aktualnie shoverowanym tilesie
-			if(gameplayState.buildMode && gameplayState.hoveredTile != undefined && gameplayState.testBuilding != undefined){
-				gameplayState.testCanBe = canBeBuild(gameplayState.hoveredTile.x, gameplayState.hoveredTile.y, gameplayState.testBuilding);
+			// ~~~
+
+			// to jest tutaj tylko po to by można było wyświetlić podświetlenie
+			// informację dla gracza jakie budynki się gdzie wybudują
+			if(gameplayState.buildMode && gameplayState.testBuilding != undefined /*&& gameplayState.moveMap*/){
+				gameplayState.placementRectangle.end = picker.byGeometry(x, y);
+
+				if(!gameplayState.useWidePlacement)
+					gameplayState.placementRectangle.begin = gameplayState.placementRectangle.end;
+
+				fillBuildingsToPlacement();
 			}
 		};
 
 		this.onMouseDown = function(x, y){
-			moveMap = true;
+			gameplayState.moveMap = true;
+
+			if(gameplayState.buildMode){
+				gameplayState.placementRectangle.begin = picker.byGeometry(x, y);
+				gameplayState.useWidePlacement = true;
+			}
 		};
 
 		this.onMouseUp = function(x, y){
-			moveMap = false;
+			gameplayState.moveMap = false;
+
+			// kolejność zawsze jest taka: zdarzenie -> onMouseUp -> onMouseClick
+			// ustawienie tutaj tej zmiennej (i ew. poinformowanie że wybudowano coś)
+			// usuwa buga powowdującego automatyczne klikniecie w nowo wybudowany budynek
+			wasAnyAction = false;
+
+			if(gameplayState.buildMode){
+				// uaktualnij placementRectangle
+				gameplayState.placementRectangle.end = picker.byGeometry(x, y);
+				fillBuildingsToPlacement();
+
+				// wybuduj budynki z gameplayState.buildingsToPlacement
+				for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++){
+					var buildingCoords = gameplayState.buildingsToPlacement[i];
+
+					var structure = structsClass[gameplayState.testBuilding.__structId];
+					new structure.class(buildingCoords.x,
+										buildingCoords.y,
+										countries[0],
+										undefined,
+										gameplayState.testBuilding.rotation);
+				}
+
+				// usuń zaznaczenie:
+
+				gameplayState.buildingsToPlacement = [];
+
+				gameplayState.placementRectangle.begin = tiles.coords(-1, -1);
+				gameplayState.placementRectangle.end = tiles.coords(-1, -1);
+				
+				gameplayState.useWidePlacement = false;
+
+				wasAnyAction = true;
+			}
 		};
 
 		this.onMouseClick = function(x, y){

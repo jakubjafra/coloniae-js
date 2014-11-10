@@ -66,7 +66,7 @@ li {
 	pointer-events:none;
 
 	color: white;
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 #on_canvas > * {
@@ -76,7 +76,7 @@ li {
 #top_left {
 	position: absolute;
 	top: 0;
-	left: 85px;
+	left: 0px;
 }
 
 #top_center {
@@ -146,8 +146,8 @@ li {
 	left: 300px;
 	top: 300px;
 
-	width: 180px;
-	height: 130px;
+	width: 200px;
+	height: auto;
 
 	border-radius: 5px;
 	padding: 10px;
@@ -157,6 +157,10 @@ li {
 	display: none;
 
 	font-size: 12px;
+}
+
+#ProductionBuildingDlg .building_desc {
+	height: 50px;
 }
 
 #MarketplaceDlg {
@@ -265,7 +269,7 @@ li {
 	height: 100%;
 }
 
-#building_ext_info {
+.building_ext_info {
 	position: relative;
 	display: inline-block;
 	float: left;
@@ -276,7 +280,7 @@ li {
 	/*background-color: red;*/
 }
 
-#building_ext_info .building_name {
+.building_name {
 	height: 30px;
 	line-height: 30px;
 	vertical-align: middle;
@@ -284,7 +288,7 @@ li {
 	size: 20px;
 }
 
-#building_ext_info .building_img {
+.building_img {
 	width: 100%;
 	z-index: 0;
 
@@ -293,7 +297,7 @@ li {
 	line-height: 30px;
 }
 
-#building_ext_info .building_side {
+.building_side {
 	position: absolute;
 	top: 0px;
 	right: 0px;
@@ -302,7 +306,7 @@ li {
 	height: 70px;
 }
 
-#building_ext_info .rotation {
+.rotation {
 	top: 50%;
 	left: 50%;
 
@@ -322,7 +326,7 @@ li {
 	cursor: pointer;
 }
 
-#building_ext_info .rotation_10 {
+.rotation_10 {
 	background-color: #B64334; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
 
 	border-top-left-radius: 0px;
@@ -331,7 +335,7 @@ li {
 	border-bottom-right-radius: 15px;
 }
 
-#building_ext_info .rotation_20 {
+.rotation_20 {
 	background-color: #B68334; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
 
 	border-top-left-radius: 15px;
@@ -340,7 +344,7 @@ li {
 	border-bottom-right-radius: 15px;
 }
 
-#building_ext_info .rotation_30 {
+.rotation_30 {
 	background-color: #294E77; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
 
 	border-top-left-radius: 15px;
@@ -349,7 +353,7 @@ li {
 	border-bottom-right-radius: 0px;
 }
 
-#building_ext_info .rotation_40 {
+.rotation_40 {
 	background-color: #278840; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
 
 	border-top-left-radius: 15px;
@@ -407,7 +411,8 @@ li {
 
 .building_desc .one_line {
 	position: absolute;
-	top: 20px;
+	top: 50%;
+	margin-top: -25px;
 	width: 200px;
 	height: 50px;
 	line-height: 50px;
@@ -473,5 +478,10 @@ li {
 	opacity: 0;
 }
 
-#ProductionBuildingDlg {
+.header {
+	width: 100%;
+	height: 20px;
+
+	line-height: 20px;
+	vertical-align: middle;
 }

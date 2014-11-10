@@ -35,9 +35,13 @@ function makeIsland(x, y, w, h){
 		}
 	}
 
+	/*
+	przykład ustanawiania urodzajności na wyspie:
+
 	newIsland.fertility = {
 		"Grain field": 0.5
 	};
+	*/
 
 	return newIsland;
 }
