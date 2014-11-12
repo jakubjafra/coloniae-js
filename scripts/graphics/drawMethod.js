@@ -4,7 +4,7 @@ draw.js
 
 */
 
-define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], function(atlasJSON, Logic, gameplayState){
+define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState', '../graphics/layerManager'], function(atlasJSON, Logic, gameplayState, layerManager){
 	var atlas = JSON.parse(atlasJSON);
 
 	var flagProgress = {};
@@ -60,7 +60,7 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 
 				var outOfScreen = (posX < -screenMarginSize || posY < -screenMarginSize || posX > (screenSize.x + screenMarginSize) || posY > (screenSize.y + screenMarginSize));
 
-				function drawRawAtlasTile(atlasName, mode){
+				function drawRawAtlasTile(atlasName, modeName){
 					toDrawArray.push({
 						atlasName: atlasName,
 						x: x,
@@ -68,7 +68,7 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 						screenX: posX,
 						screenY: posY,
 						isVisible: !outOfScreen,
-						specialMode: _.clone(mode)
+						specialMode: modeName
 					});
 				}
 
@@ -203,6 +203,8 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 
 				// (3) ew. budynek testowego (budowanie budynku):
 
+				var wasOverwrittenByTestBuilding = false;
+
 				if(!isColorpicking){
 					if( gameplayState.buildMode && gameplayState.testBuilding != undefined &&
 						gameplayState.hoveredTile != undefined && canBeOverwritten && tile.islandId != INVALID_ID ){
@@ -219,6 +221,7 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 							if( localX >= 0 && localX < gameplayState.testBuilding.width &&
 								localY >= 0 && localY < gameplayState.testBuilding.height ){
 								tileImage = getBuildingImage(gameplayState.testBuilding, tiles.coords(localX, localY));
+								wasOverwrittenByTestBuilding = true;
 							}
 						}
 					}
@@ -227,24 +230,18 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 				// ~~~
 
 				if(tileImage != undefined){
-					drawAtlasTile(tileImage, tile);
-
 					// special drawing for special modes:
 
-					if((gameplayState.buildMode || gameplayState.removeMode) && tile.countryId != 0){
-						drawAtlasTile(tileImage, tile, {
-							"globalCompositeOperation": "multiply"
-						});
-					}
-
-					if(gameplayState.hoveredTile != undefined &&
-					   tiles.at(gameplayState.hoveredTile).buildingData != undefined &&
-					   tiles.at(gameplayState.hoveredTile).buildingData == tile.buildingData){
-						drawAtlasTile(tileImage, tile, {
-							"globalCompositeOperation": "lighter",
-							"globalAlpha": (gameplayState.removeMode ? 0.5 : 0.1)
-						});
-					}
+					if((gameplayState.buildMode || gameplayState.removeMode) && tile.countryId != 0)
+						drawAtlasTile(tileImage, tile, "darkner");
+					else if(gameplayState.hoveredTile != undefined &&
+					  		tiles.at(gameplayState.hoveredTile).buildingData != undefined &&
+					   		tiles.at(gameplayState.hoveredTile).buildingData == tile.buildingData)
+						drawAtlasTile(tileImage, tile, (gameplayState.removeMode ? "lighter_5" : "lighter_1"));
+					else if(gameplayState.buildMode && wasOverwrittenByTestBuilding)
+							drawAtlasTile(tileImage, tile, "oranger");
+					else
+						drawAtlasTile(tileImage, tile);
 				}
 
 				// draw porter, if any
@@ -292,10 +289,7 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 
 			// zaznacz jakoś że statek jest zaznaczony
 			if(ship === gameplayState.choosedSth && !isColorpicking){
-				drawAtlasTile("ship_smalltrade_" + ship.rotation, tile, {
-					"globalCompositeOperation": "lighter",
-					"globalAlpha": 0.33
-				});
+				drawAtlasTile("ship_smalltrade_" + ship.rotation, tile, "lighter_3");
 			}
 
 			posY -= 64;
@@ -333,27 +327,16 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState'], 
 			var x = item.screenX - Math.floor(coords.w / 2);
 			var y = item.screenY - coords.h;
 
-			function drawImage(){
+			function drawImage(item, coords, layerName){
 				ctx.drawImage(
-					getSourceImage(tiles.index(item.x, item.y)),
+					getSourceImage(layerName, item),
 					coords.x, coords.y, coords.w, coords.h,
 					x, y, coords.w, coords.h
 				);
 			};
 
-			if(item.specialMode == undefined || isColorpicking) // nie używa się specjalnych operacji podczas colorpickingu
-				drawImage(item, coords);
-			else {
-				ctx.save();
-
-				for(var key in item.specialMode){
-					ctx[key] = item.specialMode[key];
-				}
-
-				drawImage(item, coords);
-
-				ctx.restore();
-			}
+			// nie używa się specjalnych operacji podczas colorpickingu
+			drawImage(item, coords, (item.specialMode != undefined && !isColorpicking ? item.specialMode : "base"));
 		}
 	};
 });

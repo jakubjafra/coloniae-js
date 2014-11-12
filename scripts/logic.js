@@ -24,6 +24,7 @@ define(['jquery', 'underscore', 'extend',
 		'./logic/gameDefinitions'
 		],
 	function(){
+		
 		HARD_UPDATE_INTERVAL = 1.0;
 
 		function updateForAllNotUndefined(object, updateFuncName, param){

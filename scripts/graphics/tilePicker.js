@@ -4,7 +4,7 @@ tilePicker.js
 
 */
 
-define(['../graphics/gameplayState', '../graphics/drawMethod'], function(gameplayState, draw){
+define(['../graphics/gameplayState', '../graphics/drawMethod', '../graphics/layerManager'], function(gameplayState, draw, layerManager){
 	return new function(){
 		// fast, but choose only tiles, not objects
 		this.byGeometry = function(x, y){
@@ -44,10 +44,6 @@ define(['../graphics/gameplayState', '../graphics/drawMethod'], function(gamepla
 		// ~~~
 		// ~~~
 
-		// zawiera atlas pomalowany na dany kolor, używany jako source
-		// dla kolor pickingu zamiast normalnego atlasu
-		var colorPickingSourceCanvas = document.createElement('canvas');
-
 		// canvas po którym się maluje by uzyskać kolor piksela
 		// większy canvas jest niepotrzebny
 		var colorPickingTestCanvas = document.createElement('canvas');
@@ -80,10 +76,7 @@ define(['../graphics/gameplayState', '../graphics/drawMethod'], function(gamepla
 		// ~~~
 
 		this.initColorpicking = function(resources){
-			colorPickingSourceCanvas.width = resources["atlas"].width;
-			colorPickingSourceCanvas.height = resources["atlas"].height;
-
-			colorPickingSourceCanvas.getContext('2d').drawImage(resources["atlas"], 0, 0);
+			layerManager.createNewLayer("colorpicking");
 		}
 
 		// slower, but very accurate
@@ -91,19 +84,21 @@ define(['../graphics/gameplayState', '../graphics/drawMethod'], function(gamepla
 			var context = colorPickingTestCanvas.getContext("2d");
 
 			var clonedCameraPos = {
-				x: gameplayState.cameraPosition.x - x + context.canvas.width / 2,
-				y: gameplayState.cameraPosition.y - y + context.canvas.height / 2
+				x: gameplayState.cameraPosition.x - x + colorPickingTestCanvas.width / 2,
+				y: gameplayState.cameraPosition.y - y + colorPickingTestCanvas.height / 2
 			};
 
-			var colorPickingSourceCanvas_ctx = colorPickingSourceCanvas.getContext('2d');
+			var colorPickingSourceCanvas_ctx = layerManager.getLayer("colorpicking").getContext('2d');
 			colorPickingSourceCanvas_ctx.globalCompositeOperation = 'source-in';
 			
 			// undefined informuje metodę draw, że należy obsłużyć color picking
-			draw(0, context, clonedCameraPos, function(colorNumber){
-				colorPickingSourceCanvas_ctx.fillStyle = "rgb(" + arrFromIntColor(colorNumber + COLOR_PICKING_OFFSET).join(",") + ")";
-				colorPickingSourceCanvas_ctx.fillRect(0, 0, colorPickingSourceCanvas.width, colorPickingSourceCanvas.height);
+			draw(0, context, clonedCameraPos, function(layerName, item){
+				var colorNumber = tiles.index(item.x, item.y);
 
-				return colorPickingSourceCanvas;
+				colorPickingSourceCanvas_ctx.fillStyle = "rgb(" + arrFromIntColor(colorNumber + COLOR_PICKING_OFFSET).join(",") + ")";
+				colorPickingSourceCanvas_ctx.fillRect(0, 0, colorPickingSourceCanvas_ctx.canvas.width, colorPickingSourceCanvas_ctx.canvas.height);
+
+				return colorPickingSourceCanvas_ctx.canvas;
 			}, true);
 
 			var clickedTile = undefined;

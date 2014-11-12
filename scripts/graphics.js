@@ -11,7 +11,23 @@ KEY_ARROW_RIGHT = 39;
 
 KEYBOARD_MOVE_MAP_DIFF = 20;
 
-define(['underscore', './graphics/framework', './logic', './graphics/gameplayState', './graphics/drawMethod', './graphics/tilePicker'], function(_, framework, Logic, gameplayState, draw, picker){
+define(['underscore',
+		'./graphics/framework',
+		'./logic',
+		'./graphics/gameplayState',
+		'./graphics/drawMethod',
+		'./graphics/tilePicker',
+		'./graphics/layerManager'
+		],
+	function(
+		_,
+		framework,
+		Logic,
+		gameplayState,
+		draw,
+		picker,
+		layerManager){
+
 	var wasAnyAction = false;
 
 	function makeClick(clickedTile, hoverTile, mouseX, mouseY){
@@ -231,7 +247,7 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 		};
 
 		this.onRender = function(delta, ctx, resources){
-			draw(delta, ctx, gameplayState.cameraPosition, function(){ return resources["atlas"]; }, false);
+			draw(delta, ctx, gameplayState.cameraPosition, function(layerName){ return layerManager.getLayer(layerName); }, false);
 		};
 		
 		this.onUpdate = function(delta){
@@ -239,6 +255,44 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 		};
 
 		this.onLoadResources = function(resources){
+			layerManager.setBaseLayer(resources['atlas']);
+
+			layerManager.createLayer("lighter_1", function(context, baseLayer){
+				context.globalCompositeOperation = "lighter";
+				context.globalAlpha = 0.1;
+				context.drawImage(baseLayer, 0, 0);
+			});
+
+			layerManager.createLayer("lighter_3", function(context, baseLayer){
+				context.globalCompositeOperation = "lighter";
+				context.globalAlpha = 0.33;
+				context.drawImage(baseLayer, 0, 0);
+			});
+
+			layerManager.createLayer("lighter_5", function(context, baseLayer){
+				context.globalCompositeOperation = "lighter";
+				context.globalAlpha = 0.5;
+				context.drawImage(baseLayer, 0, 0);
+			});
+
+			layerManager.createLayer("darkner", function(context, baseLayer){
+				context.globalCompositeOperation = "multiply";
+				context.drawImage(baseLayer, 0, 0);
+			});
+
+			layerManager.createLayer("oranger_tmp", function(context, baseLayer){
+				context.globalCompositeOperation = 'source-in';
+				context.fillStyle = "#CB9A50"; // http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL
+				context.globalAlpha = 0.33;
+				context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+			});
+
+			layerManager.createLayer("oranger", function(context, baseLayer){
+				context.drawImage(layerManager.getLayer("oranger_tmp"), 0, 0);
+			});
+
+			// ~~~
+
 			picker.initColorpicking(resources);
 		};
 	});
