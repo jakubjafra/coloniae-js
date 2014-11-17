@@ -76,12 +76,12 @@ define(['angular'], function(angular){
 			scope: {
 				building: "="
 			},
-			link: function(scope, element, attrs, a, transclude) {
+			link: function(scope, element, attrs, foo, transclude) {
 				var dialogId = "#" + attrs.id;
 				scope.close = function(){ $(dialogId).hide(); }
 
 				transclude(scope.$parent, function(content) {
-					element.append(content);
+					element.children('div.content').html(content);
 				});
 			}
 		};
