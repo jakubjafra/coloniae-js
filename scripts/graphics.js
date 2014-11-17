@@ -44,7 +44,8 @@ define(['underscore',
 		}
 
 		// usunięcie budynku
-		if(gameplayState.removeMode && clickedTile.buildingData != null){
+		if(gameplayState.removeMode && clickedTile.buildingData != null &&
+			clickedTile.countryId == countries[0].id){ // TODO: info jakie id ma gracz
 			clickedTile.buildingData.remove();
 
 			wasAnyAction = true;
@@ -64,7 +65,7 @@ define(['underscore',
 		// Przemyśleć jak, przydałby się na pewno jakiś "global controller" do tego typu
 		// zmiennych jak gameplayState.choosedSth (może zmiana paradygmatu GUI?)
 		if(!wasAnyAction)
-			gameplayState.clickHandler(mouseX, mouseY);
+			gameplayState.guiClickHandler(mouseX, mouseY);
 	}
 
 	// dodaje budynki na podstawie prostokąta do gameplayState.buildingsToPlacement
@@ -158,9 +159,17 @@ define(['underscore',
 		var oldX = undefined;
 		var oldY = undefined;
 
+		var timeout = null;
+
 		this.onMouseMove = function(x, y){
 			// pobieranie hover nad danym tilesem
 			gameplayState.hoveredTile = picker.byGeometry(x, y);
+
+			// jeśli myszka się nie rusza to można użyć colorPickingu dla większej dokładności
+			clearTimeout(timeout);
+			timeout = setTimeout(function(){
+				gameplayState.hoveredTile = picker.byColor(x, y);
+			}, 100);
 
 			// poruszanie kamerą
 			oldX = oldX || x;

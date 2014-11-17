@@ -4,12 +4,12 @@ gui.js
 
 Dodać tutuaj listę kontrolerów do update i updateować jak wszystko inne.
 
-TODO: Usunąć "clickHandler" - gui.js ma być jedynie odzwierciedleniem stanu graphics.js
+TODO: Usunąć "guiClickHandler" - gui.js ma być jedynie odzwierciedleniem stanu graphics.js
 a nie samemu wpływać na ten stan...
 
 */
 
-define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayState', 'extend', 'underscore'], function(angular, graphics, logic, gameplayState){
+define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayState', 'extend', 'underscore', '../../graphics/gui/directives'], function(angular, graphics, logic, gameplayState){
 	// niestety angular sam nie updateuje zmian z "other sources"
 	// więc trzeba samemu callować zmianę $scopa co jakiś czas
 	function registerInfiniteUpdate(scope, func){
@@ -22,7 +22,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 	// ~~~
 
-	var app = angular.module("app", []);
+	var app = angular.module("app", ["directives"]);
 
 	app.controller("CoinsViewer", function($scope){
 		registerInfiniteUpdate($scope, function(){
@@ -107,7 +107,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		$(buildingDlgs.join(",")).hide();
 	}
 
-	gameplayState.clickHandler = function(x, y){
+	gameplayState.guiClickHandler = function(x, y){
 		showBuildingDlg(x, y);
 	};
 
@@ -271,68 +271,6 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 				case WEST: return 'W';
 				default: return '?';
 			}
-		};
-	});
-
-	// ~~~
-
-	function makeBuildingImageLink(input){
-		if(input == undefined || input.length == 0)
-			input = "unknown";
-
-		var name = input.replace(/\s/g, '');
-		name = name.toLowerCase();
-
-		if(name == "port")
-			name += "1";
-
-		var image = 'imgs/gui/buildings/' + name + '.png';
-		return image;
-	}
-
-	app.directive("buildingImage", function(){
-		return {
-			scope: {
-				imgName: "=name"
-			},
-			link: function(scope){
-				scope.$watch('imgName', function(){
-					scope.imgSrc = makeBuildingImageLink(scope.imgName);
-				});
-			},
-			replace: true,
-			templateUrl: 'views/image.html'
-		};
-	});
-
-	// ~~~
-
-	function makeProductImageLink(input){
-		if(input == undefined || typeof input !== "number")
-			return 'imgs/gui/products/empty.png';
-
-		var productId = parseInt(input);
-		var productName = products[productId].name;
-
-		var name = productName.replace(/\s/g, '');
-		name = name.toLowerCase();
-
-		var image = 'imgs/gui/products/' + name + '.png';
-		return image;
-	};
-
-	app.directive("productImage", function(){
-		return {
-			scope: {
-				imgName: "=name"
-			},
-			link: function(scope){
-				scope.$watch('imgName', function(){
-					scope.imgSrc = makeProductImageLink(scope.imgName);
-				});
-			},
-			replace: true,
-			templateUrl: 'views/image.html'
 		};
 	});
 

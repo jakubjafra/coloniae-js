@@ -84,7 +84,7 @@ define(['jquery', 'underscore', 'extend',
 				
 				islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(TOOLS_ID), 100); // tymczasowe
 				islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(WOOD_ID), 100); // tymczasowe
-				// islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(BRICKS_ID), 1000); // tymczasowe
+				islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(FOOD_ID), 5); // tymczasowe
 
 				/*
 				new Road(19, 4, countries[0]);

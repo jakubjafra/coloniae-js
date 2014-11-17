@@ -81,6 +81,9 @@ define(['../graphics/gameplayState', '../graphics/drawMethod', '../graphics/laye
 
 		// slower, but very accurate
 		this.byColor = function(x, y){
+			if(layerManager.getLayer("colorpicking") == undefined)
+				return;
+
 			var context = colorPickingTestCanvas.getContext("2d");
 
 			var clonedCameraPos = {

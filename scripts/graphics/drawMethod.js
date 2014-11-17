@@ -232,16 +232,20 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState', '
 				if(tileImage != undefined){
 					// special drawing for special modes:
 
+					var mode = "base";
+
 					if((gameplayState.buildMode || gameplayState.removeMode) && tile.countryId != 0)
-						drawAtlasTile(tileImage, tile, "darkner");
-					else if(gameplayState.hoveredTile != undefined &&
-					  		tiles.at(gameplayState.hoveredTile).buildingData != undefined &&
-					   		tiles.at(gameplayState.hoveredTile).buildingData == tile.buildingData)
-						drawAtlasTile(tileImage, tile, (gameplayState.removeMode ? "lighter_5" : "lighter_1"));
-					else if(gameplayState.buildMode && wasOverwrittenByTestBuilding)
-							drawAtlasTile(tileImage, tile, "oranger");
-					else
-						drawAtlasTile(tileImage, tile);
+						mode = "darkner";
+
+					if(gameplayState.hoveredTile != undefined &&
+					   tiles.at(gameplayState.hoveredTile).buildingData != undefined &&
+					   tiles.at(gameplayState.hoveredTile).buildingData == tile.buildingData)
+						mode = (gameplayState.removeMode ? "lighter_5" : "lighter_1");
+					
+					if(gameplayState.buildMode && wasOverwrittenByTestBuilding)
+							mode = "oranger";
+					
+					drawAtlasTile(tileImage, tile, mode);
 				}
 
 				// draw porter, if any

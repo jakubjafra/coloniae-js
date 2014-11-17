@@ -1,6 +1,5 @@
 *~
-coloniae.sublime-workspace
-coloniae.sublime-project
+*.sublime-workspace
 __release
 __release/*
 __backup
