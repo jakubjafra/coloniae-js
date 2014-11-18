@@ -22,6 +22,9 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 	// ~~~
 
+	// jebane centrowanie elementów w CSS nigdy kurwa nie działa jak bym chciał
+	$("#top_center").css("margin-left", -($("#top_center").width() / 2) + "px");
+
 	var app = angular.module("app", ["directives"]);
 
 	app.controller("CoinsViewer", function($scope){
@@ -73,7 +76,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		"#ProductionBuildingDlg": "#ProductionBuildingDlg"
 	};
 
-	function showBuildingDlg(x, y){
+	function showBuildingDlg(){
 		if(gameplayState.choosedSth == undefined || !(gameplayState.choosedSth instanceof Building))
 			return;
 
@@ -90,7 +93,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		if(buildingDlgs[id] == undefined)
 			return;
 
-		$(id).css({"top": y + "px", "left": x + "px"});
+		closeAllBuildingDlgs();
 		$(id).show();
 
 		$(id).scope().$apply(function($scope){
@@ -99,20 +102,17 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		});
 	}
 
-	function makeCloseThisHandler(id){
-		return function(){ $(id).hide(); };
-	}
-
 	function closeAllBuildingDlgs(){
-		$(buildingDlgs.join(",")).hide();
+		$.each(buildingDlgs, function(i, v){
+			$(v).hide();
+		});
 	}
 
 	gameplayState.guiClickHandler = function(x, y){
-		showBuildingDlg(x, y);
+		showBuildingDlg();
 	};
 
 	app.controller("HouseCtrl", function($scope){
-		$scope.close = makeCloseThisHandler("#HouseDlg");
 		$scope.building = undefined;
 
 		$scope.onBuildingBind = function(){
@@ -124,7 +124,6 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 	});
 
 	app.controller("MarketplaceCtrl", function($scope){
-		$scope.close = makeCloseThisHandler("#MarketplaceDlg");
 		$scope.building = undefined;
 
 		$scope.income = 0;
@@ -145,7 +144,6 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 	});
 
 	app.controller("ProductionBuildingCtrl", function($scope){
-		$scope.close = makeCloseThisHandler("#ProductionBuildingDlg");
 		$scope.building = undefined;
 
 		$scope.storage = {};
@@ -208,8 +206,6 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 			$scope.callback.testBuilding = undefined;
 		};
-
-		$scope.chooseBuildingStateChange = function(){};
 
 		$scope.chooseBuilding = function(){
 			$scope.callback.buildMode = true;

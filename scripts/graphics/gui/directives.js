@@ -77,8 +77,8 @@ define(['angular'], function(angular){
 				building: "="
 			},
 			link: function(scope, element, attrs, foo, transclude) {
-				var dialogId = "#" + attrs.id;
-				scope.close = function(){ $(dialogId).hide(); }
+				element.addClass("buildingDialog");
+				scope.close = function(){ $(element).hide(); }
 
 				transclude(scope.$parent, function(content) {
 					element.children('div.content').html(content);

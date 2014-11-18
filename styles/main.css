@@ -42,7 +42,7 @@ li {
 	margin-left: 20px;
 }
 
-#canvas3d {
+#mainCanvas {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -67,10 +67,17 @@ li {
 
 	color: white;
 	/*font-weight: bold;*/
+
+	text-align: center;
+}
+
+#on_canvas * {
+	
 }
 
 #on_canvas > * {
 	pointer-events: auto;
+	text-align: left;
 }
 
 #top_left {
@@ -83,6 +90,8 @@ li {
 	position: absolute;
 	top: 0;
 	left: 50%;
+
+	width: auto;
 }
 
 #top_right {
@@ -104,6 +113,33 @@ li {
 	display: inline-block;
 }
 
+#console {
+	position: absolute;
+	top: 100px;
+	left: 50%;
+	margin-left: -400px;
+
+	width: 800px;
+
+	pointer-events: none;
+
+	/*display: table;*/
+
+	text-align: center;
+}
+
+#console > div {
+	display: inline-block;
+	width: auto;
+	background-color: rgba(0, 0, 0, 0.3);
+	padding: 3px;
+	border-radius: 3px;
+	margin-top: 3px;
+}
+#console > div:first-child {
+	margin-top: 0px;
+}
+
 /* --------------- */
 
 #time {
@@ -119,13 +155,10 @@ li {
 
 /* --------------- */
 
-#HouseDlg {
+.buildingDialog {
 	position: absolute;
-	left: 300px;
-	top: 300px;
-
-	width: 180px;
-	height: 80px;
+	right: 10px;
+	bottom: 5px;
 
 	border-radius: 5px;
 	padding: 10px;
@@ -135,6 +168,12 @@ li {
 	display: none;
 
 	font-size: 12px;
+
+	width: 300px;
+	height: 200px;
+}
+
+#HouseDlg {
 }
 
 #HouseDlg button {
@@ -142,21 +181,6 @@ li {
 }
 
 #ProductionBuildingDlg {
-	position: absolute;
-	left: 300px;
-	top: 300px;
-
-	width: 200px;
-	height: auto;
-
-	border-radius: 5px;
-	padding: 10px;
-
-	background-color: rgba(0, 0, 0, 0.5);
-
-	display: none;
-
-	font-size: 12px;
 }
 
 #ProductionBuildingDlg .building_desc {
@@ -164,21 +188,6 @@ li {
 }
 
 #MarketplaceDlg {
-	position: absolute;
-	left: 300px;
-	top: 300px;
-
-	width: 180px;
-	height: 180px;
-
-	border-radius: 5px;
-	padding: 10px;
-
-	background-color: rgba(0, 0, 0, 0.5);
-
-	display: none;
-
-	font-size: 12px;
 }
 
 .productlist {
@@ -188,54 +197,12 @@ li {
 	overflow-x: visible;
 }
 
-#buildcancelmenu {
-	position: absolute;
-	top: 250px;
-	left: 100px;
-
-	width: 80px;
-	height: 85px;
-
-	padding: 0;
-
-	display: none;
-}
-
-#buildcancelmenu:before {
-	content:'';
-	position:absolute;
-    top:0;
-    left:0;
-	width: 100%;
-	height: 100%;
-	background-color: black;
-	opacity: 0.4;
-
-	border-top-right-radius: 5px;
-	border-bottom-right-radius: 5px;
-}
-
-#cancelhere {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-
-	width: 100%;
-	height: 100%;
-
-	background-color: rgba(255,128,0,0.5);
-}
-
-.abc {
-	opacity: 0.5;
-}
-
 #buildmenu {
 	position: absolute;
 	bottom: 5px;
 
-	left: 50%;
-	margin-left: -331px;
+	left: 94px;
+	/* margin-left: -331px; */
 
 	width: 762px;
 	height: 200px;
@@ -243,18 +210,8 @@ li {
 	padding: 10px;
 
 	display: none; /* <- none */
-}
 
-#buildmenu:before {
-	content:'';
-	position:absolute;
-    top:0;
-    left:0;
-	width: 100%;
-	height: 100%;
-	background-color: black;
-	opacity: 0.4;
-
+	background-color: rgba(0, 0, 0, 0.5);
 	border-radius: 5px;
 }
 
@@ -427,6 +384,7 @@ li {
 	position: relative;
 
 	margin-top: 10px;
+	margin-left: 10px;
 
 	width: 64px;
 	height: 64px;
@@ -435,47 +393,17 @@ li {
 	border-radius: 5px;
 
 	cursor: pointer;
+
+	background-color: rgba(255, 255, 255, 0.4);
 }
 
-.background_transparent_color {
-	position:absolute;
-    top:0;
-    left:0;
-	width: 100%;
-	height: 100%;
-	background-color: white;
-	opacity: 0.4;
-	z-index: -1;
+#buildhandler {
+	margin-top: 300px;
 
-	border-radius: 5px;
 }
 
-.handler_on > .background_transparent_color {
-	background-color: yellow;
-	opacity: 0.6;
-}
-
-#toolbox {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-
-	width: 74px;
-	height: 200px;
-
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-#toolbox:before {
-	content:'';
-	position:absolute;
-    top:0;
-    left:0;
-	width: 100%;
-	height: 100%;
-	background-color: black;
-	opacity: 0;
+.handler_on {
+	background-color: rgba(255, 255, 0, 0.6);
 }
 
 .header {

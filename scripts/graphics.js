@@ -248,7 +248,7 @@ define(['underscore',
 			clickedTile = picker.byColor(x, y);
 
 			if(clickedTile != undefined){
-				console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")");
+				console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")", false);
 				
 				makeClick(clickedTile, gameplayState.hoveredTile, x, y);
 			} else

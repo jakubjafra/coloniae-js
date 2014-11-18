@@ -172,8 +172,6 @@ var Structure = Class.extend(function(){
 							var newX = -parseInt(j);
 							var newY = (newHeight - 1 - Math.abs(parseInt(i)));
 
-							console.log(i + " " + j + " -> " + newX + " " + newY);
-
 							if(newTerrainMap[newX] == undefined)
 								newTerrainMap[newX] = {};
 
@@ -250,7 +248,7 @@ var Structure = Class.extend(function(){
 		this.rotateTerrainMap();
 
 		// ghost
-		if(ghostOrCountry != undefined && ghostOrCountry == null)
+		if(ghostOrCountry === null)
 			return true;
 
 		isFree = (isFree != undefined);
@@ -267,7 +265,7 @@ var Structure = Class.extend(function(){
 				return false;
 			}
 
-			if(!isFree && ghostOrCountry != undefined){
+			if(!isFree){
 				var marketplace = islands[tiles.at(x, y).islandId].mainMarketplaces[tiles.at(x, y).countryId];
 				if(!haveRequriedResources(this.requiredResources, marketplace)){
 					console.log('do not have required resources to build');

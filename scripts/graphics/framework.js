@@ -11,8 +11,8 @@ define(['jquery', 'three-stats', 'jquery-mousewheel'], function($, Stats){
 
 		// Align top-left
 		stats.domElement.style.position = 'absolute';
-		stats.domElement.style.right = '0px';
-		stats.domElement.style.bottom = '100px';
+		stats.domElement.style.right = '100px';
+		stats.domElement.style.top = '0px';
 
 		$("#on_canvas").append(stats.domElement);
 
@@ -53,7 +53,7 @@ define(['jquery', 'three-stats', 'jquery-mousewheel'], function($, Stats){
 
 		var loadedResourcesCount = 0;
 
-		this.canvas = $("#canvas3d");
+		this.canvas = $("#mainCanvas");
 
 		var context = $(this.canvas)[0].getContext("2d");
 
