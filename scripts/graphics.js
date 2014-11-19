@@ -11,22 +11,25 @@ KEY_ARROW_RIGHT = 39;
 
 KEYBOARD_MOVE_MAP_DIFF = 20;
 
-define(['underscore',
-		'./graphics/framework',
+define(['underscore',		
 		'./logic',
+		'./graphics/framework',
 		'./graphics/gameplayState',
 		'./graphics/drawMethod',
 		'./graphics/tilePicker',
-		'./graphics/layerManager'
+		'./graphics/layerManager',
+		'./graphics/analytics'
 		],
 	function(
 		_,
-		framework,
 		Logic,
+		framework,
 		gameplayState,
 		draw,
 		picker,
-		layerManager){
+		layerManager,
+		analyticModule
+	){
 
 	var wasAnyAction = false;
 
@@ -261,6 +264,7 @@ define(['underscore',
 		
 		this.onUpdate = function(delta){
 			Logic.update(delta);
+			analyticModule.update(delta);
 		};
 
 		this.onLoadResources = function(resources){

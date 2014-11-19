@@ -71,10 +71,6 @@ li {
 	text-align: center;
 }
 
-#on_canvas * {
-	
-}
-
 #on_canvas > * {
 	pointer-events: auto;
 	text-align: left;
@@ -109,10 +105,6 @@ li {
 	vertical-align: middle;
 }
 
-.center_all_inside > span {
-	display: inline-block;
-}
-
 #console {
 	position: absolute;
 	top: 100px;
@@ -123,10 +115,10 @@ li {
 
 	pointer-events: none;
 
-	/*display: table;*/
-
 	text-align: center;
 }
+
+/* --------------- */
 
 #console > div {
 	display: inline-block;
@@ -136,6 +128,7 @@ li {
 	border-radius: 3px;
 	margin-top: 3px;
 }
+
 #console > div:first-child {
 	margin-top: 0px;
 }
@@ -233,8 +226,6 @@ li {
 
 	width: 200px;
 	height: 200px;
-
-	/*background-color: red;*/
 }
 
 .building_name {

@@ -188,6 +188,9 @@ var HouseGroup = Class.extend(function(){
 
 		var canUpgrade = true; // czy można sprzedawać materiały budowlane obywatelom
 
+		// nie upgraduje się jak nie ma żarcia
+		canUpgrade = (storage.of(FOOD_ID) > 0);
+
 		// dobrobyt
 		if(	this.contentTimer >= CONTENT_INTERVALS[this.contentLevel] &&
 			(this.contentLevel == VERY_WEALTHY || this.contentLevel == WEALTHY)){

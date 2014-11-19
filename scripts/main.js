@@ -45,9 +45,23 @@ require.config({
 
 console.log('loading dependencies');
 
-require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// externals libs
-			'./logic', './graphics', './graphics/gui/gui'								// local files
-		],	function($, _a, _b, _, Logic, Graphics, Gui){
+require([	'jquery',
+			'jquery-mousewheel',
+			'extend',
+			'underscore',
+			'./logic',
+			'./graphics',
+			'./graphics/gui/gui'
+		],
+		function(
+			$,
+			_a,
+			_b,
+			_,
+			Logic,
+			Graphics,
+			Gui
+		){
 			// ZA CHUJA nie wiem czemu to się nie chce ładować w tej kolejności
 			// kiedy ładuję przez Require. Popierdolone to jest. Tak działa. LOL.
 			// Rozwiązaniem jest podzielenie tego na prawidłowe moduły Require,
