@@ -45,7 +45,7 @@ var gameplayState = {
 	buildMenuHover: undefined,
 
 	// dla gui.js (usunąć to stąd!)
-	clickHandler: function(){}
+	guiClickHandler: function(){}
 };
 
 define([], function(){

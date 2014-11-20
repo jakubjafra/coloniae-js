@@ -12,20 +12,20 @@
 	</head>
 
 	<body>
-		<canvas id="canvas3d" width="1000px" height="500px">
+		<canvas id="mainCanvas" width="1000px" height="500px">
 		</canvas>
 
 		<div id="on_canvas">
+			<div id="console"></div>
+
 			<div ng-controller="CoinsViewer" class="center_all_inside" id="top_left">
-				<img src="imgs/gui/coin.png"><span>{{coins | number:0}}</span>
+				<img src="imgs/gui/coin.png"><span style="width: 50px;">{{coins | number:0}}</span>
 			</div>
 
-			<div ng-controller="OwnedIslandResourcesViewer" ng-show="hoverOnIsland" id="top_center" style="width: 240px; margin-left:-120px;">
-				<div class="center_all_inside">
-					<img src="imgs/gui/tool.png"><span style="width: 50px;">{{tool | number:0}}</span>
-					<img src="imgs/gui/wood.png"><span style="width: 50px;">{{wood | number:0}}</span>
-					<img src="imgs/gui/brick.png"><span>{{brick | number:0}}</span>
-				</div>
+			<div ng-controller="OwnedIslandResourcesViewer" class="center_all_inside" ng-show="hoverOnIsland" id="top_center">
+				<img src="imgs/gui/tool.png"><span style="width: 50px;">{{tool | number:0}}</span>
+				<img src="imgs/gui/wood.png"><span style="width: 50px;">{{wood | number:0}}</span>
+				<img src="imgs/gui/brick.png"><span style="width: 50px;">{{brick | number:0}}</span>
 			</div>
 
 			<div ng-controller="IslandPopulationViewer" ng-show="hoverOnIsland" class="center_all_inside" id="top_right">
@@ -43,60 +43,12 @@
 				</select>
 			</div>
 
-			<div id="HouseDlg" ng-controller="HouseCtrl">
-				<div class="header">
-					<b> {{ building.structName }} </b>
-					<a href="#" onclick="return false;" ng-click="close();" style="float: right;"> close </a>
-				</div>
-				<hr>
-				{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}<br/>
-				content: {{ houseGroup.contentLevel }} (#{{ houseGroup.contentRaw | number:2 }})<br/>
-				tax: {{ houseGroup.baseIncome + houseGroup.taxDiff }} <button ng-click="houseGroup.taxDiff = houseGroup.taxDiff + 1;">+</button> <button ng-click="houseGroup.taxDiff = houseGroup.taxDiff - 1;">-</button>
-			</div>
-
-			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl">
-				<div class="header">
-					<b> {{ building.structName }} </b>
-					<a href="#" onclick="return false;" ng-click="close();" style="float: right;"> close </a>
-				</div>
-				<hr>
-				income: {{ income | number:0 }}<br/>
-				maintenance: {{ maintenance | number:0 }}<br/>
-				balance: <u>{{ income - maintenance | number:0 }}</u> / min <br/>
-				<br/>
-				<ul class="productlist">
-					<li ng-repeat="slot in storage">{{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}</li>
-				</ul>
-			</div>
-
-			<div id="ProductionBuildingDlg" ng-controller="ProductionBuildingCtrl">
-				<div class="header">
-					<b> {{ building.structName }} </b>
-					<a href="#" onclick="return false;" ng-click="close();" style="float: right;"> close </a>
-				</div>
-				<hr>
-				<div ng-controller="StaticBuildingExtInfo">
-					<div building-ext-inf-description ng-controller="BuildingExtInfo">
-					</div>
-				</div>
-				<hr>
-				effectivity: {{ (effectivity * 100) | number:0 }}% <br/>
-				maitenanace: {{ maintenance }}<br/>
-				<br/>
-				stock:<br/>
-				<ul class="productlist" style="height: 50px;">
-					<li ng-repeat="slot in storage">{{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}</li>
-				</ul>
-			</div>
-
-			<div id="toolbox">
+			<div id="handlers">
 				<div ng-controller="BuildCtrl" id="buildhandler" class="handler" ng-click="showBuildDlg();">
-					<div class="background_transparent_color"></div>
 					<img src="imgs/gui/build.png">
 				</div>
 
 				<div ng-controller="BuildCtrl" id="removehandler" class="handler" ng-click="showRemoveDlg(); startRemoveMode();">
-					<div class="background_transparent_color"></div>
 					<img src="imgs/gui/remove.png">
 				</div>
 			</div>
@@ -116,6 +68,52 @@
 				<div ng-controller="BuildMenuHoverBuildingExtInfo">
 					<div building-ext-inf-full ng-controller="BuildingExtInfo"></div>
 				</div>
+			</div>
+
+			<div id="HouseDlg" ng-controller="HouseCtrl" building-dialog>
+				<div class="half_width horizontal_center">
+					<img ng-src="{{ houseGroup.contentLevel | contentImageSrc }}">
+				</div>
+				<div class="half_width horizontal_center" style="height: 105px;">
+					<div class="vertical_center">
+						<p>
+							<span id="citizen_header">{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}</span>
+							<br/>
+							<br/>
+							<span id="citizen_tax">{{ houseGroup.baseIncome + houseGroup.taxDiff }}<img src="imgs/gui/coin.png">tax</span>
+						</p>
+					</div>
+				</div>
+				<div class="full_width">
+					<div style="display: inline-block;" ng-repeat="(productId, content) in houseGroup.contentByConsumption" ng-show="content < 1">
+						<div goods-image name="productId"></div>
+					</div>
+				</div>
+			</div>
+
+			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl" building-dialog>
+				income: {{ income | number:0 }}<br/>
+				maintenance: {{ maintenance | number:0 }}<br/>
+				balance: <u>{{ income - maintenance | number:0 }}</u> / min <br/>
+				<br/>
+				<ul class="productlist">
+					<li ng-repeat="slot in storage">{{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}</li>
+				</ul>
+			</div>
+
+			<div id="ProductionBuildingDlg" ng-controller="ProductionBuildingCtrl" building-dialog>
+				<div ng-controller="StaticBuildingExtInfo">
+					<div building-ext-inf-description ng-controller="BuildingExtInfo">
+					</div>
+				</div>
+				<hr>
+				effectivity: {{ (effectivity * 100) | number:0 }}% <br/>
+				maitenanace: {{ maintenance }}<br/>
+				<br/>
+				stock:<br/>
+				<ul class="productlist" style="height: 50px;">
+					<li ng-repeat="slot in storage">{{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}</li>
+				</ul>
 			</div>
 		</div>
     </body>

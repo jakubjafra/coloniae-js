@@ -17,6 +17,8 @@ var Workshop = ProductionBuilding.extend(function(){
 	this.porters = [ new Porter(this) ];
 	this.minSourceQuantity = 5;
 
+	this.maxInputQuantity = 5;
+
 	this.sourcesRadius = 11;
 
 	this.inputConsumption = {};
@@ -38,6 +40,9 @@ var Workshop = ProductionBuilding.extend(function(){
 		var arr = [];
 
 		$.each(this.inputConsumption, $.proxy(function(i, v){
+			if(this.storage.of(i) >= this.maxInputQuantity)
+				return "continue";
+
 			var buildingQuantity = building.storage.at(this.storage.special(i));
 			if(buildingQuantity > this.minSourceQuantity){
 				arr.push([this.storage.of(i), this.storage.special(i)]);

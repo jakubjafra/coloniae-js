@@ -4,12 +4,12 @@ gui.js
 
 Dodać tutuaj listę kontrolerów do update i updateować jak wszystko inne.
 
-TODO: Usunąć "clickHandler" - gui.js ma być jedynie odzwierciedleniem stanu graphics.js
+TODO: Usunąć "guiClickHandler" - gui.js ma być jedynie odzwierciedleniem stanu graphics.js
 a nie samemu wpływać na ten stan...
 
 */
 
-define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayState', 'extend', 'underscore'], function(angular, graphics, logic, gameplayState){
+define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayState', 'extend', 'underscore', '../../graphics/gui/directives'], function(angular, graphics, logic, gameplayState){
 	// niestety angular sam nie updateuje zmian z "other sources"
 	// więc trzeba samemu callować zmianę $scopa co jakiś czas
 	function registerInfiniteUpdate(scope, func){
@@ -22,7 +22,10 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 	// ~~~
 
-	var app = angular.module("app", []);
+	// jebane centrowanie elementów w CSS nigdy kurwa nie działa jak bym chciał
+	$("#top_center").css("margin-left", -($("#top_center").width() / 2) + "px");
+
+	var app = angular.module("app", ["directives"]);
 
 	app.controller("CoinsViewer", function($scope){
 		registerInfiniteUpdate($scope, function(){
@@ -73,7 +76,8 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		"#ProductionBuildingDlg": "#ProductionBuildingDlg"
 	};
 
-	function showBuildingDlg(x, y){
+	gameplayState.guiClickHandler = function(x, y){
+		// showBuildingDlg
 		if(gameplayState.choosedSth == undefined || !(gameplayState.choosedSth instanceof Building))
 			return;
 
@@ -87,44 +91,36 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 		var id = ("#" + structName + "Dlg");
 
-		if(buildingDlgs[id] == undefined)
+		if(buildingDlgs[id] === undefined)
 			return;
 
-		$(id).css({"top": y + "px", "left": x + "px"});
+		// closeAllBuildingsDlgs
+		$.each(buildingDlgs, function(i, v){
+			$(v).hide();
+		});
+
 		$(id).show();
 
 		$(id).scope().$apply(function($scope){
 			$scope.building = gameplayState.choosedSth;
-			registerInfiniteUpdate($scope, $scope.onBuildingBind);
 		});
-	}
-
-	function makeCloseThisHandler(id){
-		return function(){ $(id).hide(); };
-	}
-
-	function closeAllBuildingDlgs(){
-		$(buildingDlgs.join(",")).hide();
-	}
-
-	gameplayState.clickHandler = function(x, y){
-		showBuildingDlg(x, y);
 	};
 
 	app.controller("HouseCtrl", function($scope){
-		$scope.close = makeCloseThisHandler("#HouseDlg");
 		$scope.building = undefined;
 
-		$scope.onBuildingBind = function(){
+		$scope.$watch('building', function(){
+			if($scope.building === undefined)
+				return;
+
 			var island = islands[$scope.building.centerTile().islandId];
 			var country = countries[$scope.building.centerTile().countryId];
 
 			$scope.houseGroup = island.houseGroups[country.id][$scope.building.type];
-		};
+		});
 	});
 
 	app.controller("MarketplaceCtrl", function($scope){
-		$scope.close = makeCloseThisHandler("#MarketplaceDlg");
 		$scope.building = undefined;
 
 		$scope.income = 0;
@@ -133,7 +129,10 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		$scope.storage = {};
 		$scope.productsLookup = products;
 
-		$scope.onBuildingBind = function(){
+		$scope.$watch('building', function(){
+			if($scope.building === undefined)
+				return;
+
 			var island = islands[$scope.building.centerTile().islandId];
 			var country = countries[$scope.building.centerTile().countryId];
 
@@ -141,17 +140,19 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 			$scope.maintenance = island.maintenance[country.id] || 0;
 
 			$scope.storage = island.mainMarketplaces[country.id].storage.slots;
-		};
+		});
 	});
 
 	app.controller("ProductionBuildingCtrl", function($scope){
-		$scope.close = makeCloseThisHandler("#ProductionBuildingDlg");
 		$scope.building = undefined;
 
 		$scope.storage = {};
 		$scope.productsLookup = products;
 
-		$scope.onBuildingBind = function(){
+		$scope.$watch('building', function(){
+			if($scope.building === undefined)
+				return;
+
 			$scope.storage = $scope.building.storage.slots;
 
 			$scope.effectivity = 0;
@@ -162,7 +163,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 				$scope.effectivity = ($scope.building.canProduce() ? 1 : 0);
 
 			$scope.maintenance = $scope.building.operatingCost.on;
-		};
+		});
 	});
 
 	// ~~~
@@ -176,7 +177,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		$scope.beginHoverBuilding = function(){
 			var index = INVALID_ID;
 			if(this.building != undefined)
-				index = this.building.index || this.building.__structId;
+				index = this.building.index;
 
 			index = parseInt(index);
 
@@ -209,19 +210,17 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 			$scope.callback.testBuilding = undefined;
 		};
 
-		$scope.chooseBuildingStateChange = function(){};
-
 		$scope.chooseBuilding = function(){
 			$scope.callback.buildMode = true;
 			$scope.callback.removeMode = false;
 
 			if(this.building != undefined)
-				$scope.choosedBuilding = this.building.index || this.building.__structId;
+				$scope.choosedBuilding = this.building.index;
 
 			var choosed = parseInt($scope.choosedBuilding);
 
 			$scope.side = NORTH;
-			if($scope.callback.testBuilding != undefined && choosed === $scope.callback.testBuilding.__structId)
+			if($scope.callback.testBuilding != undefined && choosed === $scope.callback.testBuilding.index)
 				$scope.side = $scope.callback.testBuilding.rotation;
 			
 			if(choosed >= 0){
@@ -231,7 +230,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 				$scope.callback.testBuilding.onBuild();
 
-				$scope.callback.testBuilding.__structId = choosed;
+				$scope.callback.testBuilding.index = choosed;
 			}
 		};
 
@@ -274,65 +273,22 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		};
 	});
 
-	// ~~~
+	app.filter('contentImageSrc', function(){
+		return function(input){
+			switch(parseInt(input)){
+				case VERY_WEALTHY:
+				case WEALTHY:
+					return "imgs/gui/citizen_happy.png";
 
-	function makeBuildingImageLink(input){
-		if(input == undefined || input.length == 0)
-			input = "unknown";
+				case NORMAL:
+					return "imgs/gui/citizen_not_give_a_fuck.png";
 
-		var name = input.replace(/\s/g, '');
-		name = name.toLowerCase();
+				case STARVING:
+					return "imgs/gui/citizen_worried.png";
 
-		if(name == "port")
-			name += "1";
-
-		var image = 'imgs/gui/buildings/' + name + '.png';
-		return image;
-	}
-
-	app.directive("buildingImage", function(){
-		return {
-			scope: {
-				imgName: "=name"
-			},
-			link: function(scope){
-				scope.$watch('imgName', function(){
-					scope.imgSrc = makeBuildingImageLink(scope.imgName);
-				});
-			},
-			replace: true,
-			templateUrl: 'views/image.html'
-		};
-	});
-
-	// ~~~
-
-	function makeProductImageLink(input){
-		if(input == undefined || typeof input !== "number")
-			return 'imgs/gui/products/empty.png';
-
-		var productId = parseInt(input);
-		var productName = products[productId].name;
-
-		var name = productName.replace(/\s/g, '');
-		name = name.toLowerCase();
-
-		var image = 'imgs/gui/products/' + name + '.png';
-		return image;
-	};
-
-	app.directive("productImage", function(){
-		return {
-			scope: {
-				imgName: "=name"
-			},
-			link: function(scope){
-				scope.$watch('imgName', function(){
-					scope.imgSrc = makeProductImageLink(scope.imgName);
-				});
-			},
-			replace: true,
-			templateUrl: 'views/image.html'
+				case VERY_STARVING:
+					return "imgs/gui/citizen_very_angry.png";
+			}
 		};
 	});
 
@@ -351,26 +307,28 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 	});
 
 	app.controller("BuildMenuHoverBuildingExtInfo", function($scope){
-		$scope.getBuildingToInform = function(){
-			$scope.$$childHead.init(gameplayState.testBuilding || gameplayState.buildMenuHover, true);
-		}
+		registerInfiniteUpdate($scope, function(){
+			if($scope.$$childHead === null)
+				return;
+
+			$scope.$$childHead.bindedTo = (gameplayState.testBuilding || gameplayState.buildMenuHover);
+		});
 	});
 
 	app.controller("StaticBuildingExtInfo", function($scope){
-		$scope.getBuildingToInform = function(){
-			$scope.$$childHead.init($scope.building, true);
-		}
+		$scope.$watch('building', function(){
+			if($scope.$$childHead === null)
+				return;
+			
+			$scope.$$childHead.bindedTo = $scope.building;
+		});
 	});
 
 	app.controller("BuildingExtInfo", function($scope){
-		var bindedTo = undefined;
+		$scope.bindedTo = undefined;
 
-		$scope.init = function(specificBuilding, canBeRotated){
-			bindedTo = specificBuilding;
-
-			// ~~~
-
-			if(bindedTo == undefined){
+		$scope.$watch('bindedTo', function(){
+			if($scope.bindedTo == undefined){
 				$scope.buildingName = "";
 
 				$scope.tool = 0;
@@ -384,55 +342,50 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 				$scope.isWorkshop = false;
 			}
 			else {
-				$scope.buildingName = bindedTo.structName;
+				$scope.buildingName = $scope.bindedTo.structName;
 
-				$scope.side = bindedTo.rotation;
+				$scope.side = $scope.bindedTo.rotation;
 
-				$scope.isFarm = bindedTo instanceof Farm;
-				$scope.isWorkshop = bindedTo instanceof Workshop;
+				$scope.isFarm = $scope.bindedTo instanceof Farm;
+				$scope.isWorkshop = $scope.bindedTo instanceof Workshop;
 
-				if(bindedTo instanceof ProductionBuilding){
-					$scope.output = bindedTo.storage.catagories[OUTPUT];
+				if($scope.bindedTo instanceof ProductionBuilding){
+					$scope.output = $scope.bindedTo.storage.catagories[OUTPUT];
 
-					$scope.input_1 = bindedTo.storage.catagories[INPUT_1];
-					$scope.input_2 = bindedTo.storage.catagories[INPUT_2];
+					$scope.input_1 = $scope.bindedTo.storage.catagories[INPUT_1];
+					$scope.input_2 = $scope.bindedTo.storage.catagories[INPUT_2];
 
-					$scope.inputCrop = bindedTo.requiredCrop;
+					$scope.inputCrop = $scope.bindedTo.requiredCrop;
 				}
 
-				$scope.tool = bindedTo.requiredResources[TOOLS_ID];
-				$scope.wood = bindedTo.requiredResources[WOOD_ID];
-				$scope.brick = bindedTo.requiredResources[BRICKS_ID];
-				$scope.coins = bindedTo.requiredResources[INVALID_ID];
+				$scope.tool = $scope.bindedTo.requiredResources[TOOLS_ID];
+				$scope.wood = $scope.bindedTo.requiredResources[WOOD_ID];
+				$scope.brick = $scope.bindedTo.requiredResources[BRICKS_ID];
+				$scope.coins = $scope.bindedTo.requiredResources[INVALID_ID];
 
-				if(canBeRotated){
-					$scope.changeSide = function(){
-						if(bindedTo != undefined){
-							var currentIndex;
-							for(currentIndex = 0; currentIndex < bindedTo.possibleRotation.length; currentIndex++)
-								if(bindedTo.rotation == bindedTo.possibleRotation[currentIndex])
-									break;
+				$scope.changeSide = function(){
+					if($scope.bindedTo != undefined){
+						var currentIndex;
+						
+						for(currentIndex = 0; currentIndex < $scope.bindedTo.possibleRotation.length; currentIndex++)
+							if($scope.bindedTo.rotation == $scope.bindedTo.possibleRotation[currentIndex])
+								break;
 
-							var newRotation = bindedTo.possibleRotation[
-								(currentIndex + 1) % bindedTo.possibleRotation.length
-							];
+						var newRotation = $scope.bindedTo.possibleRotation[
+							(currentIndex + 1) % $scope.bindedTo.possibleRotation.length
+						];
 
-							if(newRotation == bindedTo.rotation){
-								console.log("this building cannot be rotated yet");
-								return;
-							}
-
-							bindedTo.rotation = newRotation;
-
-							$scope.chooseBuilding();
+						if(newRotation == $scope.bindedTo.rotation){
+							console.log("this building cannot be rotated yet");
+							return;
 						}
-					};
-				}
-			}
-		};
 
-		registerInfiniteUpdate($scope, function(){
-			$scope.$parent.getBuildingToInform();
+						$scope.bindedTo.rotation = newRotation;
+
+						$scope.chooseBuilding();
+					}
+				};
+			}
 		});
 	});
 

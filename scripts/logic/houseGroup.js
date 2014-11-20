@@ -121,9 +121,6 @@ var HouseGroup = Class.extend(function(){
 
 			// jeśli coś zjedzono:
 			if(eatenProduct >= 1){
-				if(this.contentByConsumption[i] == undefined)
-					this.contentByConsumption[i] = 0;
-
 				this.contentByConsumption[i] = 1;
 
 				// zjedz ile możesz
@@ -187,6 +184,9 @@ var HouseGroup = Class.extend(function(){
 		CONTENT_INTERVALS[VERY_STARVING] = 30;
 
 		var canUpgrade = true; // czy można sprzedawać materiały budowlane obywatelom
+
+		// nie upgraduje się jak nie ma żarcia
+		canUpgrade = (storage.of(FOOD_ID) > 0);
 
 		// dobrobyt
 		if(	this.contentTimer >= CONTENT_INTERVALS[this.contentLevel] &&

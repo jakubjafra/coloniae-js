@@ -11,7 +11,26 @@ KEY_ARROW_RIGHT = 39;
 
 KEYBOARD_MOVE_MAP_DIFF = 20;
 
-define(['underscore', './graphics/framework', './logic', './graphics/gameplayState', './graphics/drawMethod', './graphics/tilePicker'], function(_, framework, Logic, gameplayState, draw, picker){
+define(['underscore',		
+		'./logic',
+		'./graphics/framework',
+		'./graphics/gameplayState',
+		'./graphics/drawMethod',
+		'./graphics/tilePicker',
+		'./graphics/layerManager',
+		'./graphics/analytics'
+		],
+	function(
+		_,
+		Logic,
+		framework,
+		gameplayState,
+		draw,
+		picker,
+		layerManager,
+		analyticModule
+	){
+
 	var wasAnyAction = false;
 
 	function makeClick(clickedTile, hoverTile, mouseX, mouseY){
@@ -28,7 +47,8 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 		}
 
 		// usunięcie budynku
-		if(gameplayState.removeMode && clickedTile.buildingData != null){
+		if(gameplayState.removeMode && clickedTile.buildingData != null &&
+			clickedTile.countryId == countries[0].id){ // TODO: info jakie id ma gracz
 			clickedTile.buildingData.remove();
 
 			wasAnyAction = true;
@@ -48,7 +68,7 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 		// Przemyśleć jak, przydałby się na pewno jakiś "global controller" do tego typu
 		// zmiennych jak gameplayState.choosedSth (może zmiana paradygmatu GUI?)
 		if(!wasAnyAction)
-			gameplayState.clickHandler(mouseX, mouseY);
+			gameplayState.guiClickHandler(mouseX, mouseY);
 	}
 
 	// dodaje budynki na podstawie prostokąta do gameplayState.buildingsToPlacement
@@ -142,9 +162,17 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 		var oldX = undefined;
 		var oldY = undefined;
 
+		var timeout = null;
+
 		this.onMouseMove = function(x, y){
 			// pobieranie hover nad danym tilesem
 			gameplayState.hoveredTile = picker.byGeometry(x, y);
+
+			// jeśli myszka się nie rusza to można użyć colorPickingu dla większej dokładności
+			clearTimeout(timeout);
+			timeout = setTimeout(function(){
+				gameplayState.hoveredTile = picker.byColor(x, y);
+			}, 100);
 
 			// poruszanie kamerą
 			oldX = oldX || x;
@@ -198,7 +226,7 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 				for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++){
 					var buildingCoords = gameplayState.buildingsToPlacement[i];
 
-					var structure = structsClass[gameplayState.testBuilding.__structId];
+					var structure = structsClass[gameplayState.testBuilding.index];
 					new structure.class(buildingCoords.x,
 										buildingCoords.y,
 										countries[0],
@@ -223,7 +251,7 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 			clickedTile = picker.byColor(x, y);
 
 			if(clickedTile != undefined){
-				console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")");
+				console.log("clicked tile (" + clickedTile.x + ", " + clickedTile.y + ")", false);
 				
 				makeClick(clickedTile, gameplayState.hoveredTile, x, y);
 			} else
@@ -231,14 +259,53 @@ define(['underscore', './graphics/framework', './logic', './graphics/gameplaySta
 		};
 
 		this.onRender = function(delta, ctx, resources){
-			draw(delta, ctx, gameplayState.cameraPosition, function(){ return resources["atlas"]; }, false);
+			draw(delta, ctx, gameplayState.cameraPosition, function(layerName){ return layerManager.getLayer(layerName); }, false);
 		};
 		
 		this.onUpdate = function(delta){
 			Logic.update(delta);
+			analyticModule.update(delta);
 		};
 
 		this.onLoadResources = function(resources){
+			layerManager.setBaseLayer(resources['atlas']);
+
+			layerManager.createLayer("lighter_1", function(context, baseLayer){
+				context.globalCompositeOperation = "lighter";
+				context.globalAlpha = 0.1;
+				context.drawImage(baseLayer, 0, 0);
+			});
+
+			layerManager.createLayer("lighter_3", function(context, baseLayer){
+				context.globalCompositeOperation = "lighter";
+				context.globalAlpha = 0.33;
+				context.drawImage(baseLayer, 0, 0);
+			});
+
+			layerManager.createLayer("lighter_5", function(context, baseLayer){
+				context.globalCompositeOperation = "lighter";
+				context.globalAlpha = 0.5;
+				context.drawImage(baseLayer, 0, 0);
+			});
+
+			layerManager.createLayer("darkner", function(context, baseLayer){
+				context.globalCompositeOperation = "multiply";
+				context.drawImage(baseLayer, 0, 0);
+			});
+
+			layerManager.createLayer("oranger_tmp", function(context, baseLayer){
+				context.globalCompositeOperation = 'source-in';
+				context.fillStyle = "#CB9A50"; // http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL
+				context.globalAlpha = 0.33;
+				context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+			});
+
+			layerManager.createLayer("oranger", function(context, baseLayer){
+				context.drawImage(layerManager.getLayer("oranger_tmp"), 0, 0);
+			});
+
+			// ~~~
+
 			picker.initColorpicking(resources);
 		};
 	});

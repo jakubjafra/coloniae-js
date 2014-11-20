@@ -45,9 +45,23 @@ require.config({
 
 console.log('loading dependencies');
 
-require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// externals libs
-			'./logic', './graphics', './graphics/gui/gui'								// local files
-		],	function($, _a, _b, _, Logic, Graphics, Gui){
+require([	'jquery',
+			'jquery-mousewheel',
+			'extend',
+			'underscore',
+			'./logic',
+			'./graphics',
+			'./graphics/gui/gui'
+		],
+		function(
+			$,
+			_a,
+			_b,
+			_,
+			Logic,
+			Graphics,
+			Gui
+		){
 			// ZA CHUJA nie wiem czemu to się nie chce ładować w tej kolejności
 			// kiedy ładuję przez Require. Popierdolone to jest. Tak działa. LOL.
 			// Rozwiązaniem jest podzielenie tego na prawidłowe moduły Require,
@@ -68,6 +82,27 @@ require([	'jquery', 'jquery-mousewheel', 'extend', 'underscore',					// external
 			$("head").append('<script src="scripts/logic/productionBuilding.js"></script>');
 			$("head").append('<script src="scripts/logic/civilianUnit.js"></script>');
 			$("head").append('<script src="scripts/logic/gameDefinitions.js"></script>');
+
+			// ~~~
+
+			// bindowanie wyświetlania logów konsoli na ekran,
+			// może być pomocne tymczasowo
+			var originalConsoleLog = console.log;
+			console.log = function(msg, show){
+				originalConsoleLog.apply(console, arguments);
+
+				if(show !== false){
+					var newElement = document.createElement("div");
+					newElement.appendChild(document.createTextNode(msg));
+
+					setTimeout(function(){
+						$(newElement).parent().find('br').eq(0).remove();
+						$(newElement).remove();
+					}, 1000);
+
+					$("#console").append(newElement).append("<br>");
+				}
+			}
 
 			// ~~~
 
