@@ -162,8 +162,58 @@ li {
 
 	font-size: 12px;
 
-	width: 300px;
+	width: 284px;
 	height: 200px;
+}
+
+span > img {
+	vertical-align: top;
+}
+
+.horizontal_center {
+	text-align: center;
+}
+
+.vertical_center {
+	position: relative;
+	width: 100%;
+	height: 100%;
+
+	display: table;
+}
+
+.vertical_center > p {
+	display: table-cell; 
+	vertical-align: middle; 
+}
+
+.half_width {
+	position: relative;
+	display: inline-block;
+	float: left;
+
+	width: 142px;
+	height: auto;
+}
+
+#citizen_header {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+#citizen_tax {
+	line-height: 30px;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+.full_width {
+	position: relative;
+	display: inline-block;
+	float: left;
+
+	width: 284px;
+	height: auto;
 }
 
 #HouseDlg {
@@ -371,11 +421,20 @@ li {
 
 /* ---------------------------------- */
 
+#handlers {
+	position: absolute;
+
+	width: 74px;
+	height: auto;
+
+	bottom: 10px;
+	left: 10px;
+}
+
 .handler {
 	position: relative;
 
 	margin-top: 10px;
-	margin-left: 10px;
 
 	width: 64px;
 	height: 64px;
@@ -388,9 +447,8 @@ li {
 	background-color: rgba(255, 255, 255, 0.4);
 }
 
-#buildhandler {
-	margin-top: 300px;
-
+.handler:first-of-type {
+	margin-top: 0px;
 }
 
 .handler_on {

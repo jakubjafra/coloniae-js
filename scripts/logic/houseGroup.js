@@ -121,9 +121,6 @@ var HouseGroup = Class.extend(function(){
 
 			// jeśli coś zjedzono:
 			if(eatenProduct >= 1){
-				if(this.contentByConsumption[i] == undefined)
-					this.contentByConsumption[i] = 0;
-
 				this.contentByConsumption[i] = 1;
 
 				// zjedz ile możesz

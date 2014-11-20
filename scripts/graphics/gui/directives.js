@@ -39,7 +39,7 @@ define(['angular'], function(angular){
 	// ~~~
 
 	function makeProductImageLink(input){
-		if(input == undefined || typeof input !== "number")
+		if(input == undefined)
 			return 'imgs/gui/products/empty.png';
 
 		var productId = parseInt(input);
@@ -60,6 +60,35 @@ define(['angular'], function(angular){
 			link: function(scope){
 				scope.$watch('imgName', function(){
 					scope.imgSrc = makeProductImageLink(scope.imgName);
+				});
+			},
+			replace: true,
+			templateUrl: 'views/image.html'
+		};
+	});
+
+	function makeGoodsImageLink(input){
+		if(input == undefined)
+			return 'imgs/gui/products/empty.png';
+
+		var productId = parseInt(input);
+		var productName = products[productId].name;
+
+		var name = productName.replace(/\s/g, '');
+		name = name.toLowerCase();
+
+		var image = 'imgs/gui/' + name + '.png';
+		return image;
+	};
+
+	directives.directive("goodsImage", function(){
+		return {
+			scope: {
+				imgName: "=name"
+			},
+			link: function(scope){
+				scope.$watch('imgName', function(){
+					scope.imgSrc = makeGoodsImageLink(scope.imgName);
 				});
 			},
 			replace: true,

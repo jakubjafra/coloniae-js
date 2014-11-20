@@ -43,12 +43,14 @@
 				</select>
 			</div>
 
-			<div ng-controller="BuildCtrl" id="buildhandler" class="handler" ng-click="showBuildDlg();">
-				<img src="imgs/gui/build.png">
-			</div>
+			<div id="handlers">
+				<div ng-controller="BuildCtrl" id="buildhandler" class="handler" ng-click="showBuildDlg();">
+					<img src="imgs/gui/build.png">
+				</div>
 
-			<div ng-controller="BuildCtrl" id="removehandler" class="handler" ng-click="showRemoveDlg(); startRemoveMode();">
-				<img src="imgs/gui/remove.png">
+				<div ng-controller="BuildCtrl" id="removehandler" class="handler" ng-click="showRemoveDlg(); startRemoveMode();">
+					<img src="imgs/gui/remove.png">
+				</div>
 			</div>
 
 			<div ng-controller="BuildCtrl" id="buildmenu" ng-click="buildModeStateChange();">
@@ -69,9 +71,24 @@
 			</div>
 
 			<div id="HouseDlg" ng-controller="HouseCtrl" building-dialog>
-				{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}<br/>
-				content: {{ houseGroup.contentLevel }} (#{{ houseGroup.contentRaw | number:2 }})<br/>
-				tax: {{ houseGroup.baseIncome + houseGroup.taxDiff }} <button ng-click="houseGroup.taxDiff = houseGroup.taxDiff + 1;">+</button> <button ng-click="houseGroup.taxDiff = houseGroup.taxDiff - 1;">-</button>
+				<div class="half_width horizontal_center">
+					<img ng-src="{{ houseGroup.contentLevel | contentImageSrc }}">
+				</div>
+				<div class="half_width horizontal_center" style="height: 105px;">
+					<div class="vertical_center">
+						<p>
+							<span id="citizen_header">{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}</span>
+							<br/>
+							<br/>
+							<span id="citizen_tax">{{ houseGroup.baseIncome + houseGroup.taxDiff }}<img src="imgs/gui/coin.png">tax</span>
+						</p>
+					</div>
+				</div>
+				<div class="full_width">
+					<div style="display: inline-block;" ng-repeat="(productId, content) in houseGroup.contentByConsumption" ng-show="content < 1">
+						<div goods-image name="productId"></div>
+					</div>
+				</div>
 			</div>
 
 			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl" building-dialog>

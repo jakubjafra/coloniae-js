@@ -273,6 +273,25 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		};
 	});
 
+	app.filter('contentImageSrc', function(){
+		return function(input){
+			switch(parseInt(input)){
+				case VERY_WEALTHY:
+				case WEALTHY:
+					return "imgs/gui/citizen_happy.png";
+
+				case NORMAL:
+					return "imgs/gui/citizen_not_give_a_fuck.png";
+
+				case STARVING:
+					return "imgs/gui/citizen_worried.png";
+
+				case VERY_STARVING:
+					return "imgs/gui/citizen_very_angry.png";
+			}
+		};
+	});
+
 	// ~~~
 
 	app.directive("buildingExtInfDescription", function(){
