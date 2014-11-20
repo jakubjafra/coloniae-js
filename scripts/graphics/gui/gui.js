@@ -76,7 +76,8 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		"#ProductionBuildingDlg": "#ProductionBuildingDlg"
 	};
 
-	function showBuildingDlg(){
+	gameplayState.guiClickHandler = function(x, y){
+		// showBuildingDlg
 		if(gameplayState.choosedSth == undefined || !(gameplayState.choosedSth instanceof Building))
 			return;
 
@@ -90,25 +91,19 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 		var id = ("#" + structName + "Dlg");
 
-		if(buildingDlgs[id] == undefined)
+		if(buildingDlgs[id] === undefined)
 			return;
 
-		closeAllBuildingDlgs();
+		// closeAllBuildingsDlgs
+		$.each(buildingDlgs, function(i, v){
+			$(v).hide();
+		});
+
 		$(id).show();
 
 		$(id).scope().$apply(function($scope){
 			$scope.building = gameplayState.choosedSth;
 		});
-	}
-
-	function closeAllBuildingDlgs(){
-		$.each(buildingDlgs, function(i, v){
-			$(v).hide();
-		});
-	}
-
-	gameplayState.guiClickHandler = function(x, y){
-		showBuildingDlg();
 	};
 
 	app.controller("HouseCtrl", function($scope){
@@ -182,7 +177,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		$scope.beginHoverBuilding = function(){
 			var index = INVALID_ID;
 			if(this.building != undefined)
-				index = this.building.index || this.building.__structId;
+				index = this.building.index;
 
 			index = parseInt(index);
 
@@ -220,12 +215,12 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 			$scope.callback.removeMode = false;
 
 			if(this.building != undefined)
-				$scope.choosedBuilding = this.building.index || this.building.__structId;
+				$scope.choosedBuilding = this.building.index;
 
 			var choosed = parseInt($scope.choosedBuilding);
 
 			$scope.side = NORTH;
-			if($scope.callback.testBuilding != undefined && choosed === $scope.callback.testBuilding.__structId)
+			if($scope.callback.testBuilding != undefined && choosed === $scope.callback.testBuilding.index)
 				$scope.side = $scope.callback.testBuilding.rotation;
 			
 			if(choosed >= 0){
@@ -235,7 +230,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 				$scope.callback.testBuilding.onBuild();
 
-				$scope.callback.testBuilding.__structId = choosed;
+				$scope.callback.testBuilding.index = choosed;
 			}
 		};
 
@@ -303,6 +298,9 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 
 	app.controller("StaticBuildingExtInfo", function($scope){
 		$scope.$watch('building', function(){
+			if($scope.$$childHead === null)
+				return;
+			
 			$scope.$$childHead.bindedTo = $scope.building;
 		});
 	});
@@ -311,11 +309,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		$scope.bindedTo = undefined;
 
 		$scope.$watch('bindedTo', function(){
-			$scope.init($scope.bindedTo, true);
-		})
-
-		$scope.init = function(specificBuilding, canBeRotated){
-			if(specificBuilding == undefined){
+			if($scope.bindedTo == undefined){
 				$scope.buildingName = "";
 
 				$scope.tool = 0;
@@ -329,52 +323,51 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 				$scope.isWorkshop = false;
 			}
 			else {
-				$scope.buildingName = specificBuilding.structName;
+				$scope.buildingName = $scope.bindedTo.structName;
 
-				$scope.side = specificBuilding.rotation;
+				$scope.side = $scope.bindedTo.rotation;
 
-				$scope.isFarm = specificBuilding instanceof Farm;
-				$scope.isWorkshop = specificBuilding instanceof Workshop;
+				$scope.isFarm = $scope.bindedTo instanceof Farm;
+				$scope.isWorkshop = $scope.bindedTo instanceof Workshop;
 
-				if(specificBuilding instanceof ProductionBuilding){
-					$scope.output = specificBuilding.storage.catagories[OUTPUT];
+				if($scope.bindedTo instanceof ProductionBuilding){
+					$scope.output = $scope.bindedTo.storage.catagories[OUTPUT];
 
-					$scope.input_1 = specificBuilding.storage.catagories[INPUT_1];
-					$scope.input_2 = specificBuilding.storage.catagories[INPUT_2];
+					$scope.input_1 = $scope.bindedTo.storage.catagories[INPUT_1];
+					$scope.input_2 = $scope.bindedTo.storage.catagories[INPUT_2];
 
-					$scope.inputCrop = specificBuilding.requiredCrop;
+					$scope.inputCrop = $scope.bindedTo.requiredCrop;
 				}
 
-				$scope.tool = specificBuilding.requiredResources[TOOLS_ID];
-				$scope.wood = specificBuilding.requiredResources[WOOD_ID];
-				$scope.brick = specificBuilding.requiredResources[BRICKS_ID];
-				$scope.coins = specificBuilding.requiredResources[INVALID_ID];
+				$scope.tool = $scope.bindedTo.requiredResources[TOOLS_ID];
+				$scope.wood = $scope.bindedTo.requiredResources[WOOD_ID];
+				$scope.brick = $scope.bindedTo.requiredResources[BRICKS_ID];
+				$scope.coins = $scope.bindedTo.requiredResources[INVALID_ID];
 
-				if(canBeRotated){
-					$scope.changeSide = function(){
-						if(specificBuilding != undefined){
-							var currentIndex;
-							for(currentIndex = 0; currentIndex < specificBuilding.possibleRotation.length; currentIndex++)
-								if(specificBuilding.rotation == specificBuilding.possibleRotation[currentIndex])
-									break;
+				$scope.changeSide = function(){
+					if($scope.bindedTo != undefined){
+						var currentIndex;
+						
+						for(currentIndex = 0; currentIndex < $scope.bindedTo.possibleRotation.length; currentIndex++)
+							if($scope.bindedTo.rotation == $scope.bindedTo.possibleRotation[currentIndex])
+								break;
 
-							var newRotation = specificBuilding.possibleRotation[
-								(currentIndex + 1) % specificBuilding.possibleRotation.length
-							];
+						var newRotation = $scope.bindedTo.possibleRotation[
+							(currentIndex + 1) % $scope.bindedTo.possibleRotation.length
+						];
 
-							if(newRotation == specificBuilding.rotation){
-								console.log("this building cannot be rotated yet");
-								return;
-							}
-
-							specificBuilding.rotation = newRotation;
-
-							$scope.chooseBuilding();
+						if(newRotation == $scope.bindedTo.rotation){
+							console.log("this building cannot be rotated yet");
+							return;
 						}
-					};
-				}
+
+						$scope.bindedTo.rotation = newRotation;
+
+						$scope.chooseBuilding();
+					}
+				};
 			}
-		};
+		});
 	});
 
 	return new function(){

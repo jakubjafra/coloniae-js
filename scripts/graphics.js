@@ -226,7 +226,7 @@ define(['underscore',
 				for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++){
 					var buildingCoords = gameplayState.buildingsToPlacement[i];
 
-					var structure = structsClass[gameplayState.testBuilding.__structId];
+					var structure = structsClass[gameplayState.testBuilding.index];
 					new structure.class(buildingCoords.x,
 										buildingCoords.y,
 										countries[0],
