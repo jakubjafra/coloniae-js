@@ -9,24 +9,13 @@ define(['../logic'
 	function(
 	){
 
-	var goods = [
-		FOOD_ID,
-		CLOTH_ID,
-		LIQUOR_ID,
-		SPICE_ID,
-		TOBACCO_PRODUCTS_ID,
-		COCOA_ID,
-		CLOTHES_ID,
-		JEWLERY_ID
-	];
-
-	TYPE_OK = INVALID_ID;
+	TYPE_OK = -1;
 	TYPE_NEED = 0;
 	TYPE_DEMAND = 1;
 
 	function State(productId, msg, type){
 		this.productId = productId;
-		this.type = 
+		this.type = type;
 
 		this.timeSinceLastCall = 0;
 	}
