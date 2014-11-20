@@ -70,13 +70,13 @@
 				</div>
 			</div>
 
-			<div id="HouseDlg" ng-controller="HouseCtrl" building-dialog building="building">
+			<div id="HouseDlg" ng-controller="HouseCtrl" building-dialog>
 				{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}<br/>
 				content: {{ houseGroup.contentLevel }} (#{{ houseGroup.contentRaw | number:2 }})<br/>
 				tax: {{ houseGroup.baseIncome + houseGroup.taxDiff }} <button ng-click="houseGroup.taxDiff = houseGroup.taxDiff + 1;">+</button> <button ng-click="houseGroup.taxDiff = houseGroup.taxDiff - 1;">-</button>
 			</div>
 
-			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl" building-dialog building="building">
+			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl" building-dialog>
 				income: {{ income | number:0 }}<br/>
 				maintenance: {{ maintenance | number:0 }}<br/>
 				balance: <u>{{ income - maintenance | number:0 }}</u> / min <br/>
@@ -86,7 +86,7 @@
 				</ul>
 			</div>
 
-			<div id="ProductionBuildingDlg" ng-controller="ProductionBuildingCtrl" building-dialog building="building">
+			<div id="ProductionBuildingDlg" ng-controller="ProductionBuildingCtrl" building-dialog>
 				<div ng-controller="StaticBuildingExtInfo">
 					<div building-ext-inf-description ng-controller="BuildingExtInfo">
 					</div>

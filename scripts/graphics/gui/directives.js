@@ -73,15 +73,17 @@ define(['angular'], function(angular){
 		return {
 			transclude: true,
 			templateUrl: 'views/buildingDialog.html',
-			scope: {
-				building: "="
-			},
+			scope: {},
 			link: function(scope, element, attrs, foo, transclude) {
 				element.addClass("buildingDialog");
 				scope.close = function(){ $(element).hide(); }
 
 				transclude(scope.$parent, function(content) {
 					element.children('div.content').html(content);
+				});
+
+				scope.$parent.$watch('building', function(){
+					scope.building = scope.$parent.building;
 				});
 			}
 		};
