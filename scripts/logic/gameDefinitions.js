@@ -34,6 +34,17 @@ TOOLS_ID = 				(new Product("Tools")).id;
 JEWLERY_ID =			(new Product("Jewlery")).id;
 CLOTHES_ID = 			(new Product("Clothes")).id;
 
+goods = [
+	FOOD_ID,
+	CLOTH_ID,
+	LIQUOR_ID,
+	SPICE_ID,
+	TOBACCO_PRODUCTS_ID,
+	COCOA_ID,
+	CLOTHES_ID,
+	JEWLERY_ID
+];
+
 // storage.js
 
 // ~~~
