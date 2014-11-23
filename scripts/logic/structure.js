@@ -169,7 +169,7 @@ var Structure = Class.extend(function(){
 
 					for(var i in this.requiredTerrainMap){
 						for(var j in this.requiredTerrainMap[i]){
-							var newX = (parseInt(j) < 0 ? -parseInt(j) : parseInt(j)); // WTF!?
+							var newX = this.height - 1 - parseInt(j);//(parseInt(j) < 0 ? -parseInt(j) : parseInt(j)); // WTF!?
 							var newY = (this.width - 1 - Math.abs(parseInt(i)));
 
 							if(newTerrainMap[newX] == undefined)
@@ -222,7 +222,7 @@ var Structure = Class.extend(function(){
 						for(var j in this.requiredTerrainMap[i]){
 							
 							var newX = parseInt(i);
-							var newY = (parseInt(j) < 0 ? -parseInt(j) : parseInt(j)); // WTF!?
+							var newY = this.height - 1 - parseInt(j); //(parseInt(j) < 0 ? -parseInt(j) : parseInt(j)); // WTF!?
 							
 
 							/*

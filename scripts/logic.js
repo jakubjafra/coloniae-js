@@ -85,9 +85,11 @@ define(['jquery',
 			tiles[19][4].countryId = 0;
 			var port = new Port(19, 4, countries[0], true);
 			
+			
 			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(TOOLS_ID), 100); // tymczasowe
 			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(WOOD_ID), 100); // tymczasowe
 			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(FOOD_ID), 5); // tymczasowe
+			
 
 			new House(19, 7, countries[0]);
 

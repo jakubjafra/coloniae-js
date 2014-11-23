@@ -466,17 +466,12 @@ var Port = buildable("Port", Marketplace.extend(function(){
 
 		this.super.onBuild();
 
-		var offsetX = Math.floor((this.width - 1) / 2);
-		var offsetY = Math.floor((this.height - 1) / 2);
+		for(var i = 0; i <= (this.width + 1); i++){
+			for(var j = 0; j <= (this.height + 1); j++){
+				var tileX = this.northTile().x + i - 1;
+				var tileY = this.northTile().y + j - 1;
 
-		for(var i = (this.width - Object.keys(this.requiredTerrainMap).length); i < this.width; i++){
-			for(var j = (this.height - Object.keys(this.requiredTerrainMap[i]).length); j < this.height; j++){
-				if(i == -1 || j == -1){
-					var tileX = this.centerTile().x + i - offsetX;
-					var tileY = this.centerTile().y + j - offsetY;
-
-					new Harbor(tileX, tileY, countries[this.centerTile().countryId], true);
-				}
+				new Harbor(tileX, tileY, countries[this.centerTile().countryId], true);
 			}
 		}
 	};
@@ -903,6 +898,8 @@ var GoldMine = buildable("Gold mine", Farm.extend(function(){
 	this.requiredCrop = "__MOUTAIN_TILES__"; // see gui.js
 
 	this.baseProduction = 0.75 / 60;
+
+	this.possibleRotation = [ NORTH, EAST, SOUTH, WEST ];
 
 	this.makeRequiredTerrainMap = function(){
 		this.createPlainTerrainMap(2, 2);
