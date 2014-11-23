@@ -31,6 +31,7 @@ function makeIsland(x, y, w, h){
 
 			if(tile.terrainLevel == PLAINS && Math.random() > 0.55){
 				new TreeFld(tile.x, tile.y, undefined, true);
+				
 			}
 		}
 	}

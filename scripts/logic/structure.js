@@ -169,7 +169,35 @@ var Structure = Class.extend(function(){
 
 					for(var i in this.requiredTerrainMap){
 						for(var j in this.requiredTerrainMap[i]){
-							var newX = -parseInt(j);
+							var newX = (parseInt(j) < 0 ? -parseInt(j) : parseInt(j)); // WTF!?
+							var newY = (this.width - 1 - Math.abs(parseInt(i)));
+
+							if(newTerrainMap[newX] == undefined)
+								newTerrainMap[newX] = {};
+
+							console.log(i, j, " -> ", newX, newY);
+
+							newTerrainMap[newX][newY] = this.requiredTerrainMap[i][j];
+						}
+					}
+
+					this.requiredTerrainMap = $.extend(true, {}, newTerrainMap);
+
+					this.width = newWidth;
+					this.height = newHeight;
+				break;
+
+			case EAST:
+					// EAST to symetryczne odbicie WEST, widać to poniżej:
+
+					var newWidth = this.height;
+					var newHeight = this.width;
+
+					var newTerrainMap = {};
+
+					for(var i in this.requiredTerrainMap){
+						for(var j in this.requiredTerrainMap[i]){
+							var newX = parseInt(j); // <- o tutaj to widać :)
 							var newY = (newHeight - 1 - Math.abs(parseInt(i)));
 
 							if(newTerrainMap[newX] == undefined)
@@ -183,6 +211,35 @@ var Structure = Class.extend(function(){
 
 					this.width = newWidth;
 					this.height = newHeight;
+				break;
+
+			case SOUTH:
+					// SOUTH to symetryczne odbicie NORTH, nie trzeba zmieniać wielkości
+
+					var newTerrainMap = {};
+
+					for(var i in this.requiredTerrainMap){
+						for(var j in this.requiredTerrainMap[i]){
+							
+							var newX = parseInt(i);
+							var newY = (parseInt(j) < 0 ? -parseInt(j) : parseInt(j)); // WTF!?
+							
+
+							/*
+							var newX = parseInt(i);
+							var newY = parseInt(j);
+							*/
+
+							if(newTerrainMap[newX] == undefined)
+								newTerrainMap[newX] = {};
+
+							console.log(i, j, " -> ", newX, newY);
+
+							newTerrainMap[newX][newY] = this.requiredTerrainMap[i][j];
+						}
+					}
+
+					this.requiredTerrainMap = $.extend(true, {}, newTerrainMap);
 				break;
 
 			default:

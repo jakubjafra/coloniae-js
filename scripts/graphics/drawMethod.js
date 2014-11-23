@@ -252,6 +252,7 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState', '
 				if(porters[tile.index] != undefined)
 					drawRawAtlasTile("placeholder_porter" + porters[tile.index]);
 
+				/*
 				// draw flag, if any
 				if(tile.buildingData != null && tile.buildingData instanceof Port &&
 					tiles.index(tile.buildingData.southTile()) == tiles.index(tile)){
@@ -269,6 +270,7 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState', '
 
 					drawRawAtlasTile(getFlagForTile(tile, delta));
 				}
+				*/
 			}
 		}
 
