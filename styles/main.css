@@ -252,7 +252,7 @@ span > img {
 
 	padding: 10px;
 
-	display: none; /* <- none */
+	/* display: none;  <- none */
 
 	background-color: rgba(0, 0, 0, 0.5);
 	border-radius: 5px;

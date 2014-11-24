@@ -102,6 +102,10 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 		$(id).show();
 
 		$(id).scope().$apply(function($scope){
+			$scope.building = undefined;
+		});
+
+		$(id).scope().$apply(function($scope){
 			$scope.building = gameplayState.choosedSth;
 		});
 	};
@@ -123,8 +127,8 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 	app.controller("MarketplaceCtrl", function($scope){
 		$scope.building = undefined;
 
-		$scope.income = 0;
-		$scope.maintenance = 0;
+		$scope.island = undefined;
+		$scope.country = undefined;
 
 		$scope.storage = {};
 		$scope.productsLookup = products;
@@ -133,13 +137,10 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 			if($scope.building === undefined)
 				return;
 
-			var island = islands[$scope.building.centerTile().islandId];
-			var country = countries[$scope.building.centerTile().countryId];
+			$scope.island = islands[$scope.building.centerTile().islandId];
+			$scope.country = countries[$scope.building.centerTile().countryId];
 
-			$scope.income = island.income[country.id] || 0;
-			$scope.maintenance = island.maintenance[country.id] || 0;
-
-			$scope.storage = island.mainMarketplaces[country.id].storage.slots;
+			$scope.storage = $scope.island.mainMarketplaces[$scope.country.id].storage.slots;
 		});
 	});
 
@@ -154,15 +155,6 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 				return;
 
 			$scope.storage = $scope.building.storage.slots;
-
-			$scope.effectivity = 0;
-
-			if($scope.building instanceof Farm)
-				$scope.effectivity = $scope.building.effectivity;
-			else if($scope.building instanceof Workshop)
-				$scope.effectivity = ($scope.building.canProduce() ? 1 : 0);
-
-			$scope.maintenance = $scope.building.operatingCost.on;
 		});
 	});
 
@@ -190,7 +182,7 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 			gameplayState.buildMenuHover = undefined;
 		};
 
-		$scope.startRemoveMode = function(){
+		$scope.toggleRemoveMode = function(){
 			$scope.callback.buildMode = false;
 			$scope.callback.removeMode = !$scope.callback.removeMode;
 
@@ -234,30 +226,10 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 			}
 		};
 
-		var dlgList = ["#buildmenu"];
-		var handlers = ["#buildhandler", "#removehandler"];
-
-		function toggleDlgFor(name, handler){
-			var isVisible = $(handler).hasClass("handler_on") || $(name).is(':visible');
-
-			$(dlgList.join(",")).hide();
-			$(handlers.join(",")).removeClass("handler_on");
-
-			if(!isVisible){
-				$(name).show();
-				$(handler).addClass("handler_on");
-			}
-		}
-
-		$scope.showBuildDlg = function(){
-			if($scope.callback.testBuilding != undefined)
-				$scope.buildModeStateChange();
-			else
-				toggleDlgFor("#buildmenu", "#buildhandler");
-		};
-
-		$scope.showRemoveDlg = function(){
-			toggleDlgFor(undefined, "#removehandler");
+		$scope.callback.showBuildMenu = false;
+		$scope.toggleBuildMenu = function(){
+			$scope.callback.showBuildMenu = !$scope.callback.showBuildMenu;
+			$scope.buildModeStateChange();
 		};
 	});
 

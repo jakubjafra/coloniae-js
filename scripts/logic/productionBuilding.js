@@ -8,6 +8,8 @@ var ProductionBuilding = StorageBuilding.extend(function(){
 	this.baseProduction = 0; // per second
 
 	this.productionStep = 0.0;
+
+	this.effectivity = 1;
 });
 
 var Workshop = ProductionBuilding.extend(function(){
@@ -59,14 +61,17 @@ var Workshop = ProductionBuilding.extend(function(){
 		return [true, arr[0][1]];
 	};
 
-	this.canProduce = function(){
+	this.canProduce = function(){ // also updates effectivity
 		var ret = true;
+		
 		$.each(this.inputConsumption, $.proxy(function(i, v){
 			if(!(this.storage.of(i) >= v)){
 				ret = false;
 				return false;
 			}
 		}, this));
+
+		this.effectivity = ret ? 1 : 0;
 		return ret;
 	}
 
@@ -100,7 +105,6 @@ var Farm = ProductionBuilding.extend(function(){
 	this.height = 2;
 
 	this.harvestRadius = 1.5; // najlepiej jedno z [1.5 ; 2 ; 2.5 ; 3]
-	this.effectivity = 1;
 
 	this.requiredCrop = undefined;
 

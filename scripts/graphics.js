@@ -46,14 +46,6 @@ define(['underscore',
 				gameplayState.choosedSth = undefined;
 		}
 
-		// usunięcie budynku
-		if(gameplayState.removeMode && clickedTile.buildingData != null &&
-			clickedTile.countryId == countries[0].id){ // TODO: info jakie id ma gracz
-			clickedTile.buildingData.remove();
-
-			wasAnyAction = true;
-		}
-
 		// zaznaczenie jednostki
 		if(clickedTile.unitId != INVALID_ID)
 			gameplayState.choosedSth = militaryUnits[clickedTile.unitId];
@@ -94,19 +86,54 @@ define(['underscore',
 			end.y = fakeBegin.y;
 		}
 
+		if(!tiles.exsist(begin) || !tiles.exsist(end))
+			return;
+
 		for(var i = begin.x; i <= end.x; i += gameplayState.testBuilding.width)
 			for(var j = begin.y; j <= end.y; j += gameplayState.testBuilding.height)
 				if(canBeBuild(i, j, gameplayState.testBuilding))
 					gameplayState.buildingsToPlacement.push(tiles.coords(i, j));
 	}
 
-	function endBuildingMode(){
+	// dodaje istniejące budynki na podstawie prostokąta do gameplayState.buildingsToPlacement
+	function fillBuildingsToRemove(){
+		gameplayState.buildingsToPlacement = [];
+
+		var fakeBegin = gameplayState.placementRectangle.begin;
+		var fakeEnd = gameplayState.placementRectangle.end;
+
+		if(fakeBegin == undefined || fakeEnd == undefined)
+			return;
+
+		var begin = _.clone(fakeBegin);
+		var end = _.clone(fakeEnd);
+
+		if(begin.x > end.x){
+			begin.x = fakeEnd.x;
+			end.x = fakeBegin.x;
+		}
+
+		if(begin.y > end.y){
+			begin.y = fakeEnd.y;
+			end.y = fakeBegin.y;
+		}
+
+		if(!tiles.exsist(begin) || !tiles.exsist(end))
+			return;
+
+		// usuń wszystkie budynki do selektora
+		for(var i = begin.x; i <= end.x; i++)
+			for(var j = begin.y; j <= end.y; j++)
+				if(tiles.exsist(i, j) && tiles.at(i, j).buildingData != null)
+					gameplayState.buildingsToPlacement.push(tiles.coords(i, j));
+	}
+
+	function endWidePlacement(){
 		gameplayState.placementRectangle.begin = tiles.coords(-1, -1);
 		gameplayState.placementRectangle.end = tiles.coords(-1, -1);
 
 		gameplayState.buildingsToPlacement = [];
 
-		gameplayState.buildMode = false;
 		gameplayState.useWidePlacement = false;
 	}
 
@@ -135,7 +162,10 @@ define(['underscore',
 					break;
 
 				default:
-					endBuildingMode();
+					endWidePlacement();
+
+					gameplayState.buildMode = false;
+					gameplayState.removeMode = false;
 					break;
 			}
 		};
@@ -145,9 +175,7 @@ define(['underscore',
 		this.onMouseLeave = function(){
 			gameplayState.hoveredTile = undefined;
 
-			// gameplayState.placementRectangle.end = tiles.coords(-1, -1);
-
-			if(!gameplayState.buildMode)
+			if(!gameplayState.buildMode || !gameplayState.removeMode)
 				gameplayState.moveMap = false;
 			else {
 				gameplayState.buildingsToPlacement = [];
@@ -178,7 +206,7 @@ define(['underscore',
 			oldX = oldX || x;
 			oldY = oldY || y;
 
-			if(gameplayState.moveMap && !gameplayState.buildMode){
+			if(gameplayState.moveMap && !(gameplayState.buildMode || gameplayState.removeMode)){
 				gameplayState.cameraPosition.x += (x - oldX);
 				gameplayState.cameraPosition.y += (y - oldY);
 			}
@@ -190,20 +218,23 @@ define(['underscore',
 
 			// to jest tutaj tylko po to by można było wyświetlić podświetlenie
 			// informację dla gracza jakie budynki się gdzie wybudują
-			if(gameplayState.buildMode && gameplayState.testBuilding != undefined /*&& gameplayState.moveMap*/){
+			if((gameplayState.buildMode && gameplayState.testBuilding != undefined) || gameplayState.removeMode){
 				gameplayState.placementRectangle.end = picker.byGeometry(x, y);
 
 				if(!gameplayState.useWidePlacement)
 					gameplayState.placementRectangle.begin = gameplayState.placementRectangle.end;
 
-				fillBuildingsToPlacement();
+				if(gameplayState.buildMode)
+					fillBuildingsToPlacement();
+				else
+					fillBuildingsToRemove();
 			}
 		};
 
 		this.onMouseDown = function(x, y){
 			gameplayState.moveMap = true;
 
-			if(gameplayState.buildMode){
+			if(gameplayState.buildMode || gameplayState.removeMode){
 				gameplayState.placementRectangle.begin = picker.byGeometry(x, y);
 				gameplayState.useWidePlacement = true;
 			}
@@ -217,21 +248,33 @@ define(['underscore',
 			// usuwa buga powowdującego automatyczne klikniecie w nowo wybudowany budynek
 			wasAnyAction = false;
 
-			if(gameplayState.buildMode){
+			if(gameplayState.buildMode || gameplayState.removeMode){
 				// uaktualnij placementRectangle
 				gameplayState.placementRectangle.end = picker.byGeometry(x, y);
-				fillBuildingsToPlacement();
 
-				// wybuduj budynki z gameplayState.buildingsToPlacement
-				for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++){
-					var buildingCoords = gameplayState.buildingsToPlacement[i];
+				if(gameplayState.buildMode){
+					fillBuildingsToPlacement();
 
-					var structure = structsClass[gameplayState.testBuilding.index];
-					new structure.class(buildingCoords.x,
-										buildingCoords.y,
-										countries[0],
-										undefined,
-										gameplayState.testBuilding.rotation);
+					// wybuduj budynki z gameplayState.buildingsToPlacement
+					for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++){
+						var buildingCoords = gameplayState.buildingsToPlacement[i];
+
+						var structure = structsClass[gameplayState.testBuilding.index];
+						new structure.class(buildingCoords.x,
+											buildingCoords.y,
+											countries[0],
+											undefined,
+											gameplayState.testBuilding.rotation);
+					}
+				} else {
+					fillBuildingsToRemove();
+
+					for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++){
+						var building = tiles.at(gameplayState.buildingsToPlacement[i]).buildingData;
+
+						if(building != null)
+							building.remove();
+					}
 				}
 
 				// usuń zaznaczenie:
@@ -282,12 +325,6 @@ define(['underscore',
 				context.drawImage(baseLayer, 0, 0);
 			});
 
-			layerManager.createLayer("lighter_5", function(context, baseLayer){
-				context.globalCompositeOperation = "lighter";
-				context.globalAlpha = 0.5;
-				context.drawImage(baseLayer, 0, 0);
-			});
-
 			layerManager.createLayer("darkner", function(context, baseLayer){
 				context.globalCompositeOperation = "multiply";
 				context.drawImage(baseLayer, 0, 0);
@@ -302,6 +339,17 @@ define(['underscore',
 
 			layerManager.createLayer("oranger", function(context, baseLayer){
 				context.drawImage(layerManager.getLayer("oranger_tmp"), 0, 0);
+			});
+
+			layerManager.createLayer("red_tmp", function(context, baseLayer){
+				context.globalCompositeOperation = 'source-in';
+				context.fillStyle = "#9B2E20"; // http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL
+				context.globalAlpha = 0.5;
+				context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+			});
+
+			layerManager.createLayer("red", function(context, baseLayer){
+				context.drawImage(layerManager.getLayer("red_tmp"), 0, 0);
 			});
 
 			// ~~~

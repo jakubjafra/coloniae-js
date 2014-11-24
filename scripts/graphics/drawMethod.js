@@ -240,10 +240,16 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState', '
 					if(gameplayState.hoveredTile != undefined &&
 					   tiles.at(gameplayState.hoveredTile).buildingData != undefined &&
 					   tiles.at(gameplayState.hoveredTile).buildingData == tile.buildingData)
-						mode = (gameplayState.removeMode ? "lighter_5" : "lighter_1");
+						mode = "lighter_1";
 					
 					if(gameplayState.buildMode && wasOverwrittenByTestBuilding)
 							mode = "oranger";
+
+					if(gameplayState.removeMode){
+						for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++)
+							if(tile.buildingData === tiles.at(gameplayState.buildingsToPlacement[i]).buildingData)
+								mode = "red";
+					}
 					
 					drawAtlasTile(tileImage, tile, mode);
 				}
