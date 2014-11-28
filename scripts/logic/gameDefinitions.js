@@ -955,8 +955,6 @@ var FishermanHut = buildable("Fisherman hut", Farm.extend(function(){
 // ~~~
 
 // budynki użyteczności publicznej
-// TODO: uzupełnić dane o budynkach
-// TODO: jebane obrazki mają złe współrzędne bo jestem debilem xD
 
 var Chapel = buildable("Chapel", Building.extend(function(){
 	this.requiredResources = makeRequiredResources(100, 5, undefined, 2);
