@@ -13,6 +13,19 @@
 		<script>
 
 		var images = [];
+		var str = "";
+
+		function selectText(containerid) {
+			if (document.selection) {
+				var range = document.body.createTextRange();
+				range.moveToElementText(document.getElementById(containerid));
+				range.select();
+			} else if (window.getSelection) {
+				var range = document.createRange();
+				range.selectNode(document.getElementById(containerid));
+				window.getSelection().addRange(range);
+			}
+		}
 
 		function redraw(){
 			var canvas = $("#preview222")[0];
@@ -23,7 +36,7 @@
 			canvas.height = parseInt($("#preview222").height());
 			canvas.width = parseInt($("#preview222").width());
 
-            canvas.width = canvas.width;
+			canvas.width = canvas.width;
 
 			images.sort(function(a,b){
 				return b.height - a.height;
@@ -55,57 +68,52 @@
 				}
 
 				ctx.drawImage(image, x, y);
-				
+
 
 				jsondatas[image.__xxx___] = {x: x, y: y, w: image.width, h: image.height};
 
 				x += image.width;
 			}
 
-			$("#output").html(JSON.stringify(jsondatas));
+			str = JSON.stringify(jsondatas);
+			$("#output").html(str);
 		}
 
-
-
 		Dropzone.options.myAwesomeDropzone = {
-			  accept: function(file, done) {
-			    var img = new Image();
+			accept: function(file, done) {
+				var img = new Image();
 
-			   img.onload = function(){
-			   		images.push({height: this.height, img: this});
-			   		redraw();
-			   };
+				img.onload = function(){
+					images.push({height: this.height, img: this});
+					redraw();
+				};
 
-			   var kkk = /^(.*)\./.exec(file.name);
+				var kkk = /^(.*)\./.exec(file.name);
 
-			   img.src = (window.URL || window.webkitURL).createObjectURL(file);
-			   img.__xxx___ = kkk[1];
+				img.src = (window.URL || window.webkitURL).createObjectURL(file);
+				img.__xxx___ = kkk[1];
 
-			    done("nah");
-			  }
-			};
+				done("nah");
+			}
+		};
 
-			$(function(){
-
-				$("#abc").keyup(function(){
-				var width = parseInt($("#abc").val());
+		$(function(){
+			$("#widthbox").keyup(function(){
+				var width = parseInt($(this).val());
 
 				$("#preview222").width(width + "px");
 
 				redraw();
 			});
 
-			$("#abc2").keyup(function(){
-				var height = parseInt($("#abc2").val());
+			$("#heightbox").keyup(function(){
+				var height = parseInt($(this).val());
 
 				$("#preview222").height(height + "px");
 
 				redraw();
 			});
-
-			
-
-			});
+		});
 
 		</script>
 	</head>
@@ -113,9 +121,10 @@
 	<body>
 		atlas tool<br/>
 		<br/>
-		width=<input id="abc" type="text" value="300" />
-		height=<input id="abc2" type="text" value="300" />
+		width=<input id="widthbox" type="text" value="300" />
+		height=<input id="heightbox" type="text" value="300" />
 		<br/>
+		<a href="#" onclick="selectText('output'); return false">select json to copy</a><br/>
 		<canvas id="preview222" style="width: 300px; height: 300px; background-color: pink; border: 1px solid blue;">
 		</canvas>
 		<br/>
