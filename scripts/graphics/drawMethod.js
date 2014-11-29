@@ -238,16 +238,18 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState', '
 						mode = "darkner";
 
 					if(gameplayState.hoveredTile != undefined &&
-					   tiles.at(gameplayState.hoveredTile).buildingData != undefined &&
-					   tiles.at(gameplayState.hoveredTile).buildingData == tile.buildingData)
+					   tiles.at_noAssert(gameplayState.hoveredTile).buildingData != undefined &&
+					   tiles.at_noAssert(gameplayState.hoveredTile).buildingData == tile.buildingData)
 						mode = "lighter_1";
 					
 					if(gameplayState.buildMode && wasOverwrittenByTestBuilding)
 							mode = "oranger";
 
 					if(gameplayState.removeMode){
+						// TODO: przepisać gameplayState.buildingsToPlacement by wyeliminować tą funkcję
+						// ona zżera masę czasu procesora.
 						for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++)
-							if(tile.buildingData === tiles.at(gameplayState.buildingsToPlacement[i]).buildingData)
+							if(tile.buildingData === tiles.at_noAssert(gameplayState.buildingsToPlacement[i]).buildingData)
 								mode = "red";
 					}
 					
