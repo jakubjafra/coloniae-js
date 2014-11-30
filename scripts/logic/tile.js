@@ -58,7 +58,7 @@ function bindUsefulMapFunctions(){
 	};
 
 	// zwraca pusty obiekt jak out of board
-	this.at_noAssert = function(x, y){
+	this.at_mayRetEmpty = function(x, y){
 		x = this.coords(x, y);
 
 		return this[x.x] != undefined ? (this[x.x][x.y] || {}) : {};

@@ -73,7 +73,7 @@ var MilitaryUnit = Class.extend(function(){
 
 	this.setPosition = function(coords){
 		// this.position may be invalid (-1, -1)
-		tiles.at_noAssert(this.position).unitId = INVALID_ID;
+		tiles.at_mayRetEmpty(this.position).unitId = INVALID_ID;
 
 		this.position = tiles.coords(coords);
 		tiles.at(this.position).unitId = this.id;

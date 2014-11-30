@@ -956,7 +956,23 @@ var FishermanHut = buildable("Fisherman hut", Farm.extend(function(){
 
 // budynki użyteczności publicznej
 
-var Chapel = buildable("Chapel", Building.extend(function(){
+var PublicBuilding = Building.extend(function(){
+	this.operatingRadius = 0;
+
+	this.onBuild = function(){
+		this.super.onBuild();
+
+		// ...
+	};
+
+	this.onRemove = function(){
+		// ...
+
+		this.super.onRemove();
+	};
+});
+
+var Chapel = buildable("Chapel", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(100, 5, undefined, 2);
 	this.operatingCost = makeOperatingCost(5, 0);
 
@@ -964,7 +980,7 @@ var Chapel = buildable("Chapel", Building.extend(function(){
 	this.height = 2;
 }));
 
-var Church = buildable("Church", Building.extend(function(){
+var Church = buildable("Church", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(1600, 7, 25, 7);
 	this.operatingCost = makeOperatingCost(50, 0);
 
@@ -972,7 +988,7 @@ var Church = buildable("Church", Building.extend(function(){
 	this.height = 4;
 }));
 
-var Cathedral = buildable("Cathedral", Building.extend(function(){
+var Cathedral = buildable("Cathedral", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(7500, 25, 70, 23);
 	this.operatingCost = makeOperatingCost(90, 0);
 
@@ -980,7 +996,7 @@ var Cathedral = buildable("Cathedral", Building.extend(function(){
 	this.height = 6;
 }));
 
-var FireDepartament = buildable("Fire departament", Building.extend(function(){
+var FireDepartament = buildable("Fire departament", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(150, 5, undefined, 3);
 	this.operatingCost = makeOperatingCost(15, 0);
 
@@ -988,7 +1004,7 @@ var FireDepartament = buildable("Fire departament", Building.extend(function(){
 	this.height = 2;
 }));
 
-var Medic = buildable("Medic", Building.extend(function(){
+var Medic = buildable("Medic", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(450, 4, 9, 4);
 	this.operatingCost = makeOperatingCost(30, 0);
 
@@ -996,7 +1012,7 @@ var Medic = buildable("Medic", Building.extend(function(){
 	this.height = 2;
 }));
 
-var PublicBath = buildable("Public bath", Building.extend(function(){
+var PublicBath = buildable("Public bath", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(1200, 5, 19, 5);
 	this.operatingCost = makeOperatingCost(60, 0);
 
@@ -1004,7 +1020,7 @@ var PublicBath = buildable("Public bath", Building.extend(function(){
 	this.height = 4;
 }));
 
-var School = buildable("School", Building.extend(function(){
+var School = buildable("School", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(490, 4, 9, 4);
 	this.operatingCost = makeOperatingCost(30, 0);
 
@@ -1012,7 +1028,7 @@ var School = buildable("School", Building.extend(function(){
 	this.height = 2;
 }));
 
-var University = buildable("University", Building.extend(function(){
+var University = buildable("University", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(750, 5, 19, 6);
 	this.operatingCost = makeOperatingCost(60, 0);
 
@@ -1020,7 +1036,7 @@ var University = buildable("University", Building.extend(function(){
 	this.height = 3;
 }));
 
-var Theatre = buildable("Theatre", Building.extend(function(){
+var Theatre = buildable("Theatre", PublicBuilding.extend(function(){
 	this.requiredResources = makeRequiredResources(1200, 5, 19, 2);
 	this.operatingCost = makeOperatingCost(80, 0);
 
