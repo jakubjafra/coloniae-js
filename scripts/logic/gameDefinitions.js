@@ -164,11 +164,127 @@ var Harbor = buildable("Harbor", Road.extend(function(){
 
 // ~~~
 
+// publicBuilding.js
+
+var Chapel = buildable("Chapel", AreaPublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(100, 5, undefined, 2);
+	this.operatingCost = makeOperatingCost(5, 0);
+
+	this.operatingRadius = 10; // tmp
+	this.bitMask = CHAPEL_MASK;
+
+	this.width = 1;
+	this.height = 2;
+}));
+
+var Church = buildable("Church", AreaPublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(1600, 7, 25, 7);
+	this.operatingCost = makeOperatingCost(50, 0);
+
+	this.operatingRadius = 10; // tmp
+	this.bitMask = CHURCH_MASK | CHAPEL_MASK;
+
+	this.width = 3;
+	this.height = 4;
+}));
+
+var Cathedral = buildable("Cathedral", AreaPublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(7500, 25, 70, 23);
+	this.operatingCost = makeOperatingCost(90, 0);
+
+	this.operatingRadius = 10; // tmp
+	this.bitMask = CHURCH_MASK | CHAPEL_MASK;
+
+	this.width = 4;
+	this.height = 6;
+}));
+
+var PublicBath = buildable("Public bath", AreaPublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(1200, 5, 19, 5);
+	this.operatingCost = makeOperatingCost(60, 0);
+
+	this.operatingRadius = 10; // tmp
+	this.bitMask = PUBLICBATH_MASK;
+
+	this.width = 3;
+	this.height = 4;
+}));
+
+var School = buildable("School", AreaPublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(490, 4, 9, 4);
+	this.operatingCost = makeOperatingCost(30, 0);
+
+	this.operatingRadius = 10; // tmp
+	this.bitMask = SCHOOL_MASK;
+
+	this.width = 2;
+	this.height = 2;
+}));
+
+var University = buildable("University", AreaPublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(750, 5, 19, 6);
+	this.operatingCost = makeOperatingCost(60, 0);
+
+	this.operatingRadius = 10; // tmp
+	this.bitMask = UNIVERSITY_MASK | SCHOOL_MASK;
+
+	this.width = 3;
+	this.height = 3;
+}));
+
+var Theatre = buildable("Theatre", AreaPublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(1200, 5, 19, 2);
+	this.operatingCost = makeOperatingCost(80, 0);
+
+	this.operatingRadius = 10; // tmp
+	this.bitMask = THEATRE_MASK;
+
+	this.width = 3;
+	this.height = 3;
+}));
+
+var Tawern = buildable("Tawern", AreaPublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(250, 4, 6, 3);
+	this.operatingCost = makeOperatingCost(15, 0);
+
+	this.operatingRadius = 10; // tmp
+	this.bitMask = TAWERN_MASK;
+
+	this.width = 3;
+	this.height = 2;
+}));
+
+// ~
+
+var FireDepartament = buildable("Fire departament", PublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(150, 5, undefined, 3);
+	this.operatingCost = makeOperatingCost(15, 0);
+
+	this.operatingRadius = 10; // tmp
+
+	this.width = 2;
+	this.height = 2;
+}));
+
+var Medic = buildable("Medic", PublicBuilding.extend(function(){
+	this.requiredResources = makeRequiredResources(450, 4, 9, 4);
+	this.operatingCost = makeOperatingCost(30, 0);
+
+	this.operatingRadius = 10; // tmp
+
+	this.width = 2;
+	this.height = 2;
+}));
+
+// ~~~
+
 // houseGroup.js
 
 var PionersHouseGroup = HouseGroup.extend(function(){
 	// grupa ta pojawia się automatycznie po wybudowaniu domu, nie ma wymaganych surowców
 	this.requiredResources = {};
+
+	this.requiredPublicBuildingsMask = CHAPEL_MASK;
 
 	this.type = PIONERS;
 	this.name = "Pioners";
@@ -193,6 +309,9 @@ var PionersHouseGroup = HouseGroup.extend(function(){
 var SettlersHouseGroup = HouseGroup.extend(function(){
 	this.requiredResources = makeRequiredResources(undefined, 3, undefined, 1,
 		makeBonusResources(CLOTH_ID, 1, LIQUOR_ID, 1));
+
+	this.requiredPublicBuildingsMask = CHAPEL_MASK | TAWERN_MASK | SCHOOL_MASK;
+
 	this.baseIncome = Math.pow(2, (this.type + 1));
 
 	this.type = SETTLERS;
@@ -222,6 +341,8 @@ var SettlersHouseGroup = HouseGroup.extend(function(){
 var CitizensHouseGroup = HouseGroup.extend(function(){
 	this.requiredResources = makeRequiredResources(undefined, 2, 6, 1,
 		makeBonusResources(SPICE_ID, 1, TOBACCO_PRODUCTS_ID, 1));
+
+	this.requiredPublicBuildingsMask = CHURCH_MASK | TAWERN_MASK | SCHOOL_MASK | PUBLICBATH_MASK;
 
 	this.type = CITIZENS;
 	this.name = "Citizens";
@@ -253,6 +374,8 @@ var CitizensHouseGroup = HouseGroup.extend(function(){
 var MerchantsHouseGroup = HouseGroup.extend(function(){
 	this.requiredResources = makeRequiredResources(undefined, 3, 9, 3,
 		makeBonusResources(COCOA_ID, 1));
+
+	this.requiredPublicBuildingsMask = CHURCH_MASK | TAWERN_MASK | UNIVERSITY_MASK | PUBLICBATH_MASK | THEATRE_MASK;
 
 	this.type = MERCHANTS;
 	this.name = "Merchants";
@@ -287,6 +410,8 @@ var MerchantsHouseGroup = HouseGroup.extend(function(){
 var AristocratsHouseGroup = HouseGroup.extend(function(){
 	this.requiredResources = makeRequiredResources(undefined, 3, 12, 3,
 		makeBonusResources(CLOTHES_ID, 1, JEWLERY_ID, 1));
+
+	this.requiredPublicBuildingsMask = CHURCH_MASK | TAWERN_MASK | UNIVERSITY_MASK | PUBLICBATH_MASK | THEATRE_MASK;
 
 	this.type = ARISTOCRATS;
 	this.name = "Aristocrats";
@@ -950,106 +1075,6 @@ var FishermanHut = buildable("Fisherman hut", Farm.extend(function(){
 		if(tile.terrainLevel < COAST)
 			this.goodOnes++;
 	};
-}));
-
-// ~~~
-
-// budynki użyteczności publicznej
-
-var PublicBuilding = Building.extend(function(){
-	this.operatingRadius = 0;
-
-	this.onBuild = function(){
-		this.super.onBuild();
-
-		// ...
-	};
-
-	this.onRemove = function(){
-		// ...
-
-		this.super.onRemove();
-	};
-});
-
-var Chapel = buildable("Chapel", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(100, 5, undefined, 2);
-	this.operatingCost = makeOperatingCost(5, 0);
-
-	this.width = 1;
-	this.height = 2;
-}));
-
-var Church = buildable("Church", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(1600, 7, 25, 7);
-	this.operatingCost = makeOperatingCost(50, 0);
-
-	this.width = 3;
-	this.height = 4;
-}));
-
-var Cathedral = buildable("Cathedral", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(7500, 25, 70, 23);
-	this.operatingCost = makeOperatingCost(90, 0);
-
-	this.width = 4;
-	this.height = 6;
-}));
-
-var FireDepartament = buildable("Fire departament", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(150, 5, undefined, 3);
-	this.operatingCost = makeOperatingCost(15, 0);
-
-	this.width = 2;
-	this.height = 2;
-}));
-
-var Medic = buildable("Medic", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(450, 4, 9, 4);
-	this.operatingCost = makeOperatingCost(30, 0);
-
-	this.width = 2;
-	this.height = 2;
-}));
-
-var PublicBath = buildable("Public bath", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(1200, 5, 19, 5);
-	this.operatingCost = makeOperatingCost(60, 0);
-
-	this.width = 3;
-	this.height = 4;
-}));
-
-var School = buildable("School", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(490, 4, 9, 4);
-	this.operatingCost = makeOperatingCost(30, 0);
-
-	this.width = 2;
-	this.height = 2;
-}));
-
-var University = buildable("University", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(750, 5, 19, 6);
-	this.operatingCost = makeOperatingCost(60, 0);
-
-	this.width = 3;
-	this.height = 3;
-}));
-
-var Theatre = buildable("Theatre", PublicBuilding.extend(function(){
-	this.requiredResources = makeRequiredResources(1200, 5, 19, 2);
-	this.operatingCost = makeOperatingCost(80, 0);
-
-	this.width = 3;
-	this.height = 3;
-}));
-
-var Tawern = buildable("Tawern", Building.extend(function(){
-	this.requiredResources = makeRequiredResources(250, 4, 6, 3);
-	this.operatingCost = makeOperatingCost(15, 0);
-
-	this.width = 3;
-	this.height = 2;
 }));
 
 // ~~~

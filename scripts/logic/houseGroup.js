@@ -34,6 +34,9 @@ var HouseGroup = Class.extend(function(){
 	// wymagane surowce do wybudowania domu na ten poziom z poziomu minus jeden
 	this.requiredResources = {};
 
+	// wymagany dostęp do budynków użyteczności publicznej
+	this.requiredPublicBuildingsMask = 0;
+
 	// dane o konsumpcji, per 100 people per 1 sec
 	this.consumption = {}; // id towaru -> consumption per 100 per 1 sec
 	this.baseConsumptionCount = 0;
@@ -49,9 +52,9 @@ var HouseGroup = Class.extend(function(){
 	// postęp w pożeraniu towaru (id towaru -> 0..1)
 	this.step = {};
 
-	// bazowa ilość monet generowana przez 1 obywatela danej kaatgorii
+	// bazowa ilość monet generowana przez 1 obywatela danej katagorii
 	this.baseIncome = 0;
-	this.taxDiff = 0;
+	this.taxDiff = 0; // niby podatek, ale nie działa :P
 
 	this.constructor = function(island, country){
 		this.island = island;
@@ -201,7 +204,10 @@ var HouseGroup = Class.extend(function(){
 				var rand = Math.floor(Math.random() * (keys.length - 1));
 				var house = housesClone[parseInt(keys[rand])];
 
-				if(house.people == this.peopleNeededToLevelUp && this.canUpgrade(house) && canUpgrade){
+				if(	house.people == this.peopleNeededToLevelUp &&
+					(house.centerTile().publicBuildingMask & this.requiredPublicBuildingsMask) &&
+					this.canUpgrade(house) &&
+					canUpgrade){
 					// level up
 
 					var houseGroups = this.island.houseGroups[this.country.id];

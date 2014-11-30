@@ -146,7 +146,7 @@ var Farm = ProductionBuilding.extend(function(){
 					if(!tiles.exsist(underTile.x + i, underTile.y + j))
 						continue;
 
-					var tile = tiles.at(underTile.x + i, underTile.y + j);
+					var tile = tiles[underTile.x + i][underTile.y + j];
 
 					if(checked[tile.index] == undefined){
 						checked[tile.index] = true;

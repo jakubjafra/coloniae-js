@@ -96,6 +96,32 @@ define(['angular'], function(angular){
 		};
 	});
 
+	function makeRawGuiImage(input){
+		if(input == undefined)
+			return 'imgs/gui/products/empty.png';
+
+		var name = input.replace(/\s/g, '');
+		name = name.toLowerCase();
+
+		var image = 'imgs/gui/' + name + '.png';
+		return image;
+	};
+
+	directives.directive("rawGuiImage", function(){
+		return {
+			scope: {
+				imgName: "=name"
+			},
+			link: function(scope){
+				scope.$watch('imgName', function(){
+					scope.imgSrc = makeRawGuiImage(scope.imgName);
+				});
+			},
+			replace: true,
+			templateUrl: 'views/image.html'
+		};
+	});
+
 	// ~~~
 
 	directives.directive("buildingDialog", function(){

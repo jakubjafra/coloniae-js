@@ -89,6 +89,11 @@
 						<div goods-image name="productId"></div>
 					</div>
 				</div>
+				<div class="full_width">
+					<div style="display: inline-block;" ng-repeat="obj in requiredMasks" ng-show="isMaskNotFulfilled(obj.mask)">
+						<div raw-gui-image name="obj.name"></div>
+					</div>
+				</div>
 			</div>
 
 			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl" building-dialog>

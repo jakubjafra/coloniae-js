@@ -78,6 +78,7 @@ require([	'jquery',
 			$("head").append('<script src="scripts/logic/ship.js"></script>');
 			$("head").append('<script src="scripts/logic/structure.js"></script>');
 			$("head").append('<script src="scripts/logic/building.js"></script>');
+			$("head").append('<script src="scripts/logic/publicBuilding.js"></script>');
 			$("head").append('<script src="scripts/logic/houseGroup.js"></script>');
 			$("head").append('<script src="scripts/logic/storageBuilding.js"></script>');
 			$("head").append('<script src="scripts/logic/productionBuilding.js"></script>');

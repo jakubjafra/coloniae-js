@@ -113,14 +113,22 @@ define(['angular', '../../graphics', '../../logic', '../../graphics/gameplayStat
 	app.controller("HouseCtrl", function($scope){
 		$scope.building = undefined;
 
+		$scope.requiredMasks = __publicBuildingsMask__;
+
 		$scope.$watch('building', function(){
 			if($scope.building === undefined)
 				return;
 
-			var island = islands[$scope.building.centerTile().islandId];
-			var country = countries[$scope.building.centerTile().countryId];
+			$scope.underTile = $scope.building.centerTile();
+
+			var island = islands[$scope.underTile.islandId];
+			var country = countries[$scope.underTile.countryId];
 
 			$scope.houseGroup = island.houseGroups[country.id][$scope.building.type];
+
+			$scope.isMaskNotFulfilled = function(mask){
+				return ($scope.houseGroup.requiredPublicBuildingsMask & mask) && !($scope.underTile.publicBuildingMask & mask);
+			}
 		});
 	});
 

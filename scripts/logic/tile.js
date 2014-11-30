@@ -26,12 +26,15 @@ var Tile = Class.extend(function(){
 	// dodatkowe dane dot. terenu
 	this.terrainType = undefined;
 	// dane budynku
+	// TODO: zamienić na buildingId -- przygotowania do serializacji
 	this.buildingData = null;
 	// id państwa do którego należy ten tile
 	this.countryId = INVALID_ID;
 	// id wyspy (nie dot. terenów morskich)
 	this.islandId = INVALID_ID;
-	// id jednostki okupującej dany tile (na morzu statku, na lądzie wojska)
+	// maska używana przez budynki z grupy PublicBuilding
+	this.publicBuildingMask = 0;
+	// id jednostki okupującej dany tile (na morzu statku, na lądzie ew. wojska)
 	this.unitId = INVALID_ID;
 
 	this.constructor = function(x, y){
@@ -39,7 +42,7 @@ var Tile = Class.extend(function(){
 
 		this.x = x;
 		this.y = y;
-	}
+	};
 });
 
 function bindUsefulMapFunctions(){
