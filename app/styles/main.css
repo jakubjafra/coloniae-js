@@ -17,7 +17,6 @@ Powinienem zawisnąć na szubienicy za to gówno.
 
 body {
 	overflow: hidden;
-
 	font-family: monospace;
 }
 
@@ -183,8 +182,8 @@ span > img {
 }
 
 .vertical_center > p {
-	display: table-cell; 
-	vertical-align: middle; 
+	display: table-cell;
+	vertical-align: middle;
 }
 
 .half_width {

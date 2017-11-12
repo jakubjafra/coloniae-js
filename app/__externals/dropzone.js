@@ -279,9 +279,9 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
 
     /*
     This is a list of all available events you can register on a dropzone object.
-    
+
     You can register an event handler like this:
-    
+
         dropzone.on("dragEnter", function() { });
      */
 
@@ -1751,7 +1751,7 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
 
 
   /*
-  
+
   Bugfix for iOS 6 and 7
   Source: http://stackoverflow.com/questions/11929099/html5-canvas-drawimage-ratio-bug-ios
   based on the work of https://github.com/stomita/ios-imagefile-megapixel
@@ -1865,10 +1865,10 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
 });
 
 if (typeof exports == "object") {
-  module.exports = require("dropzone");
+  module.exports = require("app/__externals/dropzone");
 } else if (typeof define == "function" && define.amd) {
-  define([], function(){ return require("dropzone"); });
+  define([], function(){ return require("app/__externals/dropzone"); });
 } else {
-  this["Dropzone"] = require("dropzone");
+  this["Dropzone"] = require("app/__externals/dropzone");
 }
 })()
