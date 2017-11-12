@@ -4,3 +4,5 @@ __release
 __release/*
 __backup
 __backup/*
+.idea
+.DS_Store
