@@ -19,7 +19,7 @@ Screenshots
 _Solid start island for futher expansion._
 
 ![Building menu](https://raw.githubusercontent.com/khronedev/coloniae/master/showcase/screen_3.png)
-_The original Anno 1602 was not implemented._
+_The original Anno 1602 GUI was not implemented._
 
 ![First working version](https://raw.githubusercontent.com/khronedev/coloniae/master/showcase/screen_first_version.png)
 _First version was rendered in full 3D (back then in 2014!)_
