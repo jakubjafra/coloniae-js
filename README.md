@@ -6,7 +6,14 @@ _You can even get to aristocrats in here._
 
 This game is clone of old strategy Anno 1602. Copyrights for graphics, design and so on are held by the Ubisoft company. It is written only for educational purposes.
 
-Run with:
+Play
+----
+
+[Click here to play in your browser](https://khronedev.github.io/coloniae/app/). It takes a while to load ;)
+
+### Docker
+
+You can run this locally with:
 ```
 docker-compose up
 ```
