@@ -62,11 +62,6 @@ require([	'jquery',
 			Graphics,
 			Gui
 		){
-			// ZA CHUJA nie wiem czemu to się nie chce ładować w tej kolejności
-			// kiedy ładuję przez Require. Popierdolone to jest. Tak działa. LOL.
-			// Rozwiązaniem jest podzielenie tego na prawidłowe moduły Require,
-			// ale mi się kurwa nie chce.
-			
 			$("head").append('<script src="scripts/logic/tile.js"></script>');
 			$("head").append('<script src="scripts/logic/algorithms.js"></script>');
 			$("head").append('<script src="scripts/logic/product.js"></script>');
@@ -84,7 +79,6 @@ require([	'jquery',
 			$("head").append('<script src="scripts/logic/productionBuilding.js"></script>');
 			$("head").append('<script src="scripts/logic/civilianUnit.js"></script>');
 			$("head").append('<script src="scripts/logic/gameDefinitions.js"></script>');
-			
 
 			// ~~~
 

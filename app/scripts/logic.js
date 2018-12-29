@@ -8,6 +8,7 @@ define(['jquery',
 		'underscore',
 		'extend',
 		// wczytanie logiki:
+		/*
 		'./logic/tile',
 		'./logic/algorithms',
 		'./logic/product',
@@ -25,6 +26,7 @@ define(['jquery',
 		'./logic/productionBuilding',
 		'./logic/civilianUnit',
 		'./logic/gameDefinitions'
+		*/
 		],
 	function(
 	){
