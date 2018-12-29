@@ -9,14 +9,14 @@ require.config({
 	baseUrl: 'scripts',
 
 	paths: {
-		'jquery': '../__externals/jquery-2.1.1.min',
-		'jquery-mousewheel': '../__externals/jquery.mousewheel.min',
-		'extend': '../__externals/extend',
-		'three': '../__externals/three.min',
-		'three-stats': '../__externals/stats.min',
-		'underscore': '../__externals/underscore-min',
-		'angular': '../__externals/angular.min',
-		'text': '../__externals/text'
+		'jquery': '../externals/jquery-2.1.1.min',
+		'jquery-mousewheel': '../externals/jquery.mousewheel.min',
+		'extend': '../externals/extend',
+		'three': '../externals/three.min',
+		'three-stats': '../externals/stats.min',
+		'underscore': '../externals/underscore-min',
+		'angular': '../externals/angular.min',
+		'text': '../externals/text'
 	},
 
 	shim: {
@@ -99,7 +99,7 @@ require([	'jquery',
 
 					$("#console").append(newElement).append("<br>");
 				}
-			}
+			};
 
 			// ~~~
 
