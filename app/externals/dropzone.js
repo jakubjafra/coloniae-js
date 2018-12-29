@@ -1865,10 +1865,10 @@ require.register("dropzone/lib/dropzone.js", function (exports, module) {
 });
 
 if (typeof exports == "object") {
-  module.exports = require("app/__externals/dropzone");
+  module.exports = require("app/externals/dropzone");
 } else if (typeof define == "function" && define.amd) {
-  define([], function(){ return require("app/__externals/dropzone"); });
+  define([], function(){ return require("app/externals/dropzone"); });
 } else {
-  this["Dropzone"] = require("app/__externals/dropzone");
+  this["Dropzone"] = require("app/externals/dropzone");
 }
 })()
