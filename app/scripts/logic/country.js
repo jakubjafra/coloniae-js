@@ -4,7 +4,7 @@ country.js
 
 */
 
-import Class from 'extend';
+import Class from '../extend';
 
 import { INVALID_ID, INVALID_TYPE } from './constants';
 

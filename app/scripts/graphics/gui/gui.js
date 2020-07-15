@@ -28,8 +28,8 @@ import { gameplayState } from '../../graphics/gameplayState';
 
 import './directives';
 
-import buildingExtendedInfoDescriptionTemplate from '../../../views/buildingExtendedInfo/description.html';
-import buildingExtendedInfoFullTemplate from '../../../views/buildingExtendedInfo/full.html';
+import buildingExtendedInfoDescriptionTemplate from './views/buildingExtendedInfo/description.html';
+import buildingExtendedInfoFullTemplate from './views/buildingExtendedInfo/full.html';
 
 // niestety angular sam nie updateuje zmian z "other sources"
 // więc trzeba samemu callować zmianę $scopa co jakiś czas

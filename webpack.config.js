@@ -1,5 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -19,10 +20,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.css$/i,
-        use: ['style-loader', 'css-loader'],
-      },
-      {
         test: /\.(png|jpe?g|gif)$/i,
         loader: 'file-loader',
       },
@@ -35,6 +32,12 @@ module.exports = {
   plugins: [
     new webpack.ProvidePlugin({
       'window.jQuery': 'jquery',
+    }),
+    new CopyPlugin({
+      patterns: [
+        { from: 'static', to: '.', context: './app/' },
+        { from: 'imgs', to: 'imgs', context: './app/' },
+      ],
     }),
   ],
 };

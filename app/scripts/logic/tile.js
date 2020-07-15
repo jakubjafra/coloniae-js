@@ -4,7 +4,7 @@ tile.js
 
 */
 
-import Class from 'extend';
+import Class from '../extend';
 
 import { INVALID_ID } from './constants';
 

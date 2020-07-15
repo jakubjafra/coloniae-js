@@ -9,8 +9,8 @@ import angular from 'angular';
 
 import { products } from '../../logic/product';
 
-import imageTemplate from '../../../views/image.html';
-import buildingDialogTemplate from '../../../views/buildingDialog.html';
+import imageTemplate from './views/image.html';
+import buildingDialogTemplate from './views/buildingDialog.html';
 
 var directives = angular.module('directives', []);
 

@@ -4,7 +4,7 @@ storage.js
 
 */
 
-import Class from 'extend';
+import Class from '../extend';
 
 // trzeba zrobić porządek z tymi slotami... nie podoba mi się trochę bałagan z tymi id'kami
 // być może to problem bo nie mam rozpisanych towarów nigdzie ani konkretnych budynków

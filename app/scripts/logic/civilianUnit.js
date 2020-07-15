@@ -4,7 +4,7 @@ civilianUnit.js
 
 */
 
-import Class from 'extend';
+import Class from '../extend';
 import _ from 'underscore';
 
 import { INVALID_ID } from './constants';

@@ -4,7 +4,7 @@ structure.js
 
 */
 
-import Class from 'extend';
+import Class from '../extend';
 import $ from 'jquery';
 
 import { INVALID_ID } from './constants';
