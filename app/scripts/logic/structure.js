@@ -9,7 +9,7 @@ import $ from 'jquery';
 
 import { INVALID_ID } from './constants';
 import { WOOD_ID, BRICKS_ID, TOOLS_ID } from './gameDefinitions';
-import { Country } from './country';
+import { Country, countries } from './country';
 import { tiles } from './tile';
 import { islands } from './island';
 

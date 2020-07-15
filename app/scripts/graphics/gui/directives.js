@@ -4,7 +4,13 @@ directives.js
 
 */
 
+import $ from 'jquery';
 import angular from 'angular';
+
+import { products } from '../../logic/product';
+
+import imageTemplate from '../../../views/image.html';
+import buildingDialogTemplate from '../../../views/buildingDialog.html';
 
 var directives = angular.module('directives', []);
 
@@ -31,7 +37,7 @@ directives.directive('buildingImage', function () {
       });
     },
     replace: true,
-    templateUrl: 'views/image.html',
+    template: imageTemplate,
   };
 });
 
@@ -61,7 +67,7 @@ directives.directive('productImage', function () {
       });
     },
     replace: true,
-    templateUrl: 'views/image.html',
+    template: imageTemplate,
   };
 });
 
@@ -89,7 +95,7 @@ directives.directive('goodsImage', function () {
       });
     },
     replace: true,
-    templateUrl: 'views/image.html',
+    template: imageTemplate,
   };
 });
 
@@ -114,7 +120,7 @@ directives.directive('rawGuiImage', function () {
       });
     },
     replace: true,
-    templateUrl: 'views/image.html',
+    template: imageTemplate,
   };
 });
 
@@ -123,7 +129,7 @@ directives.directive('rawGuiImage', function () {
 directives.directive('buildingDialog', function () {
   return {
     transclude: true,
-    templateUrl: 'views/buildingDialog.html',
+    template: buildingDialogTemplate,
     scope: {},
     link: function (scope, element, attrs, foo, transclude) {
       element.addClass('buildingDialog');

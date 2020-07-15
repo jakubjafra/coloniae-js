@@ -20,7 +20,7 @@ export var PublicBuilding = Building.extend(function () {
 
 // ~~~
 
-var __publicBuildingsMask__ = [];
+export var __publicBuildingsMask__ = [];
 
 function createMask(name) {
   var mask = 1 << __publicBuildingsMask__.length;

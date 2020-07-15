@@ -36,7 +36,7 @@ define([
   { structsClass, canBeBuild },
   { militaryUnits },
   { framework },
-  gameplayState,
+  { gameplayState },
   draw,
   picker,
   layerManager,

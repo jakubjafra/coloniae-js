@@ -24,12 +24,15 @@
     "underscore": "^1.6.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.4",
-    "serve": "^11.3.2",
+    "css-loader": "^3.6.0",
+    "file-loader": "^6.0.0",
+    "html-loader": "^1.1.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.1.7",
-    "shell-quote": "^1.7.2",
+    "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
+    "serve": "^11.3.2",
+    "shell-quote": "^1.7.2",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12"
   }

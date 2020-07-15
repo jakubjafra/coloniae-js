@@ -35,7 +35,7 @@ import { HouseGroup, PIONERS, SETTLERS, CITIZENS, MERCHANTS, ARISTOCRATS } from 
 import { Workshop, Farm } from './productionBuilding';
 import { CivilianUnit } from './civilianUnit';
 import { tiles } from './tile';
-import { Storage } from './storage';
+import { Storage, OUTPUT, INPUT_1, INPUT_2 } from './storage';
 
 // tile.js
 

@@ -24,7 +24,7 @@ define([
   { civilianUnits },
   { militaryUnits },
   { Porter, FieldPlant, House },
-  gameplayState,
+  { gameplayState },
   layerManager,
 ) {
   var flagProgress = {};

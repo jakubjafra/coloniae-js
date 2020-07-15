@@ -1,18 +1,48 @@
 <div class="building_ext_info">
-	<div class="building_name">
-		{{buildingName}}
-	</div>
-	<div class="building_side">
-		<div ng-click="changeSide(); $event.stopPropagation();" class="rotation rotation_{{side}}">{{side | rotationLetterByCode}}</div>
-	</div>
-	<div class="building_img" style="height: 50px;">
-		<div building-image name="buildingName"></div>
-	</div>
-	<div class="building_img" style="height: 30px;">
-		<span ng-show="tool != undefined"><img style="display: inline-block;" src="imgs/gui/tool.png" width="20px" height="20px">{{tool | number:0}}</span>
-		<span ng-show="wood != undefined"><img style="display: inline-block;" src="imgs/gui/wood.png" width="20px" height="20px">{{wood | number:0}}</span>
-		<span ng-show="brick != undefined"><img style="display: inline-block;" src="imgs/gui/brick.png" width="20px" height="20px">{{brick | number:0}}</span>
-		<span ng-show="coins != undefined"><img style="display: inline-block;" src="imgs/gui/coin.png" width="20px" height="20px">{{coins | number:0}}</span>
-	</div>
-	<div building-ext-inf-description></div>
+  <div class="building_name">
+    {{buildingName}}
+  </div>
+  <div class="building_side">
+    <div ng-click="changeSide(); $event.stopPropagation();" class="rotation rotation_{{side}}">
+      {{side | rotationLetterByCode}}
+    </div>
+  </div>
+  <div class="building_img" style="height: 50px;">
+    <div building-image name="buildingName"></div>
+  </div>
+  <div class="building_img" style="height: 30px;">
+    <span ng-show="tool != undefined"
+      ><img
+        style="display: inline-block;"
+        src="../../imgs/gui/tool.png"
+        width="20px"
+        height="20px"
+      />{{tool | number:0}}</span
+    >
+    <span ng-show="wood != undefined"
+      ><img
+        style="display: inline-block;"
+        src="../../imgs/gui/wood.png"
+        width="20px"
+        height="20px"
+      />{{wood | number:0}}</span
+    >
+    <span ng-show="brick != undefined"
+      ><img
+        style="display: inline-block;"
+        src="../../imgs/gui/brick.png"
+        width="20px"
+        height="20px"
+      />{{brick | number:0}}</span
+    >
+    <span ng-show="coins != undefined"
+      ><img
+        style="display: inline-block;"
+        src="../../imgs/gui/coin.png"
+        width="20px"
+        height="20px"
+      />{{coins | number:0}}</span
+    >
+  </div>
+  <div building-ext-inf-description></div>
 </div>

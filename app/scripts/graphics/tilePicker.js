@@ -9,7 +9,7 @@ define([
   '../graphics/gameplayState',
   '../graphics/drawMethod',
   '../graphics/layerManager',
-], function ({ tiles }, gameplayState, draw, layerManager) {
+], function ({ tiles }, { gameplayState }, draw, layerManager) {
   return new (function () {
     // fast, but choose only tiles, not objects
     this.byGeometry = function (x, y) {

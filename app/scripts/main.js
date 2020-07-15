@@ -4,51 +4,11 @@ main.js
 
 */
 
-/*
-require.config({
-	baseUrl: 'scripts',
-
-	paths: {
-		'jquery': '../externals/jquery-2.1.1.min',
-		'jquery-mousewheel': '../externals/jquery.mousewheel.min',
-		'extend': '../externals/extend',
-		'three': '../externals/three.min',
-		'three-stats': '../externals/stats.min',
-		'underscore': '../externals/underscore-min',
-		'angular': '../externals/angular.min',
-		'text': '../externals/text'
-	},
-
-	shim: {
-		'jquery-mousewheel': {
-			deps: [ 'jquery' ],
-			exports: 'jQuery.mousewheel'
-		},
-
-		'three': {
-			exports: 'THREE'
-		},
-
-		'three-stats': {
-			exports: 'Stats'
-		},
-
-		'underscore': {
-			exports: '_'
-		},
-
-		'angular': {
-			exports: 'angular'
-		}
-	}
-});
-*/
-
 import $ from 'jquery';
 
 import { Logic } from './logic';
 import Graphics from './graphics';
-import Gui from './graphics/gui/gui';
+import { Gui } from './graphics/gui/gui';
 
 // ~~~
 

@@ -4,7 +4,7 @@ gameplayState.js
 
 */
 
-var gameplayState = {
+export var gameplayState = {
   // aktualna pozycja kamery
   cameraPosition: {
     x: 500,
@@ -47,7 +47,3 @@ var gameplayState = {
   // dla gui.js (usunąć to stąd!)
   guiClickHandler: function () {},
 };
-
-define([], function () {
-  return gameplayState;
-});
