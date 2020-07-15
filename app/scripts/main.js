@@ -4,7 +4,7 @@ main.js
 
 */
 
-
+/*
 require.config({
 	baseUrl: 'scripts',
 
@@ -42,26 +42,14 @@ require.config({
 		}
 	}
 });
+*/
 
-console.log('loading dependencies');
+import $ from 'externals/jquery-2.1.1.min.js';
 
-require([	'jquery',
-			'jquery-mousewheel',
-			'extend',
-			'underscore',
-			'./logic',
-			'./graphics',
-			'./graphics/gui/gui'
-		],
-		function(
-			$,
-			_a,
-			_b,
-			_,
-			Logic,
-			Graphics,
-			Gui
-		){
+import Logic from './logic';
+import Graphics from './graphics';
+import Gui from './graphics/gui/gui';
+
 			$("head").append('<script src="scripts/logic/tile.js"></script>');
 			$("head").append('<script src="scripts/logic/algorithms.js"></script>');
 			$("head").append('<script src="scripts/logic/product.js"></script>');
@@ -115,4 +103,3 @@ require([	'jquery',
 			// uruchomienie gry
 			Graphics.start();
 			Gui.start();
-});

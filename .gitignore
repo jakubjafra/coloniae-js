@@ -6,3 +6,6 @@ __backup
 __backup/*
 .idea
 .DS_Store
+node_modules
+.vscode
+build
