@@ -4,11 +4,12 @@ logic.js
 
 */
 
-define(['jquery',
-		'underscore',
-		'extend',
-		// wczytanie logiki:
-		/*
+define([
+  'jquery',
+  'underscore',
+  'extend',
+  // wczytanie logiki:
+  /*
 		'./logic/tile',
 		'./logic/algorithms',
 		'./logic/product',
@@ -27,76 +28,79 @@ define(['jquery',
 		'./logic/civilianUnit',
 		'./logic/gameDefinitions'
 		*/
-		],
-	function(
-	){
-		
-	HARD_UPDATE_INTERVAL = 1.0;
+], function () {
+  HARD_UPDATE_INTERVAL = 1.0;
 
-	function updateForAllNotUndefined(object, updateFuncName, param){
-		for(var i = 0; i < object.length; i++)
-			if(object[i] != undefined)
-				object[i][updateFuncName].call(object[i], param);
-	}
+  function updateForAllNotUndefined(object, updateFuncName, param) {
+    for (var i = 0; i < object.length; i++)
+      if (object[i] != undefined) object[i][updateFuncName].call(object[i], param);
+  }
 
-	var hardUpdateCount = 0.0;
+  var hardUpdateCount = 0.0;
 
-	return {
-		timeFlowSpeed: 4,
+  return {
+    timeFlowSpeed: 4,
 
-		update: function(delta){
-			// Kolejność update'ów JEST WAŻNA (islands musi być pierwsze).
+    update: function (delta) {
+      // Kolejność update'ów JEST WAŻNA (islands musi być pierwsze).
 
-			hardUpdateCount += delta;
+      hardUpdateCount += delta;
 
-			for(; hardUpdateCount >= HARD_UPDATE_INTERVAL; hardUpdateCount -= HARD_UPDATE_INTERVAL){
-				var gameTimeDelta = HARD_UPDATE_INTERVAL * this.timeFlowSpeed; 
-				
-				updateForAllNotUndefined(islands, 'hardUpdate', gameTimeDelta);
-				updateForAllNotUndefined(structures, 'hardUpdate', gameTimeDelta);
-				updateForAllNotUndefined(civilianUnits, 'hardUpdate', gameTimeDelta);
-				updateForAllNotUndefined(militaryUnits, 'hardUpdate', gameTimeDelta);
-			}
+      for (; hardUpdateCount >= HARD_UPDATE_INTERVAL; hardUpdateCount -= HARD_UPDATE_INTERVAL) {
+        var gameTimeDelta = HARD_UPDATE_INTERVAL * this.timeFlowSpeed;
 
-			var gameTimeDelta = delta * this.timeFlowSpeed;
+        updateForAllNotUndefined(islands, 'hardUpdate', gameTimeDelta);
+        updateForAllNotUndefined(structures, 'hardUpdate', gameTimeDelta);
+        updateForAllNotUndefined(civilianUnits, 'hardUpdate', gameTimeDelta);
+        updateForAllNotUndefined(militaryUnits, 'hardUpdate', gameTimeDelta);
+      }
 
-			updateForAllNotUndefined(islands, 'softUpdate', gameTimeDelta);
-			updateForAllNotUndefined(structures, 'softUpdate', gameTimeDelta);
-			updateForAllNotUndefined(civilianUnits, 'softUpdate', gameTimeDelta);
-			updateForAllNotUndefined(militaryUnits, 'softUpdate', gameTimeDelta);
-		},
+      var gameTimeDelta = delta * this.timeFlowSpeed;
 
-		// tymczasowe tworzenie planszy:
-		init: function(){
-			console.log("creating map, sample buildings, etc.");
+      updateForAllNotUndefined(islands, 'softUpdate', gameTimeDelta);
+      updateForAllNotUndefined(structures, 'softUpdate', gameTimeDelta);
+      updateForAllNotUndefined(civilianUnits, 'softUpdate', gameTimeDelta);
+      updateForAllNotUndefined(militaryUnits, 'softUpdate', gameTimeDelta);
+    },
 
-			createMap(40, 50);
+    // tymczasowe tworzenie planszy:
+    init: function () {
+      console.log('creating map, sample buildings, etc.');
 
-			// var mainIsland = new Island();
+      createMap(40, 50);
 
-			var playerCountry = new Country();
-			playerCountry.type = PLAYER_COUNTRY;
+      // var mainIsland = new Island();
 
-			var ship = new Ship();
+      var playerCountry = new Country();
+      playerCountry.type = PLAYER_COUNTRY;
 
-			ship.setPosition(tiles.coords(19, 0));
-			// ship.moveTo(tiles.coords(19, 1));
-			ship.countryId = playerCountry.id;
+      var ship = new Ship();
 
-			playerCountry.coins = 10000; // tymczasowe
+      ship.setPosition(tiles.coords(19, 0));
+      // ship.moveTo(tiles.coords(19, 1));
+      ship.countryId = playerCountry.id;
 
-			tiles[19][4].countryId = 0;
-			var port = new Port(19, 4, countries[0], true);
-			
-			
-			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(TOOLS_ID), 100); // tymczasowe
-			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(WOOD_ID), 100); // tymczasowe
-			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(FOOD_ID), 5); // tymczasowe
-			
+      playerCountry.coins = 10000; // tymczasowe
 
-			new House(19, 7, countries[0]);
+      tiles[19][4].countryId = 0;
+      var port = new Port(19, 4, countries[0], true);
 
-			/*
+      islands[0].mainMarketplaces[0].storage.add(
+        islands[0].mainMarketplaces[0].storage.special(TOOLS_ID),
+        100,
+      ); // tymczasowe
+      islands[0].mainMarketplaces[0].storage.add(
+        islands[0].mainMarketplaces[0].storage.special(WOOD_ID),
+        100,
+      ); // tymczasowe
+      islands[0].mainMarketplaces[0].storage.add(
+        islands[0].mainMarketplaces[0].storage.special(FOOD_ID),
+        5,
+      ); // tymczasowe
+
+      new House(19, 7, countries[0]);
+
+      /*
 			new Road(19, 4, countries[0]);
 
 			// new Harbor(19, 1, countries[0]);
@@ -146,6 +150,6 @@ define(['jquery',
 			for(var i = 0; i < 6; i++)
 				new Road(27 + i, 11, countries[0]);
 			*/
-		}
-	};
+    },
+  };
 });

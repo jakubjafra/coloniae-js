@@ -4,148 +4,156 @@ framework.js
 
 */
 
-define(['jquery', 'three-stats', 'jquery-mousewheel'], function($, Stats){
-	function initFpsCounter(){
-		var stats = new Stats();
-		stats.setMode(0); // 0: fps, 1: ms
+define(['jquery', 'three-stats', 'jquery-mousewheel'], function ($, Stats) {
+  function initFpsCounter() {
+    var stats = new Stats();
+    stats.setMode(0); // 0: fps, 1: ms
 
-		// Align top-left
-		stats.domElement.style.position = 'absolute';
-		stats.domElement.style.right = '100px';
-		stats.domElement.style.top = '0px';
+    // Align top-left
+    stats.domElement.style.position = 'absolute';
+    stats.domElement.style.right = '100px';
+    stats.domElement.style.top = '0px';
 
-		$("#on_canvas").append(stats.domElement);
+    $('#on_canvas').append(stats.domElement);
 
-		return stats;
-	}
+    return stats;
+  }
 
-	return function(wrapper){
-		console.assert(typeof wrapper === "object");
+  return function (wrapper) {
+    console.assert(typeof wrapper === 'object');
 
-		wrapper.resources = wrapper.resources || [];
-		wrapper.loadedResources = {};
+    wrapper.resources = wrapper.resources || [];
+    wrapper.loadedResources = {};
 
-		wrapper.fullscreen = wrapper.fullscreen || false;
+    wrapper.fullscreen = wrapper.fullscreen || false;
 
-		wrapper.onUpdate = wrapper.onUpdate || function(){};
-		wrapper.onRender = wrapper.onRender || function(){};
-		wrapper.onLoadResources = wrapper.onLoadResources || function(){};
+    wrapper.onUpdate = wrapper.onUpdate || function () {};
+    wrapper.onRender = wrapper.onRender || function () {};
+    wrapper.onLoadResources = wrapper.onLoadResources || function () {};
 
-		wrapper.onKeyDown = wrapper.onKeyDown || function(){};
-		wrapper.onKeyUp = wrapper.onKeyUp || function(){};
+    wrapper.onKeyDown = wrapper.onKeyDown || function () {};
+    wrapper.onKeyUp = wrapper.onKeyUp || function () {};
 
-		wrapper.onMouseEnter = wrapper.onMouseEnter || function(){};
-		wrapper.onMouseLeave = wrapper.onMouseLeave || function(){};
-		wrapper.onMouseMove = wrapper.onMouseMove || function(){};
-		wrapper.onMouseDown = wrapper.onMouseDown || function(){};
-		wrapper.onMouseUp = wrapper.onMouseUp || function(){};
-		wrapper.onMouseWheel = wrapper.onMouseWheel || function(){};
+    wrapper.onMouseEnter = wrapper.onMouseEnter || function () {};
+    wrapper.onMouseLeave = wrapper.onMouseLeave || function () {};
+    wrapper.onMouseMove = wrapper.onMouseMove || function () {};
+    wrapper.onMouseDown = wrapper.onMouseDown || function () {};
+    wrapper.onMouseUp = wrapper.onMouseUp || function () {};
+    wrapper.onMouseWheel = wrapper.onMouseWheel || function () {};
 
-		wrapper.onMouseClick = wrapper.onMouseClick || function(){};
+    wrapper.onMouseClick = wrapper.onMouseClick || function () {};
 
-		// ~~~
+    // ~~~
 
-		this._ = wrapper;
+    this._ = wrapper;
 
-		this.stats = initFpsCounter();
+    this.stats = initFpsCounter();
 
-		// ~~~
+    // ~~~
 
-		var loadedResourcesCount = 0;
+    var loadedResourcesCount = 0;
 
-		this.canvas = $("#mainCanvas");
+    this.canvas = $('#mainCanvas');
 
-		var context = $(this.canvas)[0].getContext("2d");
+    var context = $(this.canvas)[0].getContext('2d');
 
-		if(wrapper.fullscreen){
-			context.canvas.width = parseInt($("body").width());
-			context.canvas.height = parseInt(window.innerHeight);
-		}
+    if (wrapper.fullscreen) {
+      context.canvas.width = parseInt($('body').width());
+      context.canvas.height = parseInt(window.innerHeight);
+    }
 
-		$(window).resize(function(){
-			context.canvas.width = parseInt($("body").width());
-			context.canvas.height = parseInt(window.innerHeight);
-		});
+    $(window).resize(function () {
+      context.canvas.width = parseInt($('body').width());
+      context.canvas.height = parseInt(window.innerHeight);
+    });
 
-		var oldTime = (new Date()).getTime();
-		var newTime = 0;
-		var delta = 0;
+    var oldTime = new Date().getTime();
+    var newTime = 0;
+    var delta = 0;
 
-		var X = 0;
-		var Y = 0;
+    var X = 0;
+    var Y = 0;
 
-		var wasMouseCursorMovedSinceMouseDown = false;
-		var lastMouseDown = 0;
+    var wasMouseCursorMovedSinceMouseDown = false;
+    var lastMouseDown = 0;
 
-		$("body").keydown(function(e){ wrapper.onKeyDown.call(wrapper, e.which); });
-		$("body").keyup(function(e){ wrapper.onKeyUp.call(wrapper, e.which); });
+    $('body').keydown(function (e) {
+      wrapper.onKeyDown.call(wrapper, e.which);
+    });
+    $('body').keyup(function (e) {
+      wrapper.onKeyUp.call(wrapper, e.which);
+    });
 
-		$(this.canvas).mouseenter($.proxy(wrapper.onMouseEnter, wrapper));
-		$(this.canvas).mouseleave($.proxy(wrapper.onMouseLeave, wrapper));
-		
-		$(this.canvas).mousemove($.proxy(function(e){
-			X = e.pageX - $(this.canvas).offset().left;
-			Y = e.pageY - $(this.canvas).offset().top;
+    $(this.canvas).mouseenter($.proxy(wrapper.onMouseEnter, wrapper));
+    $(this.canvas).mouseleave($.proxy(wrapper.onMouseLeave, wrapper));
 
-			wasMouseCursorMovedSinceMouseDown = true;
+    $(this.canvas).mousemove(
+      $.proxy(function (e) {
+        X = e.pageX - $(this.canvas).offset().left;
+        Y = e.pageY - $(this.canvas).offset().top;
 
-			wrapper.onMouseMove.call(wrapper, X, Y);
-		}, this));
-		
-		$(this.canvas).mousedown(function(){
-			wasMouseCursorMovedSinceMouseDown = false;
-			lastMouseDown = (new Date()).getTime();
+        wasMouseCursorMovedSinceMouseDown = true;
 
-			wrapper.onMouseDown.call(wrapper, X, Y);
-		});
-		
-		$(this.canvas).mouseup(function(){
-			wrapper.onMouseUp.call(wrapper, X, Y);
+        wrapper.onMouseMove.call(wrapper, X, Y);
+      }, this),
+    );
 
-			if(!wasMouseCursorMovedSinceMouseDown || ((new Date()).getTime() - lastMouseDown) < 200)
-				wrapper.onMouseClick.call(wrapper, X, Y);
-		});
+    $(this.canvas).mousedown(function () {
+      wasMouseCursorMovedSinceMouseDown = false;
+      lastMouseDown = new Date().getTime();
 
-		$(this.canvas).mousewheel(function(e){ wrapper.onMouseWheel.call(wrapper, e.deltaY); });
+      wrapper.onMouseDown.call(wrapper, X, Y);
+    });
 
-		this.step = $.proxy(function(){
-			newTime = (new Date()).getTime();
-			delta = (newTime - oldTime) / 1000;
+    $(this.canvas).mouseup(function () {
+      wrapper.onMouseUp.call(wrapper, X, Y);
 
-			this.stats.begin();
+      if (!wasMouseCursorMovedSinceMouseDown || new Date().getTime() - lastMouseDown < 200)
+        wrapper.onMouseClick.call(wrapper, X, Y);
+    });
 
-			wrapper.onUpdate(delta);
-			wrapper.onRender(delta, context, wrapper.loadedResources);
+    $(this.canvas).mousewheel(function (e) {
+      wrapper.onMouseWheel.call(wrapper, e.deltaY);
+    });
 
-			this.stats.end();
+    this.step = $.proxy(function () {
+      newTime = new Date().getTime();
+      delta = (newTime - oldTime) / 1000;
 
-			oldTime = newTime;
+      this.stats.begin();
 
-			requestAnimationFrame(this.step);
-		}, this);
+      wrapper.onUpdate(delta);
+      wrapper.onRender(delta, context, wrapper.loadedResources);
 
-		this.start = function(){
-			console.log('starting loading requested ' + wrapper.resources.length + ' image(s)');
+      this.stats.end();
 
-			for(var i = 0; i < wrapper.resources.length; i++){
-				var name = wrapper.resources[i];
+      oldTime = newTime;
 
-				wrapper.loadedResources[name] = new Image(); // TODO: Uwolnić resources od bycia stricte Image.
+      requestAnimationFrame(this.step);
+    }, this);
 
-				wrapper.loadedResources[name].onload = $.proxy(function(){
-					loadedResourcesCount++;
-					if(loadedResourcesCount >= wrapper.resources.length){
-						console.log('...done loading images, lauching game');
+    this.start = function () {
+      console.log('starting loading requested ' + wrapper.resources.length + ' image(s)');
 
-						wrapper.onLoadResources(wrapper.loadedResources);
+      for (var i = 0; i < wrapper.resources.length; i++) {
+        var name = wrapper.resources[i];
 
-						oldTime = (new Date()).getTime();
-						requestAnimationFrame(this.step);
-					}
-				}, this);
+        wrapper.loadedResources[name] = new Image(); // TODO: Uwolnić resources od bycia stricte Image.
 
-				wrapper.loadedResources[name].src = "imgs/" + name + ".png";
-			}
-		};
-	};
+        wrapper.loadedResources[name].onload = $.proxy(function () {
+          loadedResourcesCount++;
+          if (loadedResourcesCount >= wrapper.resources.length) {
+            console.log('...done loading images, lauching game');
+
+            wrapper.onLoadResources(wrapper.loadedResources);
+
+            oldTime = new Date().getTime();
+            requestAnimationFrame(this.step);
+          }
+        }, this);
+
+        wrapper.loadedResources[name].src = 'imgs/' + name + '.png';
+      }
+    };
+  };
 });

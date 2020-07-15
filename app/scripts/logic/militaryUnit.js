@@ -15,132 +15,119 @@ SOUTH_WEST = 31;
 WEST = 40;
 NORTH_WEST = 41;
 
-function directionFromVector(vector){
-	if(vector.y < 0){
-		if(vector.x < 0)
-			return NORTH_EAST;
-		else if(vector.x == 0)
-			return NORTH;
-		else
-			return NORTH_WEST;
-	} else if(vector.y == 0){
-		if(vector.x < 0)
-			return EAST;
-		else if(vector.x == 0)
-			return 0;
-		else
-			return WEST;
-	} else {
-		if(vector.x < 0)
-			return SOUTH_EAST;
-		else if(vector.x == 0)
-			return SOUTH;
-		else
-			return SOUTH_WEST;
-	}
+function directionFromVector(vector) {
+  if (vector.y < 0) {
+    if (vector.x < 0) return NORTH_EAST;
+    else if (vector.x == 0) return NORTH;
+    else return NORTH_WEST;
+  } else if (vector.y == 0) {
+    if (vector.x < 0) return EAST;
+    else if (vector.x == 0) return 0;
+    else return WEST;
+  } else {
+    if (vector.x < 0) return SOUTH_EAST;
+    else if (vector.x == 0) return SOUTH;
+    else return SOUTH_WEST;
+  }
 }
 
 // Jednostka wojskowa - porusza się wszędzie, może być tylko 1 na danym tilesie.
-var MilitaryUnit = Class.extend(function(){
-	// identyfikator
-	this.id = INVALID_ID;
-	// aktualna pozycja
-	this.position = tiles.coords(-1, -1);
-	// aktualna rotacja
-	this.rotation = NORTH;
-	// aktualny wektor rotacji
-	this.rotationVector = tiles.coords(0, 0);
+var MilitaryUnit = Class.extend(function () {
+  // identyfikator
+  this.id = INVALID_ID;
+  // aktualna pozycja
+  this.position = tiles.coords(-1, -1);
+  // aktualna rotacja
+  this.rotation = NORTH;
+  // aktualny wektor rotacji
+  this.rotationVector = tiles.coords(0, 0);
 
-	// czy się porusza
-	this.isMoving = false;
-	// czas od ostatniej zmiany pozycji
-	this.lastMoveTime = 0;
-	// tiles końcowy
-	this.destination = tiles.coords(-1, -1);
-	// znaleziona droga, lista kroków do celu
-	this.steps = [];
+  // czy się porusza
+  this.isMoving = false;
+  // czas od ostatniej zmiany pozycji
+  this.lastMoveTime = 0;
+  // tiles końcowy
+  this.destination = tiles.coords(-1, -1);
+  // znaleziona droga, lista kroków do celu
+  this.steps = [];
 
-	// "odwrtoność" speed (im większa tym wolniej statek płynie)
-	this.timeNeededToReachNewTile = 1;
+  // "odwrtoność" speed (im większa tym wolniej statek płynie)
+  this.timeNeededToReachNewTile = 1;
 
-	// przynależność państwowa
-	this.countryId = INVALID_ID;
+  // przynależność państwowa
+  this.countryId = INVALID_ID;
 
-	this.constructor = function(){
-		this.id = militaryUnits.length;
-		militaryUnits.push(this);
-	};
+  this.constructor = function () {
+    this.id = militaryUnits.length;
+    militaryUnits.push(this);
+  };
 
-	this.setPosition = function(coords){
-		// this.position may be invalid (-1, -1)
-		tiles.at_mayRetEmpty(this.position).unitId = INVALID_ID;
+  this.setPosition = function (coords) {
+    // this.position may be invalid (-1, -1)
+    tiles.at_mayRetEmpty(this.position).unitId = INVALID_ID;
 
-		this.position = tiles.coords(coords);
-		tiles.at(this.position).unitId = this.id;
-	};
+    this.position = tiles.coords(coords);
+    tiles.at(this.position).unitId = this.id;
+  };
 
-	this.calcRotationVectorForMovement = function(){
-		var vec_x = tiles.coords(this.steps[0]).x - this.position.x;
-		var vec_y = tiles.coords(this.steps[0]).y - this.position.y;
-		
-		this.rotationVector = tiles.coords(vec_x, vec_y);
-		this.rotation = directionFromVector(this.rotationVector);
-	};
+  this.calcRotationVectorForMovement = function () {
+    var vec_x = tiles.coords(this.steps[0]).x - this.position.x;
+    var vec_y = tiles.coords(this.steps[0]).y - this.position.y;
 
-	// do dziedziczenia
-	this.setupRoute = function(destination, source){
-		return [];
-	};
+    this.rotationVector = tiles.coords(vec_x, vec_y);
+    this.rotation = directionFromVector(this.rotationVector);
+  };
 
-	this.moveTo = function(destination){
-		var wasMovement = false;
-		var sourcePos = this.position;
+  // do dziedziczenia
+  this.setupRoute = function (destination, source) {
+    return [];
+  };
 
-		if(this.steps.length > 0){
-			sourcePos = tiles.coords(this.steps[0]);
-			this.steps = [this.steps[0]];
+  this.moveTo = function (destination) {
+    var wasMovement = false;
+    var sourcePos = this.position;
 
-			wasMovement = true;
-		}
+    if (this.steps.length > 0) {
+      sourcePos = tiles.coords(this.steps[0]);
+      this.steps = [this.steps[0]];
 
-		this.steps.push.apply(this.steps, this.setupRoute(destination, sourcePos));
+      wasMovement = true;
+    }
 
-		if(this.steps.length > 0 && tiles.index(this.steps[0]) == tiles.index(sourcePos))
-			this.steps.splice(0, 1);
+    this.steps.push.apply(this.steps, this.setupRoute(destination, sourcePos));
 
-		if(this.steps.length == 0)
-			return;
+    if (this.steps.length > 0 && tiles.index(this.steps[0]) == tiles.index(sourcePos))
+      this.steps.splice(0, 1);
 
-		this.calcRotationVectorForMovement();
-		this.isMoving = true;
+    if (this.steps.length == 0) return;
 
-		if(!wasMovement)
-			this.lastMoveTime = 0;
-	};
+    this.calcRotationVectorForMovement();
+    this.isMoving = true;
 
-	this.onStart = function(){};
-	this.onReach = function(){};
+    if (!wasMovement) this.lastMoveTime = 0;
+  };
 
-	this.softUpdate = function(delta){
-		if(!this.isMoving && this.steps.length >= 0)
-			return;
+  this.onStart = function () {};
+  this.onReach = function () {};
 
-		this.lastMoveTime += delta;
+  this.softUpdate = function (delta) {
+    if (!this.isMoving && this.steps.length >= 0) return;
 
-		if(this.lastMoveTime >= this.timeNeededToReachNewTile){
-			this.setPosition(this.steps[0]);
-			this.steps.splice(0, 1);
+    this.lastMoveTime += delta;
 
-			if(this.steps.length > 0)
-				this.calcRotationVectorForMovement();
-			else if(this.steps.length == 0){
-				this.isMoving = false;
-				this.onReach();
-			}
+    if (this.lastMoveTime >= this.timeNeededToReachNewTile) {
+      this.setPosition(this.steps[0]);
+      this.steps.splice(0, 1);
 
-			this.lastMoveTime = 0;
-		}
-	};
-	
-	this.hardUpdate = function(delta){};
+      if (this.steps.length > 0) this.calcRotationVectorForMovement();
+      else if (this.steps.length == 0) {
+        this.isMoving = false;
+        this.onReach();
+      }
+
+      this.lastMoveTime = 0;
+    }
+  };
+
+  this.hardUpdate = function (delta) {};
 });
