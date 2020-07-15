@@ -10,14 +10,36 @@ a nie samemu wpływać na ten stan...
 */
 
 define([
+  'jquery',
   'angular',
   '../../graphics',
   '../../logic',
+  '../../logic/constants',
+  '../../logic/island',
+  '../../logic/country',
+  '../../logic/structure',
+  '../../logic/product',
+  '../../logic/gameDefinitions',
+  '../../logic/building',
+  '../../logic/productionBuilding',
   '../../graphics/gameplayState',
-  'extend',
-  'underscore',
-  '../../graphics/gui/directives',
-], function (angular, graphics, logic, gameplayState) {
+  './directives',
+], function (
+  $,
+  angular,
+  graphics,
+  logic,
+  { INVALID_ID },
+  { islands },
+  { countries },
+  { structsClass, NORTH, SOUTH, EAST, WEST },
+  { products },
+  { TOOLS_ID, WOOD_ID, BRICKS_ID, Port, Farm },
+  { Building },
+  { ProductionBuilding },
+  gameplayState,
+  directives,
+) {
   // niestety angular sam nie updateuje zmian z "other sources"
   // więc trzeba samemu callować zmianę $scopa co jakiś czas
   function registerInfiniteUpdate(scope, func) {

@@ -4,7 +4,12 @@ productionBuilding.js
 
 */
 
-var ProductionBuilding = StorageBuilding.extend(function () {
+import { INVALID_ID } from './constants';
+import { OUTPUT, INPUT_1 } from './storage';
+import { StorageBuilding } from './storageBuilding';
+import { Porter } from './gameDefinitions';
+
+export var ProductionBuilding = StorageBuilding.extend(function () {
   this.baseProduction = 0; // per second
 
   this.productionStep = 0.0;
@@ -12,7 +17,7 @@ var ProductionBuilding = StorageBuilding.extend(function () {
   this.effectivity = 1;
 });
 
-var Workshop = ProductionBuilding.extend(function () {
+export var Workshop = ProductionBuilding.extend(function () {
   this.width = 2;
   this.height = 2;
 
@@ -107,7 +112,7 @@ var Workshop = ProductionBuilding.extend(function () {
   };
 });
 
-var Farm = ProductionBuilding.extend(function () {
+export var Farm = ProductionBuilding.extend(function () {
   this.width = 2;
   this.height = 2;
 

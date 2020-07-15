@@ -4,7 +4,11 @@ alalytic.js
 
 */
 
-define(['../logic'], function () {
+define(['../logic/island', '../logic/product', '../logic/gameDefinitions'], function (
+  { islands },
+  { products },
+  { goods },
+) {
   TYPE_OK = -1;
   TYPE_NEED = 0;
   TYPE_DEMAND = 1;

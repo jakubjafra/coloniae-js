@@ -4,7 +4,11 @@ algorithms.js
 
 */
 
-function neighbours(cross, filter) {
+import $ from 'jquery';
+
+import { tiles } from './tile';
+
+export function neighbours(cross, filter) {
   return function (ofThisTile) {
     var tile = tiles.coords(ofThisTile);
 
@@ -34,14 +38,14 @@ function neighbours(cross, filter) {
   };
 }
 
-function distanceManhattan(a, b) {
+export function distanceManhattan(a, b) {
   var a_coords = tiles.coords(a);
   var b_coords = tiles.coords(b);
 
   return Math.abs(a_coords.x - b_coords.x) + Math.abs(a_coords.y - b_coords.y);
 }
 
-function distanceEuclideanPow(a, b) {
+export function distanceEuclideanPow(a, b) {
   var a_coords = tiles.coords(a);
   var b_coords = tiles.coords(b);
 
@@ -51,7 +55,7 @@ function distanceEuclideanPow(a, b) {
   );
 }
 
-function distanceEuclidean(a, b) {
+export function distanceEuclidean(a, b) {
   return Math.sqrt(distanceEuclideanPow(a, b));
 }
 
@@ -67,16 +71,16 @@ function distanceEuclidean(a, b) {
 	
 	ret -> trasę jeśli istnieje, jeśli nie zwraca false
 */
-function AStar(source, target, neighbourFunc, lengthFunc) {
-  closedset = {};
-  openset = {};
-  came_from = {};
+export function AStar(source, target, neighbourFunc, lengthFunc) {
+  const closedset = {};
+  const openset = {};
+  const came_from = {};
 
-  g_score = {};
-  f_score = {};
+  const g_score = {};
+  const f_score = {};
 
   lengthFunc = distanceEuclidean || lengthFunc;
-  heuristic_cost_estimate = distanceEuclideanPow;
+  const heuristic_cost_estimate = distanceEuclideanPow;
 
   openset[source] = true;
   g_score[source] = 0;
@@ -111,7 +115,7 @@ function AStar(source, target, neighbourFunc, lengthFunc) {
   }
 
   while (openset.length != 0) {
-    current = openset_node_having_lowest_f_score_value();
+    const current = openset_node_having_lowest_f_score_value();
 
     if (current == target) {
       var reverseRoute = reconstruct_path(came_from, target);

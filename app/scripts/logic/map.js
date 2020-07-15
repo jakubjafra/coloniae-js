@@ -4,7 +4,11 @@ map.js
 
 */
 
-function makeIsland(x, y, w, h) {
+import { PLAINS, SHALLOW, COAST, HILLSIDE, MOUTAIN, Tile, tiles } from './tile';
+import { Island } from './island';
+import { TreeFld } from './gameDefinitions';
+
+export function makeIsland(x, y, w, h) {
   var newIsland = new Island();
 
   for (var i = 0; i < h; i++) {
@@ -41,7 +45,7 @@ function makeIsland(x, y, w, h) {
   return newIsland;
 }
 
-function makeMountain(x, y) {
+export function makeMountain(x, y) {
   for (var i = 0; i < 6; i++) {
     for (var j = 0; j < 6; j++) {
       var tile = tiles[x + i][y + j];
@@ -56,8 +60,8 @@ function makeMountain(x, y) {
   }
 }
 
-function createMap(x, y) {
-  tiles = new bindUsefulMapFunctions();
+export function createMap(x, y) {
+  // tiles = new bindUsefulMapFunctions();
 
   tiles.size = tiles.coords(x, y);
 

@@ -44,29 +44,11 @@ require.config({
 });
 */
 
-import $ from 'externals/jquery-2.1.1.min.js';
+import $ from 'jquery';
 
-import Logic from './logic';
+import { Logic } from './logic';
 import Graphics from './graphics';
 import Gui from './graphics/gui/gui';
-
-$('head').append('<script src="scripts/logic/tile.js"></script>');
-$('head').append('<script src="scripts/logic/algorithms.js"></script>');
-$('head').append('<script src="scripts/logic/product.js"></script>');
-$('head').append('<script src="scripts/logic/storage.js"></script>');
-$('head').append('<script src="scripts/logic/country.js"></script>');
-$('head').append('<script src="scripts/logic/island.js"></script>');
-$('head').append('<script src="scripts/logic/map.js"></script>');
-$('head').append('<script src="scripts/logic/militaryUnit.js"></script>');
-$('head').append('<script src="scripts/logic/ship.js"></script>');
-$('head').append('<script src="scripts/logic/structure.js"></script>');
-$('head').append('<script src="scripts/logic/building.js"></script>');
-$('head').append('<script src="scripts/logic/publicBuilding.js"></script>');
-$('head').append('<script src="scripts/logic/houseGroup.js"></script>');
-$('head').append('<script src="scripts/logic/storageBuilding.js"></script>');
-$('head').append('<script src="scripts/logic/productionBuilding.js"></script>');
-$('head').append('<script src="scripts/logic/civilianUnit.js"></script>');
-$('head').append('<script src="scripts/logic/gameDefinitions.js"></script>');
 
 // ~~~
 
@@ -95,10 +77,10 @@ console.log = function (msg, show) {
 Logic.init();
 
 /*
-			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(FOOD_ID), 1000); // tymczasowe
-			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(CLOTH_ID), 1000); // tymczasowe
-			islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(LIQUOR_ID), 1000); // tymczasowe
-			*/
+islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(FOOD_ID), 1000); // tymczasowe
+islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(CLOTH_ID), 1000); // tymczasowe
+islands[0].mainMarketplaces[0].storage.add(islands[0].mainMarketplaces[0].storage.special(LIQUOR_ID), 1000); // tymczasowe
+*/
 
 // uruchomienie gry
 Graphics.start();

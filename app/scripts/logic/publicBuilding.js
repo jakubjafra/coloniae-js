@@ -4,7 +4,9 @@ publicBuilding.js
 
 */
 
-var PublicBuilding = Building.extend(function () {
+import { Building } from './building';
+
+export var PublicBuilding = Building.extend(function () {
   this.operatingRadius = 0;
 
   this.onBuild = function () {
@@ -31,15 +33,15 @@ function createMask(name) {
   return mask;
 }
 
-CHAPEL_MASK = createMask('Chapel');
-CHURCH_MASK = createMask('Church');
-PUBLICBATH_MASK = createMask('Public bath');
-SCHOOL_MASK = createMask('School');
-UNIVERSITY_MASK = createMask('University');
-THEATRE_MASK = createMask('Theatre');
-TAWERN_MASK = createMask('Tawern');
+export const CHAPEL_MASK = createMask('Chapel');
+export const CHURCH_MASK = createMask('Church');
+export const PUBLICBATH_MASK = createMask('Public bath');
+export const SCHOOL_MASK = createMask('School');
+export const UNIVERSITY_MASK = createMask('University');
+export const THEATRE_MASK = createMask('Theatre');
+export const TAWERN_MASK = createMask('Tawern');
 
-var AreaPublicBuilding = PublicBuilding.extend(function () {
+export var AreaPublicBuilding = PublicBuilding.extend(function () {
   this.bitMask = 0;
 
   function applyMask(a, b) {

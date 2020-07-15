@@ -4,6 +4,39 @@ logic/gameDefinitions.js
 
 */
 
+import { INVALID_ID } from './constants';
+import { islands } from './island';
+import { countries } from './country';
+import { Product, products } from './product';
+import {
+  Structure,
+  buildable,
+  makeRequiredResources,
+  makeBonusResources,
+  NORTH,
+  EAST,
+  SOUTH,
+  WEST,
+} from './structure';
+import { Building, makeOperatingCost } from './building';
+import { StorageBuilding } from './storageBuilding';
+import {
+  PublicBuilding,
+  AreaPublicBuilding,
+  CHAPEL_MASK,
+  CHURCH_MASK,
+  PUBLICBATH_MASK,
+  SCHOOL_MASK,
+  UNIVERSITY_MASK,
+  THEATRE_MASK,
+  TAWERN_MASK,
+} from './publicBuilding';
+import { HouseGroup, PIONERS, SETTLERS, CITIZENS, MERCHANTS, ARISTOCRATS } from './houseGroup';
+import { Workshop, Farm } from './productionBuilding';
+import { CivilianUnit } from './civilianUnit';
+import { tiles } from './tile';
+import { Storage } from './storage';
+
 // tile.js
 
 // ~~~
@@ -11,30 +44,30 @@ logic/gameDefinitions.js
 // product.js
 
 // *** raw ***
-WOOL_ID = new Product('Wool').id;
-CATTLE_ID = new Product('Cattle').id;
-GRAIN_ID = new Product('Grain').id;
-FLOUR_ID = new Product('Flour').id;
-COCOA_ID = new Product('Cocoa').id;
-SUGARCANE_ID = new Product('Sugarcane').id;
-SPICE_ID = new Product('Spice').id;
-TOBACCO_ID = new Product('Tobacco').id;
-WOOD_ID = new Product('Wood').id;
-ORE_ID = new Product('Ore').id;
-IRON_ID = new Product('Iron').id;
-BRICKS_ID = new Product('Bricks').id;
-GOLD_ID = new Product('Gold').id;
+export const WOOL_ID = new Product('Wool').id;
+export const CATTLE_ID = new Product('Cattle').id;
+export const GRAIN_ID = new Product('Grain').id;
+export const FLOUR_ID = new Product('Flour').id;
+export const COCOA_ID = new Product('Cocoa').id;
+export const SUGARCANE_ID = new Product('Sugarcane').id;
+export const SPICE_ID = new Product('Spice').id;
+export const TOBACCO_ID = new Product('Tobacco').id;
+export const WOOD_ID = new Product('Wood').id;
+export const ORE_ID = new Product('Ore').id;
+export const IRON_ID = new Product('Iron').id;
+export const BRICKS_ID = new Product('Bricks').id;
+export const GOLD_ID = new Product('Gold').id;
 
 // *** products ***
-FOOD_ID = new Product('Food').id;
-CLOTH_ID = new Product('Cloth').id;
-LIQUOR_ID = new Product('Liquor').id;
-TOBACCO_PRODUCTS_ID = new Product('Tobacco products').id;
-TOOLS_ID = new Product('Tools').id;
-JEWLERY_ID = new Product('Jewlery').id;
-CLOTHES_ID = new Product('Clothes').id;
+export const FOOD_ID = new Product('Food').id;
+export const CLOTH_ID = new Product('Cloth').id;
+export const LIQUOR_ID = new Product('Liquor').id;
+export const TOBACCO_PRODUCTS_ID = new Product('Tobacco products').id;
+export const TOOLS_ID = new Product('Tools').id;
+export const JEWLERY_ID = new Product('Jewlery').id;
+export const CLOTHES_ID = new Product('Clothes').id;
 
-goods = [
+export const goods = [
   FOOD_ID,
   CLOTH_ID,
   LIQUOR_ID,
@@ -59,7 +92,7 @@ goods = [
 
 // structure.js
 
-var tilesFertility = {}; // tile_index -> fertility array (based on tile.island.fertility)
+export var tilesFertility = {}; // tile_index -> fertility array (based on tile.island.fertility)
 
 function getFertilityFor(coords, plant) {
   if (
@@ -83,7 +116,7 @@ function getFertilityFor(coords, plant) {
   }
 }
 
-var FieldPlant = Structure.extend(function () {
+export var FieldPlant = Structure.extend(function () {
   this.requiredResources = makeRequiredResources(5);
 
   this.isWithered = false; // czy dane pole jest uschnięte
@@ -95,47 +128,47 @@ var FieldPlant = Structure.extend(function () {
   };
 });
 
-var TreeFld = buildable(
+export var TreeFld = buildable(
   'Tree field',
   FieldPlant.extend(function () {}),
 );
 
-var GrainFld = buildable(
+export var GrainFld = buildable(
   'Grain field',
   FieldPlant.extend(function () {}),
 );
 
-var CocoaFld = buildable(
+export var CocoaFld = buildable(
   'Cocoa field',
   FieldPlant.extend(function () {}),
 );
 
-var SugarcaneFld = buildable(
+export var SugarcaneFld = buildable(
   'Sugarcane field',
   FieldPlant.extend(function () {}),
 );
 
-var WineFld = buildable(
+export var WineFld = buildable(
   'Wine field',
   FieldPlant.extend(function () {}),
 );
 
-var SpiceFld = buildable(
+export var SpiceFld = buildable(
   'Spice field',
   FieldPlant.extend(function () {}),
 );
 
-var TobaccoFld = buildable(
+export var TobaccoFld = buildable(
   'Tobacco field',
   FieldPlant.extend(function () {}),
 );
 
-var CottonFld = buildable(
+export var CottonFld = buildable(
   'Cotton field',
   FieldPlant.extend(function () {}),
 );
 
-var Quarry = buildable(
+export var Quarry = buildable(
   'Quarry',
   Structure.extend(function () {
     this.requiredResources = makeRequiredResources(150, 2, undefined, 6);
@@ -160,9 +193,9 @@ var Quarry = buildable(
 
 // building.js
 
-var roads = [];
+export var roads = [];
 
-var Road = buildable(
+export var Road = buildable(
   'Road',
   Building.extend(function () {
     this.requiredResources = makeRequiredResources(5);
@@ -181,7 +214,7 @@ var Road = buildable(
   }),
 );
 
-var Harbor = buildable(
+export var Harbor = buildable(
   'Harbor',
   Road.extend(function () {
     this.requiredResources = makeRequiredResources(5, undefined, 2);
@@ -198,7 +231,7 @@ var Harbor = buildable(
 
 // publicBuilding.js
 
-var Chapel = buildable(
+export var Chapel = buildable(
   'Chapel',
   AreaPublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(100, 5, undefined, 2);
@@ -212,7 +245,7 @@ var Chapel = buildable(
   }),
 );
 
-var Church = buildable(
+export var Church = buildable(
   'Church',
   AreaPublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(1600, 7, 25, 7);
@@ -226,7 +259,7 @@ var Church = buildable(
   }),
 );
 
-var Cathedral = buildable(
+export var Cathedral = buildable(
   'Cathedral',
   AreaPublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(7500, 25, 70, 23);
@@ -240,7 +273,7 @@ var Cathedral = buildable(
   }),
 );
 
-var PublicBath = buildable(
+export var PublicBath = buildable(
   'Public bath',
   AreaPublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(1200, 5, 19, 5);
@@ -254,7 +287,7 @@ var PublicBath = buildable(
   }),
 );
 
-var School = buildable(
+export var School = buildable(
   'School',
   AreaPublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(490, 4, 9, 4);
@@ -268,7 +301,7 @@ var School = buildable(
   }),
 );
 
-var University = buildable(
+export var University = buildable(
   'University',
   AreaPublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(750, 5, 19, 6);
@@ -282,7 +315,7 @@ var University = buildable(
   }),
 );
 
-var Theatre = buildable(
+export var Theatre = buildable(
   'Theatre',
   AreaPublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(1200, 5, 19, 2);
@@ -296,7 +329,7 @@ var Theatre = buildable(
   }),
 );
 
-var Tawern = buildable(
+export var Tawern = buildable(
   'Tawern',
   AreaPublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(250, 4, 6, 3);
@@ -312,7 +345,7 @@ var Tawern = buildable(
 
 // ~
 
-var FireDepartament = buildable(
+export var FireDepartament = buildable(
   'Fire departament',
   PublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(150, 5, undefined, 3);
@@ -325,7 +358,7 @@ var FireDepartament = buildable(
   }),
 );
 
-var Medic = buildable(
+export var Medic = buildable(
   'Medic',
   PublicBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(450, 4, 9, 4);
@@ -342,7 +375,7 @@ var Medic = buildable(
 
 // houseGroup.js
 
-var PionersHouseGroup = HouseGroup.extend(function () {
+export var PionersHouseGroup = HouseGroup.extend(function () {
   // grupa ta pojawia się automatycznie po wybudowaniu domu, nie ma wymaganych surowców
   this.requiredResources = {};
 
@@ -368,7 +401,7 @@ var PionersHouseGroup = HouseGroup.extend(function () {
   };
 });
 
-var SettlersHouseGroup = HouseGroup.extend(function () {
+export var SettlersHouseGroup = HouseGroup.extend(function () {
   this.requiredResources = makeRequiredResources(
     undefined,
     3,
@@ -405,7 +438,7 @@ var SettlersHouseGroup = HouseGroup.extend(function () {
   };
 });
 
-var CitizensHouseGroup = HouseGroup.extend(function () {
+export var CitizensHouseGroup = HouseGroup.extend(function () {
   this.requiredResources = makeRequiredResources(
     undefined,
     2,
@@ -443,7 +476,7 @@ var CitizensHouseGroup = HouseGroup.extend(function () {
   };
 });
 
-var MerchantsHouseGroup = HouseGroup.extend(function () {
+export var MerchantsHouseGroup = HouseGroup.extend(function () {
   this.requiredResources = makeRequiredResources(
     undefined,
     3,
@@ -485,7 +518,7 @@ var MerchantsHouseGroup = HouseGroup.extend(function () {
   };
 });
 
-var AristocratsHouseGroup = HouseGroup.extend(function () {
+export var AristocratsHouseGroup = HouseGroup.extend(function () {
   this.requiredResources = makeRequiredResources(
     undefined,
     3,
@@ -531,7 +564,7 @@ var AristocratsHouseGroup = HouseGroup.extend(function () {
   };
 });
 
-var House = buildable(
+export var House = buildable(
   'House',
   Building.extend(function () {
     this.requiredResources = makeRequiredResources(undefined, 3);
@@ -578,7 +611,7 @@ var House = buildable(
 
 // storageBuilding.js
 
-var Marketplace = buildable(
+export var Marketplace = buildable(
   'Marketplace',
   StorageBuilding.extend(function () {
     this.requiredResources = makeRequiredResources(200, 10, undefined, 4);
@@ -653,7 +686,7 @@ var Marketplace = buildable(
   }),
 );
 
-var Port = buildable(
+export var Port = buildable(
   'Port',
   Marketplace.extend(function () {
     this.requiredResources = makeRequiredResources(100, 6, undefined, 3);
@@ -693,7 +726,7 @@ var Port = buildable(
 
 // productionBuilding.js
 
-var Butcher = buildable(
+export var Butcher = buildable(
   'Butcher',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(150, 4, 10, 3);
@@ -712,7 +745,7 @@ var Butcher = buildable(
   }),
 );
 
-var WeavingHut = buildable(
+export var WeavingHut = buildable(
   'Weaving hut',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(200, 6, undefined, 3);
@@ -731,7 +764,7 @@ var WeavingHut = buildable(
   }),
 );
 
-var OreSmelter = buildable(
+export var OreSmelter = buildable(
   'Ore smelter',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(200, 1, 4, 3);
@@ -752,7 +785,7 @@ var OreSmelter = buildable(
   }),
 );
 
-var Toolmaker = buildable(
+export var Toolmaker = buildable(
   'Toolmaker',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(150, 2, 5, 3);
@@ -771,7 +804,7 @@ var Toolmaker = buildable(
   }),
 );
 
-var Windmill = buildable(
+export var Windmill = buildable(
   'Windmill',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(100, 6, undefined, 3);
@@ -790,7 +823,7 @@ var Windmill = buildable(
   }),
 );
 
-var Bakery = buildable(
+export var Bakery = buildable(
   'Bakery',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(150, 6, undefined, 2);
@@ -809,7 +842,7 @@ var Bakery = buildable(
   }),
 );
 
-var RumDistillery = buildable(
+export var RumDistillery = buildable(
   'Rum distillery',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(200, 2, 5, 3);
@@ -828,7 +861,7 @@ var RumDistillery = buildable(
   }),
 );
 
-var TobaccoProducts = buildable(
+export var TobaccoProducts = buildable(
   'Tobacco products',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(200, 2, 5, 3);
@@ -847,7 +880,7 @@ var TobaccoProducts = buildable(
   }),
 );
 
-var Goldsmith = buildable(
+export var Goldsmith = buildable(
   'Goldsmith',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(1500, 2, 10, 7);
@@ -866,7 +899,7 @@ var Goldsmith = buildable(
   }),
 );
 
-var Taylor = buildable(
+export var Taylor = buildable(
   'Taylor',
   Workshop.extend(function () {
     this.requiredResources = makeRequiredResources(150, 6, 2, 3);
@@ -887,7 +920,7 @@ var Taylor = buildable(
 
 // ~~~
 
-var CattleFarm = buildable(
+export var CattleFarm = buildable(
   'Cattle farm',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(100, 4, undefined, 1);
@@ -910,7 +943,7 @@ var CattleFarm = buildable(
   }),
 );
 
-var SheepFarm = buildable(
+export var SheepFarm = buildable(
   'Sheep farm',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(200, 4, undefined, 2);
@@ -933,7 +966,7 @@ var SheepFarm = buildable(
   }),
 );
 
-var Lumberjack = buildable(
+export var Lumberjack = buildable(
   'Lumberjack',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(50, undefined, undefined, 2);
@@ -953,7 +986,7 @@ var Lumberjack = buildable(
   }),
 );
 
-var GrainFarm = buildable(
+export var GrainFarm = buildable(
   'Grain farm',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(100, 5, undefined, 2);
@@ -973,7 +1006,7 @@ var GrainFarm = buildable(
   }),
 );
 
-var CocoaPlantation = buildable(
+export var CocoaPlantation = buildable(
   'Cocoa plantation',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(300, 3, 8, 2);
@@ -993,7 +1026,7 @@ var CocoaPlantation = buildable(
   }),
 );
 
-var SugarcanePlantation = buildable(
+export var SugarcanePlantation = buildable(
   'Sugarcane plantation',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(300, 3, 8, 2);
@@ -1013,7 +1046,7 @@ var SugarcanePlantation = buildable(
   }),
 );
 
-var Winery = buildable(
+export var Winery = buildable(
   'Winery',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(300, 3, 8, 2);
@@ -1033,7 +1066,7 @@ var Winery = buildable(
   }),
 );
 
-var SpicePlantation = buildable(
+export var SpicePlantation = buildable(
   'Spice plantation',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(300, 3, 8, 2);
@@ -1053,7 +1086,7 @@ var SpicePlantation = buildable(
   }),
 );
 
-var TobaccoPlantation = buildable(
+export var TobaccoPlantation = buildable(
   'Tobacco plantation',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(300, 3, 8, 2);
@@ -1073,7 +1106,7 @@ var TobaccoPlantation = buildable(
   }),
 );
 
-var CottonPlantation = buildable(
+export var CottonPlantation = buildable(
   'Cotton plantation',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(300, 3, 8, 2);
@@ -1093,7 +1126,7 @@ var CottonPlantation = buildable(
   }),
 );
 
-var Stonemason = buildable(
+export var Stonemason = buildable(
   'Stonemason',
   Farm.extend(function () {
     this.requiredResources = makeRequiredResources(100, 5, undefined, 5);
@@ -1124,7 +1157,7 @@ var Stonemason = buildable(
   }),
 );
 
-var IronMine = buildable(
+export var IronMine = buildable(
   'Iron mine',
   Farm.extend(function () {
     this.width = 2;
@@ -1162,7 +1195,7 @@ var IronMine = buildable(
   }),
 );
 
-var GoldMine = buildable(
+export var GoldMine = buildable(
   'Gold mine',
   Farm.extend(function () {
     this.width = 2;
@@ -1200,7 +1233,7 @@ var GoldMine = buildable(
   }),
 );
 
-var FishermanHut = buildable(
+export var FishermanHut = buildable(
   'Fisherman hut',
   Farm.extend(function () {
     this.width = 1;
@@ -1236,10 +1269,10 @@ var FishermanHut = buildable(
 
 // civilianUnit.js
 
-PORTER_CAPACITY = 10;
+export const PORTER_CAPACITY = 10;
 
 // Tragarz - transportuje surowce.
-var Porter = CivilianUnit.extend(function () {
+export var Porter = CivilianUnit.extend(function () {
   this.storage = new Storage();
 
   // "prywatne" source i dest dla CAŁEGO kursu w tę i spowrotem

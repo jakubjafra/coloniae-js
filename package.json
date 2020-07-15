@@ -4,15 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "serve ./app",
+    "start:dev": "reload -b -p 5000 -d ./app",
     "build": "webpack",
+    "build:watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jakub Jafra",
   "license": "MIT",
   "dependencies": {
-    "angular": "^1.2.32"
+    "angular": "^1.2.32",
+    "dropzone": "^5.7.1",
+    "finalhandler": "^1.1.2",
+    "jquery": "^2.1.4",
+    "jquery-mousewheel": "^3.1.13",
+    "reload": "^3.1.0",
+    "serve-static": "^1.14.1",
+    "three-stats": "^1.0.1",
+    "underscore": "^1.6.0"
   },
   "devDependencies": {
+    "nodemon": "^2.0.4",
+    "serve": "^11.3.2",
     "husky": "^4.2.5",
     "lint-staged": "^10.1.7",
     "shell-quote": "^1.7.2",

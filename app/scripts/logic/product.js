@@ -4,10 +4,14 @@ product.js
 
 */
 
-var products = [];
-var productsByName = {};
+import Class from 'extend';
 
-var Product = Class.extend(function () {
+import { INVALID_ID } from './constants';
+
+export var products = [];
+export var productsByName = {};
+
+export var Product = Class.extend(function () {
   this.id = INVALID_ID;
   this.name = '';
 

@@ -5,13 +5,28 @@ draw.js
 */
 
 define([
-  'text!../../imgs/atlas.json',
+  'underscore',
+  '../../imgs/atlas.json',
   '../logic',
+  '../logic/constants',
+  '../logic/tile',
+  '../logic/civilianUnit',
+  '../logic/militaryUnit',
+  '../logic/gameDefinitions',
   '../graphics/gameplayState',
   '../graphics/layerManager',
-], function (atlasJSON, Logic, gameplayState, layerManager) {
-  var atlas = JSON.parse(atlasJSON);
-
+], function (
+  _,
+  atlas,
+  Logic,
+  { INVALID_ID },
+  { tiles, SEA, SHALLOW, COAST, PLAINS, HILLSIDE, MOUTAIN },
+  { civilianUnits },
+  { militaryUnits },
+  { Porter, FieldPlant, House },
+  gameplayState,
+  layerManager,
+) {
   var flagProgress = {};
 
   function getFlagForTile(tile, delta) {

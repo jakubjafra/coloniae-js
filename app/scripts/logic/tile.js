@@ -4,18 +4,19 @@ tile.js
 
 */
 
-INVALID_ID = -1;
-INVALID_TYPE = INVALID_ID;
+import Class from 'extend';
 
-OCEAN = -2;
-SEA = -1;
-SHALLOW = 0;
-COAST = 1;
-PLAINS = 2;
-HILLSIDE = 3;
-MOUTAIN = 4;
+import { INVALID_ID } from './constants';
 
-var Tile = Class.extend(function () {
+export const OCEAN = -2;
+export const SEA = -1;
+export const SHALLOW = 0;
+export const COAST = 1;
+export const PLAINS = 2;
+export const HILLSIDE = 3;
+export const MOUTAIN = 4;
+
+export var Tile = Class.extend(function () {
   // indeks
   this.index = INVALID_ID;
   // pozycja
@@ -45,7 +46,7 @@ var Tile = Class.extend(function () {
   };
 });
 
-function bindUsefulMapFunctions() {
+export function bindUsefulMapFunctions() {
   // bo generalnie pozycję można przedstawiać na 3 sposoby:
   // {x: 1, y: 1}  LUB  x = 1; y = 1;  LUB  xy = 101
   // i te funkcje pomagają operować na tak różnych sposobach przedstawiania
@@ -88,4 +89,4 @@ function bindUsefulMapFunctions() {
   };
 }
 
-var tiles = new bindUsefulMapFunctions();
+export var tiles = new bindUsefulMapFunctions();

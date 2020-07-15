@@ -4,13 +4,17 @@ country.js
 
 */
 
-var countries = [];
+import Class from 'extend';
 
-PLAYER_COUNTRY = 0; // państwo gracza
-AI_COUNTRY = 1; // państwa konkurujące z graczem
-NPC_COUNTRY = 2; // podoczne państwa (tubylcy, plemiona, piraci, itd.)
+import { INVALID_ID, INVALID_TYPE } from './constants';
 
-var Country = Class.extend(function () {
+export var countries = [];
+
+export const PLAYER_COUNTRY = 0; // państwo gracza
+export const AI_COUNTRY = 1; // państwa konkurujące z graczem
+export const NPC_COUNTRY = 2; // podoczne państwa (tubylcy, plemiona, piraci, itd.)
+
+export var Country = Class.extend(function () {
   // identyfikator
   this.id = INVALID_ID;
   // kto tym krajem zarządza

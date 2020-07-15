@@ -1,125 +1,182 @@
 <!DOCTYPE html>
 <html>
-	<head>
-        <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
 
-		<link href="styles/reset.css" rel="stylesheet">
-		<link href="styles/main.css" rel="stylesheet">
+    <link href="styles/reset.css" rel="stylesheet" />
+    <link href="styles/main.css" rel="stylesheet" />
 
-		<title>coloniae</title>
+    <title>coloniae</title>
+  </head>
 
-		<script data-main="scripts/main" src="externals/require.js"></script>
-	</head>
+  <body>
+    <canvas id="mainCanvas" width="1000px" height="500px"> </canvas>
 
-	<body>
-		<canvas id="mainCanvas" width="1000px" height="500px">
-		</canvas>
+    <div id="on_canvas">
+      <div id="console"></div>
 
-		<div id="on_canvas">
-			<div id="console"></div>
+      <div ng-controller="CoinsViewer" class="center_all_inside" id="top_left">
+        <img src="imgs/gui/coin.png" /><span style="width: 50px;">{{coins | number:0}}</span>
+      </div>
 
-			<div ng-controller="CoinsViewer" class="center_all_inside" id="top_left">
-				<img src="imgs/gui/coin.png"><span style="width: 50px;">{{coins | number:0}}</span>
-			</div>
+      <div
+        ng-controller="OwnedIslandResourcesViewer"
+        class="center_all_inside"
+        ng-show="hoverOnIsland"
+        id="top_center"
+      >
+        <img src="imgs/gui/tool.png" /><span style="width: 50px;">{{tool | number:0}}</span>
+        <img src="imgs/gui/wood.png" /><span style="width: 50px;">{{wood | number:0}}</span>
+        <img src="imgs/gui/brick.png" /><span style="width: 50px;">{{brick | number:0}}</span>
+      </div>
 
-			<div ng-controller="OwnedIslandResourcesViewer" class="center_all_inside" ng-show="hoverOnIsland" id="top_center">
-				<img src="imgs/gui/tool.png"><span style="width: 50px;">{{tool | number:0}}</span>
-				<img src="imgs/gui/wood.png"><span style="width: 50px;">{{wood | number:0}}</span>
-				<img src="imgs/gui/brick.png"><span style="width: 50px;">{{brick | number:0}}</span>
-			</div>
+      <div
+        ng-controller="IslandPopulationViewer"
+        ng-show="hoverOnIsland"
+        class="center_all_inside"
+        id="top_right"
+      >
+        <img src="imgs/gui/population.png" /><span style="width: 50px;"
+          >{{population | number:0}}</span
+        >
+      </div>
 
-			<div ng-controller="IslandPopulationViewer" ng-show="hoverOnIsland" class="center_all_inside" id="top_right">
-				<img src="imgs/gui/population.png"><span style="width: 50px;">{{population | number:0}}</span>
-			</div>
+      <div id="time" ng-controller="TimeCtrl">
+        <select ng-model="timeController.timeFlowSpeed">
+          <option value="0">&times; 0</option>
+          <option value="1">&times; 1</option>
+          <option value="2">&times; 2</option>
+          <option value="4">&times; 4</option>
+          <option value="8">&times; 8</option>
+          <option value="16">&times; 16</option>
+        </select>
+      </div>
 
-			<div id="time" ng-controller="TimeCtrl">
-				<select ng-model="timeController.timeFlowSpeed">
-					<option value="0">&times; 0</option>
-					<option value="1">&times; 1</option>
-					<option value="2">&times; 2</option>
-					<option value="4">&times; 4</option>
-					<option value="8">&times; 8</option>
-					<option value="16">&times; 16</option>
-				</select>
-			</div>
+      <div id="handlers">
+        <div
+          ng-controller="BuildCtrl"
+          id="buildhandler"
+          class="handler"
+          ng-class="{'handler_on': callback.showBuildMenu === true}"
+          ng-click="toggleBuildMenu();"
+        >
+          <img src="imgs/gui/build.png" />
+        </div>
 
-			<div id="handlers">
-				<div ng-controller="BuildCtrl" id="buildhandler" class="handler" ng-class="{'handler_on': callback.showBuildMenu === true}" ng-click="toggleBuildMenu();">
-					<img src="imgs/gui/build.png">
-				</div>
+        <div
+          ng-controller="BuildCtrl"
+          id="removehandler"
+          class="handler"
+          ng-class="{'handler_on': callback.removeMode === true}"
+          ng-click="toggleRemoveMode();"
+        >
+          <img src="imgs/gui/remove.png" />
+        </div>
+      </div>
 
-				<div ng-controller="BuildCtrl" id="removehandler" class="handler" ng-class="{'handler_on': callback.removeMode === true}" ng-click="toggleRemoveMode();">
-					<img src="imgs/gui/remove.png">
-				</div>
-			</div>
+      <div
+        ng-controller="BuildCtrl"
+        id="buildmenu"
+        ng-show="callback.showBuildMenu"
+        ng-click="buildModeStateChange();"
+      >
+        <div id="buildlist">
+          <div
+            ng-repeat="building in allBuildings"
+            value="{{$index}}"
+            class="buildlistitem"
+            ng-click="chooseBuilding(); $event.stopPropagation();"
+            ng-onmouseover="beginHoverBuilding(); $event.stopPropagation();"
+            ng-mouseenter="beginHoverBuilding(); $event.stopPropagation();"
+            ng-mouseleave="endHoverBuilding(); $event.stopPropagation();"
+          >
+            <div building-image name="building.name"></div>
+          </div>
+          <div id="buildlist_ontop" ng-show="callback.buildMode">
+            <span style="background-color: black;"
+              ><b>press any key</b> or <b>click here</b> to exit build mode selection</span
+            >
+          </div>
+        </div>
 
-			<div ng-controller="BuildCtrl" id="buildmenu" ng-show="callback.showBuildMenu" ng-click="buildModeStateChange();">
-				<div id="buildlist">
-					<div ng-repeat="building in allBuildings" value="{{$index}}" class="buildlistitem" ng-click="chooseBuilding(); $event.stopPropagation();" ng-onmouseover="beginHoverBuilding(); $event.stopPropagation();" ng-mouseenter="beginHoverBuilding(); $event.stopPropagation();" ng-mouseleave="endHoverBuilding(); $event.stopPropagation();">
-						<div building-image name="building.name"></div>
-					</div>
-					<div id="buildlist_ontop" ng-show="callback.buildMode">
-						<span style="background-color: black;"><b>press any key</b> or <b>click here</b> to exit build mode selection</span>
-					</div>
-				</div>
+        <div class="vertical_line" style="margin-left: 5px; margin-right: 5px;">&nbsp;</div>
 
-				<div class="vertical_line" style="margin-left: 5px; margin-right: 5px;">&nbsp;</div>
+        <div ng-controller="BuildMenuHoverBuildingExtInfo">
+          <div building-ext-inf-full ng-controller="BuildingExtInfo"></div>
+        </div>
+      </div>
 
-				<div ng-controller="BuildMenuHoverBuildingExtInfo">
-					<div building-ext-inf-full ng-controller="BuildingExtInfo"></div>
-				</div>
-			</div>
+      <div id="HouseDlg" ng-controller="HouseCtrl" building-dialog>
+        <div class="half_width horizontal_center">
+          <img ng-src="{{ houseGroup.contentLevel | contentImageSrc }}" />
+        </div>
+        <div class="half_width horizontal_center" style="height: 105px;">
+          <div class="vertical_center">
+            <p>
+              <span id="citizen_header"
+                >{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}</span
+              >
+              <br />
+              <br />
+              <span id="citizen_tax"
+                >{{ houseGroup.baseIncome + houseGroup.taxDiff }}<img
+                  src="imgs/gui/coin.png"
+                />tax</span
+              >
+            </p>
+          </div>
+        </div>
+        <div class="full_width">
+          <div
+            style="display: inline-block;"
+            ng-repeat="(productId, content) in houseGroup.contentByConsumption"
+            ng-show="content < 1"
+          >
+            <div goods-image name="productId"></div>
+          </div>
+        </div>
+        <div class="full_width">
+          <div
+            style="display: inline-block;"
+            ng-repeat="obj in requiredMasks"
+            ng-show="isMaskNotFulfilled(obj.mask)"
+          >
+            <div raw-gui-image name="obj.name"></div>
+          </div>
+        </div>
+      </div>
 
-			<div id="HouseDlg" ng-controller="HouseCtrl" building-dialog>
-				<div class="half_width horizontal_center">
-					<img ng-src="{{ houseGroup.contentLevel | contentImageSrc }}">
-				</div>
-				<div class="half_width horizontal_center" style="height: 105px;">
-					<div class="vertical_center">
-						<p>
-							<span id="citizen_header">{{ houseGroup.totalNumberOfPeople | number:0 }} {{ houseGroup.name }}</span>
-							<br/>
-							<br/>
-							<span id="citizen_tax">{{ houseGroup.baseIncome + houseGroup.taxDiff }}<img src="imgs/gui/coin.png">tax</span>
-						</p>
-					</div>
-				</div>
-				<div class="full_width">
-					<div style="display: inline-block;" ng-repeat="(productId, content) in houseGroup.contentByConsumption" ng-show="content < 1">
-						<div goods-image name="productId"></div>
-					</div>
-				</div>
-				<div class="full_width">
-					<div style="display: inline-block;" ng-repeat="obj in requiredMasks" ng-show="isMaskNotFulfilled(obj.mask)">
-						<div raw-gui-image name="obj.name"></div>
-					</div>
-				</div>
-			</div>
+      <div id="MarketplaceDlg" ng-controller="MarketplaceCtrl" building-dialog>
+        income: {{ island.income[country.id] | number:0 }}<br />
+        maintenance: {{ island.maintenance[country.id] | number:0 }}<br />
+        balance:
+        <u>{{ island.income[country.id] - island.maintenance[country.id] | number:0 }}</u> / min
+        <br />
+        <br />
+        <ul class="productlist">
+          <li ng-repeat="slot in storage">
+            {{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}
+          </li>
+        </ul>
+      </div>
 
-			<div id="MarketplaceDlg" ng-controller="MarketplaceCtrl" building-dialog>
-				income: {{ island.income[country.id] | number:0 }}<br/>
-				maintenance: {{ island.maintenance[country.id] | number:0 }}<br/>
-				balance: <u>{{ island.income[country.id] - island.maintenance[country.id] | number:0 }}</u> / min <br/>
-				<br/>
-				<ul class="productlist">
-					<li ng-repeat="slot in storage">{{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}</li>
-				</ul>
-			</div>
+      <div id="ProductionBuildingDlg" ng-controller="ProductionBuildingCtrl" building-dialog>
+        <div ng-controller="StaticBuildingExtInfo">
+          <div building-ext-inf-description ng-controller="BuildingExtInfo"></div>
+        </div>
+        <hr />
+        effectivity: {{ (building.effectivity * 100) | number:0 }}% <br />
+        maitenanace: {{ building.operatingCost.on }}<br />
+        <br />
+        stock:<br />
+        <ul class="productlist" style="height: 50px;">
+          <li ng-repeat="slot in storage">
+            {{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}
+          </li>
+        </ul>
+      </div>
+    </div>
 
-			<div id="ProductionBuildingDlg" ng-controller="ProductionBuildingCtrl" building-dialog>
-				<div ng-controller="StaticBuildingExtInfo">
-					<div building-ext-inf-description ng-controller="BuildingExtInfo">
-					</div>
-				</div>
-				<hr>
-				effectivity: {{ (building.effectivity * 100) | number:0 }}% <br/>
-				maitenanace: {{ building.operatingCost.on }}<br/>
-				<br/>
-				stock:<br/>
-				<ul class="productlist" style="height: 50px;">
-					<li ng-repeat="slot in storage">{{ productsLookup[slot.type].name }}: {{ slot.quantity | number:0 }}</li>
-				</ul>
-			</div>
-		</div>
-    </body>
+    <script src="build/index.js"></script>
+  </body>
 </html>

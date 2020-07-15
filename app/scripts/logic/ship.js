@@ -4,14 +4,19 @@ ship.js
 
 */
 
-function onlyWaterTilesFilter(tile) {
+import { MilitaryUnit } from './militaryUnit';
+import { countries } from './country';
+import { AStar, neighbours } from './algorithms';
+import { tiles, SHALLOW } from './tile';
+
+export function onlyWaterTilesFilter(tile) {
   return tile.terrainLevel < SHALLOW;
 }
 
 // TODO: filter niech uwzględnia także inne jednostki pływające
 
 // Statek, porusza się po morzach,
-var Ship = MilitaryUnit.extend(function () {
+export var Ship = MilitaryUnit.extend(function () {
   this.operatingCost = 10;
 
   this.setupRoute = function (destination, source) {

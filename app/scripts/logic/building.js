@@ -4,7 +4,13 @@ building.js
 
 */
 
-function makeOperatingCost(turned_on, turned_off) {
+import { INVALID_ID } from './constants';
+import { countries } from './country';
+import { islands } from './island';
+import { Structure } from './structure';
+import { tiles } from './tile';
+
+export function makeOperatingCost(turned_on, turned_off) {
   var arr = {};
 
   arr.on = turned_on || 0;
@@ -13,9 +19,9 @@ function makeOperatingCost(turned_on, turned_off) {
   return arr;
 }
 
-var buildings = [];
+export var buildings = [];
 
-var Building = Structure.extend(function () {
+export var Building = Structure.extend(function () {
   // Id
   this.id = INVALID_ID;
   // Budynki nie mogą być nadpisane.

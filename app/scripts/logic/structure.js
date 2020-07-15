@@ -4,6 +4,15 @@ structure.js
 
 */
 
+import Class from 'extend';
+import $ from 'jquery';
+
+import { INVALID_ID } from './constants';
+import { WOOD_ID, BRICKS_ID, TOOLS_ID } from './gameDefinitions';
+import { Country } from './country';
+import { tiles } from './tile';
+import { islands } from './island';
+
 /*
 
 Nowe struktury tworzy się tylko przez:
@@ -13,8 +22,8 @@ cała magia dzieje się w konstruktorze.
 */
 
 // Wszystkie możliwe (i mające sens) do zbudowania na mapie struktury.
-var structsClass = [null];
-function buildable(name, X) {
+export var structsClass = [null];
+export function buildable(name, X) {
   structsClass.push({ name: name, class: X, index: structsClass.length });
   X.prototype.structName = name;
 
@@ -23,7 +32,7 @@ function buildable(name, X) {
 
 // ~~~
 
-function haveRequriedResources(requiredResources, marketplace) {
+export function haveRequriedResources(requiredResources, marketplace) {
   var ret = true;
 
   $.each(requiredResources, function (i, v) {
@@ -44,7 +53,7 @@ function haveRequriedResources(requiredResources, marketplace) {
   return ret;
 }
 
-function useRequiredResources(requiredResources, marketplace) {
+export function useRequiredResources(requiredResources, marketplace) {
   $.each(requiredResources, function (i, v) {
     switch (Number(i)) {
       case INVALID_ID:
@@ -62,7 +71,7 @@ function useRequiredResources(requiredResources, marketplace) {
   });
 }
 
-function makeRequiredResources(coins, wood, bricks, tools, etc) {
+export function makeRequiredResources(coins, wood, bricks, tools, etc) {
   var arr = {};
 
   if (coins != undefined) arr[INVALID_ID] = coins;
@@ -74,7 +83,7 @@ function makeRequiredResources(coins, wood, bricks, tools, etc) {
   return arr;
 }
 
-function makeBonusResources(etc) {
+export function makeBonusResources(etc) {
   var arr = {};
 
   console.assert(arguments.length % 2 == 0);
@@ -85,7 +94,7 @@ function makeBonusResources(etc) {
   return arr;
 }
 
-function canBeBuild(x, y, building) {
+export function canBeBuild(x, y, building) {
   var offsetX = Math.floor((building.width - 1) / 2);
   var offsetY = Math.floor((building.height - 1) / 2);
 
@@ -110,14 +119,14 @@ function canBeBuild(x, y, building) {
 }
 
 // stałe do obrotów
-NORTH = 10;
-EAST = 20;
-SOUTH = 30;
-WEST = 40;
+export const NORTH = 10;
+export const EAST = 20;
+export const SOUTH = 30;
+export const WEST = 40;
 
-var structures = [];
+export var structures = [];
 
-var Structure = Class.extend(function () {
+export var Structure = Class.extend(function () {
   // Id struktury
   this.structureId = INVALID_ID;
   // Wielkość budynku.

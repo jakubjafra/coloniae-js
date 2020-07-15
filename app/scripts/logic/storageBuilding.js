@@ -4,9 +4,12 @@ storageBuilding.js
 
 */
 
+import { Building, buildings } from './building';
+import { Storage, OUTPUT } from './storage';
+
 // StorageBuilding będzie dążył do skupiania w swoim wnętrzu określonych surowców
 // z dostępnego najbliższego otoczenia.
-var StorageBuilding = Building.extend(function () {
+export var StorageBuilding = Building.extend(function () {
   this.width = 2;
   this.height = 2;
 

@@ -4,10 +4,16 @@ civilianUnit.js
 
 */
 
-var civilianUnits = [];
+import Class from 'extend';
+import _ from 'underscore';
+
+import { INVALID_ID } from './constants';
+import { tiles } from './tile';
+
+export var civilianUnits = [];
 
 // Jednostka cywilna - porusza się z budynku do budynku po drogach.
-var CivilianUnit = Class.extend(function () {
+export var CivilianUnit = Class.extend(function () {
   // identyfikator
   this.id = INVALID_ID;
   // budynek z którego się porusza

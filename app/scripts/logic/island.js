@@ -4,9 +4,14 @@ island.js
 
 */
 
-var islands = [];
+import Class from 'extend';
+import $ from 'jquery';
 
-var Island = Class.extend(function () {
+import { INVALID_ID } from './constants';
+
+export var islands = [];
+
+export var Island = Class.extend(function () {
   this.id = INVALID_ID;
 
   this.fertility = {}; // urodzajność (domyślnie jest 1)

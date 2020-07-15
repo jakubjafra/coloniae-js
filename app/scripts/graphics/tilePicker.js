@@ -5,10 +5,11 @@ tilePicker.js
 */
 
 define([
+  '../logic/tile',
   '../graphics/gameplayState',
   '../graphics/drawMethod',
   '../graphics/layerManager',
-], function (gameplayState, draw, layerManager) {
+], function ({ tiles }, gameplayState, draw, layerManager) {
   return new (function () {
     // fast, but choose only tiles, not objects
     this.byGeometry = function (x, y) {

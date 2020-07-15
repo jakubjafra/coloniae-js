@@ -4,19 +4,25 @@ houseGroup.js
 
 */
 
-PIONERS = 0;
-SETTLERS = 1;
-CITIZENS = 2;
-MERCHANTS = 3;
-ARISTOCRATS = 4;
+import Class from 'extend';
+import $ from 'jquery';
+import _ from 'underscore';
 
-VERY_WEALTHY = 2;
-WEALTHY = 1;
-NORMAL = 0;
-STARVING = -1;
-VERY_STARVING = -1;
+import { FOOD_ID } from './gameDefinitions';
 
-var HouseGroup = Class.extend(function () {
+export const PIONERS = 0;
+export const SETTLERS = 1;
+export const CITIZENS = 2;
+export const MERCHANTS = 3;
+export const ARISTOCRATS = 4;
+
+export const VERY_WEALTHY = 2;
+export const WEALTHY = 1;
+export const NORMAL = 0;
+export const STARVING = -1;
+export const VERY_STARVING = -1;
+
+export var HouseGroup = Class.extend(function () {
   // identyfikator typu
   this.type = 0;
   // nazwa grupy

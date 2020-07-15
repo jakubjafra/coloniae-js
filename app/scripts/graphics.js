@@ -4,23 +4,44 @@ graphics.js
 
 */
 
-KEY_ARROW_UP = 38;
-KEY_ARROW_DOWN = 40;
-KEY_ARROW_LEFT = 37;
-KEY_ARROW_RIGHT = 39;
+const KEY_ARROW_UP = 38;
+const KEY_ARROW_DOWN = 40;
+const KEY_ARROW_LEFT = 37;
+const KEY_ARROW_RIGHT = 39;
 
-KEYBOARD_MOVE_MAP_DIFF = 20;
+const KEYBOARD_MOVE_MAP_DIFF = 20;
 
 define([
   'underscore',
   './logic',
+  './logic/constants',
+  './logic/ship',
+  './logic/country',
+  './logic/tile',
+  './logic/structure',
+  './logic/militaryUnit',
   './graphics/framework',
   './graphics/gameplayState',
   './graphics/drawMethod',
   './graphics/tilePicker',
   './graphics/layerManager',
   './graphics/analytics',
-], function (_, Logic, framework, gameplayState, draw, picker, layerManager, analyticModule) {
+], function (
+  _,
+  { Logic },
+  { INVALID_ID },
+  { Ship },
+  { countries },
+  { OCEAN, SEA, SHALLOW, COAST, PLAINS, HILLSIDE, MOUTAIN, tiles },
+  { structsClass, canBeBuild },
+  { militaryUnits },
+  { framework },
+  gameplayState,
+  draw,
+  picker,
+  layerManager,
+  analyticModule,
+) {
   var wasAnyAction = false;
 
   function makeClick(clickedTile, hoverTile, mouseX, mouseY) {

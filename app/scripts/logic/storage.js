@@ -4,11 +4,13 @@ storage.js
 
 */
 
+import Class from 'extend';
+
 // trzeba zrobić porządek z tymi slotami... nie podoba mi się trochę bałagan z tymi id'kami
 // być może to problem bo nie mam rozpisanych towarów nigdzie ani konkretnych budynków
 // w chwili gdy będą towary i budynki konkretne to ten bałagan sam się uprzątnie ???
 
-var Slot = Class.extend(function () {
+export var Slot = Class.extend(function () {
   this.type = undefined;
   this.quantity = 0;
 
@@ -19,11 +21,11 @@ var Slot = Class.extend(function () {
 });
 
 // workshop zwykle bierze kilka substratów (katagoria INPUT_1) i zamienia w jeden produkt (o stałej określonej katagorii OUTPUT)
-OUTPUT = 0;
-INPUT_1 = 1;
-INPUT_2 = 2;
+export const OUTPUT = 0;
+export const INPUT_1 = 1;
+export const INPUT_2 = 2;
 
-var Storage = Class.extend(function () {
+export var Storage = Class.extend(function () {
   this.slots = {}; // typeId -> Slot
   this.catagories = {}; // catagoryId -> typeId
 

@@ -4,18 +4,23 @@ militaryUnit.js
 
 */
 
-var militaryUnits = [];
+import Class from 'extend';
 
-NORTH = 10;
-NORTH_EAST = 11;
-EAST = 20;
-SOUTH_EAST = 21;
-SOUTH = 30;
-SOUTH_WEST = 31;
-WEST = 40;
-NORTH_WEST = 41;
+import { INVALID_ID } from './constants';
+import { tiles } from './tile';
 
-function directionFromVector(vector) {
+export var militaryUnits = [];
+
+export const NORTH = 10;
+export const NORTH_EAST = 11;
+export const EAST = 20;
+export const SOUTH_EAST = 21;
+export const SOUTH = 30;
+export const SOUTH_WEST = 31;
+export const WEST = 40;
+export const NORTH_WEST = 41;
+
+export function directionFromVector(vector) {
   if (vector.y < 0) {
     if (vector.x < 0) return NORTH_EAST;
     else if (vector.x == 0) return NORTH;
@@ -32,7 +37,7 @@ function directionFromVector(vector) {
 }
 
 // Jednostka wojskowa - porusza się wszędzie, może być tylko 1 na danym tilesie.
-var MilitaryUnit = Class.extend(function () {
+export var MilitaryUnit = Class.extend(function () {
   // identyfikator
   this.id = INVALID_ID;
   // aktualna pozycja
