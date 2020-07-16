@@ -1,9 +1,3 @@
-/*
-
-publicBuilding.js
-
-*/
-
 import { Building } from './building';
 import { tiles } from './tile';
 

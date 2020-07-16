@@ -1,9 +1,3 @@
-/*
-
-main.js
-
-*/
-
 import $ from 'jquery';
 
 import { Logic } from './logic';

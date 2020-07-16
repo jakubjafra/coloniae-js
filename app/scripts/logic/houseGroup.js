@@ -1,9 +1,3 @@
-/*
-
-houseGroup.js
-
-*/
-
 import Class from '../extend';
 import $ from 'jquery';
 import _ from 'underscore';

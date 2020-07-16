@@ -1,9 +1,3 @@
-/*
-
-alalytic.js
-
-*/
-
 import { islands } from '../logic/island';
 import { products } from '../logic/product';
 import { goods } from '../logic/gameDefinitions';

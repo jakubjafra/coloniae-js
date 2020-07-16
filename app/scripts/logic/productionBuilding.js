@@ -1,9 +1,3 @@
-/*
-
-productionBuilding.js
-
-*/
-
 import $ from 'jquery';
 
 import { INVALID_ID } from './constants';

@@ -1,9 +1,3 @@
-/*
-
-gameplayState.js
-
-*/
-
 export var gameplayState = {
   // aktualna pozycja kamery
   cameraPosition: {

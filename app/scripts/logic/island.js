@@ -1,9 +1,3 @@
-/*
-
-island.js
-
-*/
-
 import Class from '../extend';
 import $ from 'jquery';
 

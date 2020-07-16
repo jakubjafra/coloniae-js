@@ -1,9 +1,3 @@
-/*
-
-algorithms.js
-
-*/
-
 import $ from 'jquery';
 
 import { tiles } from './tile';

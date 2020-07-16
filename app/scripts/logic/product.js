@@ -1,9 +1,3 @@
-/*
-
-product.js
-
-*/
-
 import Class from '../extend';
 
 import { INVALID_ID } from './constants';

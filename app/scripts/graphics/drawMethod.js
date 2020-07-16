@@ -1,9 +1,3 @@
-/*
-
-draw.js
-
-*/
-
 import _ from 'underscore';
 import atlas from '../../imgs/atlas.json';
 import { Logic } from '../logic';

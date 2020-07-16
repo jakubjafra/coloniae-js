@@ -1,9 +1,3 @@
-/*
-
-layerManager.js
-
-*/
-
 export var layerManager = new (function () {
   var layers = {};
 

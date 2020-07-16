@@ -1,9 +1,3 @@
-/*
-
-logic.js
-
-*/
-
 import { PLAYER_COUNTRY, Country, countries } from './logic/country';
 import { createMap } from './logic/map';
 import { islands } from './logic/island';

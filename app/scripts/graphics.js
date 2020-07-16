@@ -1,9 +1,3 @@
-/*
-
-graphics.js
-
-*/
-
 import _ from 'underscore';
 import { Logic } from './logic';
 import { INVALID_ID } from './logic/constants';

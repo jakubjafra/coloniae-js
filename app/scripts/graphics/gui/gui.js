@@ -1,13 +1,7 @@
-/*
+// TODO: Dodać tutuaj listę kontrolerów do update i updateować jak wszystko inne.
 
-gui.js
-
-Dodać tutuaj listę kontrolerów do update i updateować jak wszystko inne.
-
-TODO: Usunąć "guiClickHandler" - gui.js ma być jedynie odzwierciedleniem stanu graphics.js
-a nie samemu wpływać na ten stan...
-
-*/
+// TODO: Usunąć "guiClickHandler" - gui.js ma być jedynie odzwierciedleniem stanu graphics.js
+// a nie samemu wpływać na ten stan...
 
 import $ from 'jquery';
 import angular from 'angular';

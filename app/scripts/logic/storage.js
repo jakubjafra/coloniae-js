@@ -1,9 +1,3 @@
-/*
-
-storage.js
-
-*/
-
 import Class from '../extend';
 
 // trzeba zrobić porządek z tymi slotami... nie podoba mi się trochę bałagan z tymi id'kami

@@ -1,9 +1,3 @@
-/*
-
-ship.js
-
-*/
-
 import { MilitaryUnit } from './militaryUnit';
 import { countries } from './country';
 import { AStar, neighbours } from './algorithms';

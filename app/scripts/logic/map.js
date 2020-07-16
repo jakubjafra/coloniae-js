@@ -1,9 +1,3 @@
-/*
-
-map.js
-
-*/
-
 import { PLAINS, SHALLOW, COAST, HILLSIDE, MOUTAIN, Tile, tiles } from './tile';
 import { Island } from './island';
 import { TreeFld } from './gameDefinitions';

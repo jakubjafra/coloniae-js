@@ -1,9 +1,3 @@
-/*
-
-building.js
-
-*/
-
 import { INVALID_ID } from './constants';
 import { countries } from './country';
 import { islands } from './island';

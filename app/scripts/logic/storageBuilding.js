@@ -1,9 +1,3 @@
-/*
-
-storageBuilding.js
-
-*/
-
 import { Building, buildings } from './building';
 import { Storage, OUTPUT } from './storage';
 

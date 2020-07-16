@@ -1,9 +1,3 @@
-/*
-
-framework.js
-
-*/
-
 import $ from 'jquery';
 import { Stats } from 'three-stats';
 import 'jquery-mousewheel';

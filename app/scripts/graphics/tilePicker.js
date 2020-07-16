@@ -1,9 +1,3 @@
-/*
-
-tilePicker.js
-
-*/
-
 import { tiles } from '../logic/tile';
 import { gameplayState } from '../graphics/gameplayState';
 import { drawMethod } from '../graphics/drawMethod';
