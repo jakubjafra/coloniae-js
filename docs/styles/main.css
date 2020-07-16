@@ -1,0 +1,474 @@
+/*
+
+main.css
+
+Powinienem zawisnąć na szubienicy za to gówno.
+
+*/
+
+* {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+body {
+	overflow: hidden;
+	font-family: monospace;
+}
+
+a {
+	color: white;
+}
+
+b {
+	font-weight: bold;
+}
+
+hr {
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+ul {
+	list-style-type: disc;
+}
+
+li {
+	margin-left: 20px;
+}
+
+#mainCanvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	width: 100%;
+	height: 100%;
+
+	background-color: black;
+}
+
+#on_canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	width: 100%;
+	height: 100%;
+
+	z-index: 2;
+
+	pointer-events:none;
+
+	color: white;
+	/*font-weight: bold;*/
+
+	text-align: center;
+}
+
+#on_canvas > * {
+	pointer-events: auto;
+	text-align: left;
+}
+
+#top_left {
+	position: absolute;
+	top: 0;
+	left: 0px;
+}
+
+#top_center {
+	position: absolute;
+	top: 0;
+	left: 50%;
+
+	width: auto;
+}
+
+#top_right {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.center_all_inside {
+	display: inline-block;
+}
+
+.center_all_inside > * {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#console {
+	position: absolute;
+	top: 100px;
+	left: 50%;
+	margin-left: -400px;
+
+	width: 800px;
+
+	pointer-events: none;
+
+	text-align: center;
+}
+
+/* --------------- */
+
+#console > div {
+	display: inline-block;
+	width: auto;
+	background-color: rgba(0, 0, 0, 0.3);
+	padding: 3px;
+	border-radius: 3px;
+	margin-top: 3px;
+}
+
+#console > div:first-child {
+	margin-top: 0px;
+}
+
+/* --------------- */
+
+#time {
+	position: absolute;
+	right: 20px;
+	bottom: 20px;
+
+	background-color: rgba(0, 0, 0, 0.5);
+
+	padding: 5px;
+	border-radius: 5px;
+}
+
+/* --------------- */
+
+.buildingDialog {
+	position: absolute;
+	right: 10px;
+	bottom: 5px;
+
+	border-radius: 5px;
+	padding: 10px;
+
+	background-color: rgba(0, 0, 0, 0.5);
+
+	display: none;
+
+	font-size: 12px;
+
+	width: 284px;
+	height: 220px;
+}
+
+span > img {
+	vertical-align: top;
+}
+
+.horizontal_center {
+	text-align: center;
+}
+
+.vertical_center {
+	position: relative;
+	width: 100%;
+	height: 100%;
+
+	display: table;
+}
+
+.vertical_center > p {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.half_width {
+	position: relative;
+	display: inline-block;
+	float: left;
+
+	width: 142px;
+	height: auto;
+}
+
+#citizen_header {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+#citizen_tax {
+	line-height: 30px;
+	vertical-align: middle;
+	font-weight: bold;
+}
+
+.full_width {
+	position: relative;
+	display: inline-block;
+	float: left;
+
+	width: 284px;
+	height: auto;
+}
+
+#HouseDlg {
+}
+
+#HouseDlg button {
+	cursor: pointer;
+}
+
+#ProductionBuildingDlg {
+}
+
+#ProductionBuildingDlg .building_desc {
+	height: 50px;
+}
+
+#MarketplaceDlg {
+}
+
+.productlist {
+	width: 100%;
+	height: 100px;
+	overflow-y: auto;
+	overflow-x: visible;
+}
+
+#buildmenu {
+	position: absolute;
+	bottom: 5px;
+
+	left: 94px;
+	/* margin-left: -331px; */
+
+	width: 762px;
+	height: 200px;
+
+	padding: 10px;
+
+	/* display: none;  <- none */
+
+	background-color: rgba(0, 0, 0, 0.5);
+	border-radius: 5px;
+}
+
+.vertical_line {
+	position: relative;
+	display: inline-block;
+	float: left;
+
+	border-left: 2px dotted white;
+
+	width: 0px;
+	height: 100%;
+}
+
+.building_ext_info {
+	position: relative;
+	display: inline-block;
+	float: left;
+
+	width: 200px;
+	height: 200px;
+}
+
+.building_name {
+	height: 30px;
+	line-height: 30px;
+	vertical-align: middle;
+
+	size: 20px;
+}
+
+.building_img {
+	width: 100%;
+	z-index: 0;
+
+	text-align: center;
+	vertical-align: middle;
+	line-height: 30px;
+}
+
+.building_side {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+
+	width: 50px;
+	height: 70px;
+}
+
+.rotation {
+	top: 50%;
+	left: 50%;
+
+	margin-top: -15px;
+	margin-left: -15px;
+
+	width: 30px;
+	height: 30px;
+
+	line-height: 30px;
+	vertical-align: middle;
+
+	text-align: center;
+
+	position: relative;
+
+	cursor: pointer;
+}
+
+.rotation_10 {
+	background-color: #B64334; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
+
+	border-top-left-radius: 0px;
+	border-top-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+}
+
+.rotation_20 {
+	background-color: #B68334; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
+
+	border-top-left-radius: 15px;
+	border-top-right-radius: 0px;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+}
+
+.rotation_30 {
+	background-color: #294E77; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
+
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 0px;
+}
+
+.rotation_40 {
+	background-color: #278840; /* http://paletton.com/#uid=7050I0kmRmRfLtbjtpupujttbfL */
+
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	border-bottom-left-radius: 0px;
+	border-bottom-right-radius: 15px;
+}
+
+#buildlist {
+	position: relative;
+	display:inline-block;
+	float: left;
+
+	height: 200px;
+	width: 550px;
+
+	background-color: transparent;
+
+	overflow: hidden;
+	overflow-y: auto;
+}
+
+#buildlist_ontop {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 550px;
+	height: 300px;
+	z-index: 2;
+
+	line-height: 300px;
+	vertical-align: middle;
+	text-align: center;
+
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.buildlistitem {
+	position: relative;
+	float: left;
+
+	display: inline-block;
+
+	width: 55px;
+	height: 50px;
+
+	cursor: pointer;
+}
+
+.building_desc {
+	position: relative;
+
+	width: 200px;
+	height: 90px;
+}
+
+.building_desc .one_line {
+	position: absolute;
+	top: 50%;
+	margin-top: -25px;
+	width: 200px;
+	height: 50px;
+	line-height: 50px;
+	vertical-align: middle;
+
+	text-align: center;
+}
+
+/* ---------------------------------- */
+
+#handlers {
+	position: absolute;
+
+	width: 74px;
+	height: auto;
+
+	bottom: 10px;
+	left: 10px;
+}
+
+.handler {
+	position: relative;
+
+	margin-top: 10px;
+
+	width: 64px;
+	height: 64px;
+
+	padding: 5px;
+	border-radius: 5px;
+
+	cursor: pointer;
+
+	background-color: rgba(255, 255, 255, 0.4);
+}
+
+.handler:first-of-type {
+	margin-top: 0px;
+}
+
+.handler_on {
+	background-color: rgba(255, 255, 0, 0.6);
+}
+
+.header {
+	width: 100%;
+	height: 24px;
+
+	line-height: 24px;
+	vertical-align: middle;
+
+	font-size: 14px;
+
+	border-bottom: 1px solid white;
+
+	margin-bottom: 10px;
+}
+
+.header a {
+	text-decoration: none;
+}
