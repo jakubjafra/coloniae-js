@@ -1,151 +1,156 @@
-/*
+import $ from 'jquery';
+import { Stats } from 'three-stats';
+import 'jquery-mousewheel';
 
-framework.js
+function initFpsCounter() {
+  var stats = new Stats();
+  stats.setMode(0); // 0: fps, 1: ms
 
-*/
+  // Align top-left
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = null;
+  stats.domElement.style.right = '100px';
+  stats.domElement.style.top = '0px';
 
-define(['jquery', 'three-stats', 'jquery-mousewheel'], function($, Stats){
-	function initFpsCounter(){
-		var stats = new Stats();
-		stats.setMode(0); // 0: fps, 1: ms
+  $('#on_canvas').append(stats.domElement);
 
-		// Align top-left
-		stats.domElement.style.position = 'absolute';
-		stats.domElement.style.right = '100px';
-		stats.domElement.style.top = '0px';
+  return stats;
+}
 
-		$("#on_canvas").append(stats.domElement);
+export function framework(wrapper) {
+  console.assert(typeof wrapper === 'object');
 
-		return stats;
-	}
+  wrapper.resources = wrapper.resources || [];
+  wrapper.loadedResources = {};
 
-	return function(wrapper){
-		console.assert(typeof wrapper === "object");
+  wrapper.fullscreen = wrapper.fullscreen || false;
 
-		wrapper.resources = wrapper.resources || [];
-		wrapper.loadedResources = {};
+  wrapper.onUpdate = wrapper.onUpdate || function () {};
+  wrapper.onRender = wrapper.onRender || function () {};
+  wrapper.onLoadResources = wrapper.onLoadResources || function () {};
 
-		wrapper.fullscreen = wrapper.fullscreen || false;
+  wrapper.onKeyDown = wrapper.onKeyDown || function () {};
+  wrapper.onKeyUp = wrapper.onKeyUp || function () {};
 
-		wrapper.onUpdate = wrapper.onUpdate || function(){};
-		wrapper.onRender = wrapper.onRender || function(){};
-		wrapper.onLoadResources = wrapper.onLoadResources || function(){};
+  wrapper.onMouseEnter = wrapper.onMouseEnter || function () {};
+  wrapper.onMouseLeave = wrapper.onMouseLeave || function () {};
+  wrapper.onMouseMove = wrapper.onMouseMove || function () {};
+  wrapper.onMouseDown = wrapper.onMouseDown || function () {};
+  wrapper.onMouseUp = wrapper.onMouseUp || function () {};
+  wrapper.onMouseWheel = wrapper.onMouseWheel || function () {};
 
-		wrapper.onKeyDown = wrapper.onKeyDown || function(){};
-		wrapper.onKeyUp = wrapper.onKeyUp || function(){};
+  wrapper.onMouseClick = wrapper.onMouseClick || function () {};
 
-		wrapper.onMouseEnter = wrapper.onMouseEnter || function(){};
-		wrapper.onMouseLeave = wrapper.onMouseLeave || function(){};
-		wrapper.onMouseMove = wrapper.onMouseMove || function(){};
-		wrapper.onMouseDown = wrapper.onMouseDown || function(){};
-		wrapper.onMouseUp = wrapper.onMouseUp || function(){};
-		wrapper.onMouseWheel = wrapper.onMouseWheel || function(){};
+  // ~~~
 
-		wrapper.onMouseClick = wrapper.onMouseClick || function(){};
+  this._ = wrapper;
 
-		// ~~~
+  this.stats = initFpsCounter();
 
-		this._ = wrapper;
+  // ~~~
 
-		this.stats = initFpsCounter();
+  var loadedResourcesCount = 0;
 
-		// ~~~
+  this.canvas = $('#mainCanvas');
 
-		var loadedResourcesCount = 0;
+  var context = $(this.canvas)[0].getContext('2d');
 
-		this.canvas = $("#mainCanvas");
+  if (wrapper.fullscreen) {
+    context.canvas.width = parseInt($('body').width());
+    context.canvas.height = parseInt(window.innerHeight);
+  }
 
-		var context = $(this.canvas)[0].getContext("2d");
+  $(window).resize(function () {
+    context.canvas.width = parseInt($('body').width());
+    context.canvas.height = parseInt(window.innerHeight);
+  });
 
-		if(wrapper.fullscreen){
-			context.canvas.width = parseInt($("body").width());
-			context.canvas.height = parseInt(window.innerHeight);
-		}
+  var oldTime = new Date().getTime();
+  var newTime = 0;
+  var delta = 0;
 
-		$(window).resize(function(){
-			context.canvas.width = parseInt($("body").width());
-			context.canvas.height = parseInt(window.innerHeight);
-		});
+  var X = 0;
+  var Y = 0;
 
-		var oldTime = (new Date()).getTime();
-		var newTime = 0;
-		var delta = 0;
+  var wasMouseCursorMovedSinceMouseDown = false;
+  var lastMouseDown = 0;
 
-		var X = 0;
-		var Y = 0;
+  $('body').keydown(function (e) {
+    wrapper.onKeyDown.call(wrapper, e.which);
+  });
+  $('body').keyup(function (e) {
+    wrapper.onKeyUp.call(wrapper, e.which);
+  });
 
-		var wasMouseCursorMovedSinceMouseDown = false;
-		var lastMouseDown = 0;
+  $(this.canvas).mouseenter($.proxy(wrapper.onMouseEnter, wrapper));
+  $(this.canvas).mouseleave($.proxy(wrapper.onMouseLeave, wrapper));
 
-		$("body").keydown(function(e){ wrapper.onKeyDown.call(wrapper, e.which); });
-		$("body").keyup(function(e){ wrapper.onKeyUp.call(wrapper, e.which); });
+  $(this.canvas).mousemove(
+    $.proxy(function (e) {
+      X = e.pageX - $(this.canvas).offset().left;
+      Y = e.pageY - $(this.canvas).offset().top;
 
-		$(this.canvas).mouseenter($.proxy(wrapper.onMouseEnter, wrapper));
-		$(this.canvas).mouseleave($.proxy(wrapper.onMouseLeave, wrapper));
-		
-		$(this.canvas).mousemove($.proxy(function(e){
-			X = e.pageX - $(this.canvas).offset().left;
-			Y = e.pageY - $(this.canvas).offset().top;
+      wasMouseCursorMovedSinceMouseDown = true;
 
-			wasMouseCursorMovedSinceMouseDown = true;
+      wrapper.onMouseMove.call(wrapper, X, Y);
+    }, this),
+  );
 
-			wrapper.onMouseMove.call(wrapper, X, Y);
-		}, this));
-		
-		$(this.canvas).mousedown(function(){
-			wasMouseCursorMovedSinceMouseDown = false;
-			lastMouseDown = (new Date()).getTime();
+  $(this.canvas).mousedown(function () {
+    wasMouseCursorMovedSinceMouseDown = false;
+    lastMouseDown = new Date().getTime();
 
-			wrapper.onMouseDown.call(wrapper, X, Y);
-		});
-		
-		$(this.canvas).mouseup(function(){
-			wrapper.onMouseUp.call(wrapper, X, Y);
+    wrapper.onMouseDown.call(wrapper, X, Y);
+  });
 
-			if(!wasMouseCursorMovedSinceMouseDown || ((new Date()).getTime() - lastMouseDown) < 200)
-				wrapper.onMouseClick.call(wrapper, X, Y);
-		});
+  $(this.canvas).mouseup(function () {
+    wrapper.onMouseUp.call(wrapper, X, Y);
 
-		$(this.canvas).mousewheel(function(e){ wrapper.onMouseWheel.call(wrapper, e.deltaY); });
+    if (!wasMouseCursorMovedSinceMouseDown || new Date().getTime() - lastMouseDown < 200)
+      wrapper.onMouseClick.call(wrapper, X, Y);
+  });
 
-		this.step = $.proxy(function(){
-			newTime = (new Date()).getTime();
-			delta = (newTime - oldTime) / 1000;
+  $(this.canvas).mousewheel(function (e) {
+    wrapper.onMouseWheel.call(wrapper, e.deltaY);
+  });
 
-			this.stats.begin();
+  this.step = $.proxy(function () {
+    newTime = new Date().getTime();
+    delta = (newTime - oldTime) / 1000;
 
-			wrapper.onUpdate(delta);
-			wrapper.onRender(delta, context, wrapper.loadedResources);
+    this.stats.begin();
 
-			this.stats.end();
+    wrapper.onUpdate(delta);
+    wrapper.onRender(delta, context, wrapper.loadedResources);
 
-			oldTime = newTime;
+    this.stats.end();
 
-			requestAnimationFrame(this.step);
-		}, this);
+    oldTime = newTime;
 
-		this.start = function(){
-			console.log('starting loading requested ' + wrapper.resources.length + ' image(s)');
+    requestAnimationFrame(this.step);
+  }, this);
 
-			for(var i = 0; i < wrapper.resources.length; i++){
-				var name = wrapper.resources[i];
+  this.start = function () {
+    console.log('starting loading requested ' + wrapper.resources.length + ' image(s)');
 
-				wrapper.loadedResources[name] = new Image(); // TODO: Uwolnić resources od bycia stricte Image.
+    for (var i = 0; i < wrapper.resources.length; i++) {
+      var name = wrapper.resources[i];
 
-				wrapper.loadedResources[name].onload = $.proxy(function(){
-					loadedResourcesCount++;
-					if(loadedResourcesCount >= wrapper.resources.length){
-						console.log('...done loading images, lauching game');
+      wrapper.loadedResources[name] = new Image(); // TODO: Uwolnić resources od bycia stricte Image.
 
-						wrapper.onLoadResources(wrapper.loadedResources);
+      wrapper.loadedResources[name].onload = $.proxy(function () {
+        loadedResourcesCount++;
+        if (loadedResourcesCount >= wrapper.resources.length) {
+          console.log('...done loading images, lauching game');
 
-						oldTime = (new Date()).getTime();
-						requestAnimationFrame(this.step);
-					}
-				}, this);
+          wrapper.onLoadResources(wrapper.loadedResources);
 
-				wrapper.loadedResources[name].src = "imgs/" + name + ".png";
-			}
-		};
-	};
-});
+          oldTime = new Date().getTime();
+          requestAnimationFrame(this.step);
+        }
+      }, this);
+
+      wrapper.loadedResources[name].src = 'imgs/' + name + '.png';
+    }
+  };
+}

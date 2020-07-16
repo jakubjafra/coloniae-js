@@ -1,183 +1,187 @@
-/*
+import $ from 'jquery';
 
-productionBuilding.js
+import { INVALID_ID } from './constants';
+import { OUTPUT, INPUT_1 } from './storage';
+import { StorageBuilding } from './storageBuilding';
+import { Porter, Marketplace } from './gameDefinitions';
+import { tiles, PLAINS } from './tile';
 
-*/
+export var ProductionBuilding = StorageBuilding.extend(function () {
+  this.baseProduction = 0; // per second
 
-var ProductionBuilding = StorageBuilding.extend(function(){
-	this.baseProduction = 0; // per second
+  this.productionStep = 0.0;
 
-	this.productionStep = 0.0;
-
-	this.effectivity = 1;
+  this.effectivity = 1;
 });
 
-var Workshop = ProductionBuilding.extend(function(){
-	this.width = 2;
-	this.height = 2;
+export var Workshop = ProductionBuilding.extend(function () {
+  this.width = 2;
+  this.height = 2;
 
-	this.porters = [ new Porter(this) ];
-	this.minSourceQuantity = 5;
+  this.porters = [new Porter(this)];
+  this.minSourceQuantity = 5;
 
-	this.maxInputQuantity = 5;
+  this.maxInputQuantity = 5;
 
-	this.sourcesRadius = 11;
+  this.sourcesRadius = 11;
 
-	this.inputConsumption = {};
+  this.inputConsumption = {};
 
-	this.onBuild = function(){
-		this.super.onBuild();
+  this.onBuild = function () {
+    this.super.onBuild();
 
-		this.storage.catagories[OUTPUT] = INVALID_ID;
+    this.storage.catagories[OUTPUT] = INVALID_ID;
 
-		this.inputConsumption[INPUT_1] = 1;
-		this.storage.catagories[INPUT_1] = INVALID_ID;
-	};
+    this.inputConsumption[INPUT_1] = 1;
+    this.storage.catagories[INPUT_1] = INVALID_ID;
+  };
 
-	this.sourcesFilter = function(building){
-		return (building instanceof Marketplace) || (building instanceof Farm);
-	};
+  this.sourcesFilter = function (building) {
+    return building instanceof Marketplace || building instanceof Farm;
+  };
 
-	this.chooseFilter = function(building){
-		var arr = [];
+  this.chooseFilter = function (building) {
+    var arr = [];
 
-		$.each(this.inputConsumption, $.proxy(function(i, v){
-			if(this.storage.of(i) >= this.maxInputQuantity)
-				return "continue";
+    $.each(
+      this.inputConsumption,
+      $.proxy(function (i, v) {
+        if (this.storage.of(i) >= this.maxInputQuantity) return 'continue';
 
-			var buildingQuantity = building.storage.at(this.storage.special(i));
-			if(buildingQuantity > this.minSourceQuantity){
-				arr.push([this.storage.of(i), this.storage.special(i)]);
-			}
-		}, this));
+        var buildingQuantity = building.storage.at(this.storage.special(i));
+        if (buildingQuantity > this.minSourceQuantity) {
+          arr.push([this.storage.of(i), this.storage.special(i)]);
+        }
+      }, this),
+    );
 
-		if(arr.length == 0)
-			return [false];
+    if (arr.length == 0) return [false];
 
-		arr.sort(function(a, b){
-			return a[0] - b[0];
-		});
+    arr.sort(function (a, b) {
+      return a[0] - b[0];
+    });
 
-		return [true, arr[0][1]];
-	};
+    return [true, arr[0][1]];
+  };
 
-	this.canProduce = function(){ // also updates effectivity
-		var ret = true;
-		
-		$.each(this.inputConsumption, $.proxy(function(i, v){
-			if(!(this.storage.of(i) >= v)){
-				ret = false;
-				return false;
-			}
-		}, this));
+  this.canProduce = function () {
+    // also updates effectivity
+    var ret = true;
 
-		this.effectivity = ret ? 1 : 0;
-		return ret;
-	}
+    $.each(
+      this.inputConsumption,
+      $.proxy(function (i, v) {
+        if (!(this.storage.of(i) >= v)) {
+          ret = false;
+          return false;
+        }
+      }, this),
+    );
 
-	this.hardUpdate = function(delta){
-		this.super.hardUpdate(delta);
+    this.effectivity = ret ? 1 : 0;
+    return ret;
+  };
 
-		if(this.canProduce()){
-			this.productionStep += this.baseProduction * delta;
+  this.hardUpdate = function (delta) {
+    this.super.hardUpdate(delta);
 
-			while(this.productionStep >= 1.0 && this.canProduce()){
-				this.storage.add(this.storage.special(OUTPUT), 1);
+    if (this.canProduce()) {
+      this.productionStep += this.baseProduction * delta;
 
-				$.each(this.inputConsumption, $.proxy(function(i, v){
-					this.storage.remove(this.storage.special(i), v);
-				}, this));
-				this.productionStep -= 1.0;
-			}
-		}
-	};
+      while (this.productionStep >= 1.0 && this.canProduce()) {
+        this.storage.add(this.storage.special(OUTPUT), 1);
 
-	this.softUpdate = function(delta){
-		this.super.softUpdate(delta);
+        $.each(
+          this.inputConsumption,
+          $.proxy(function (i, v) {
+            this.storage.remove(this.storage.special(i), v);
+          }, this),
+        );
+        this.productionStep -= 1.0;
+      }
+    }
+  };
 
-		if(!this.canProduce())
-			this.deployPorters();
-	};
+  this.softUpdate = function (delta) {
+    this.super.softUpdate(delta);
+
+    if (!this.canProduce()) this.deployPorters();
+  };
 });
 
-var Farm = ProductionBuilding.extend(function(){
-	this.width = 2;
-	this.height = 2;
+export var Farm = ProductionBuilding.extend(function () {
+  this.width = 2;
+  this.height = 2;
 
-	this.harvestRadius = 1.5; // najlepiej jedno z [1.5 ; 2 ; 2.5 ; 3]
+  this.harvestRadius = 1.5; // najlepiej jedno z [1.5 ; 2 ; 2.5 ; 3]
 
-	this.requiredCrop = undefined;
+  this.requiredCrop = undefined;
 
-	this.onBuild = function(){
-		this.super.onBuild();
+  this.onBuild = function () {
+    this.super.onBuild();
 
-		this.storage.catagories[OUTPUT] = INVALID_ID;
-	};
+    this.storage.catagories[OUTPUT] = INVALID_ID;
+  };
 
-	this.goodOnes = 0;
-	this.totalOnes = 0;
-	
-	this.forEachTileInRadius = function(tile){
-		if(tile.terrainLevel >= PLAINS && tile.buildingData !== this){
-			if(tile.buildingData == null){
-				if(this.requiredCrop == null)
-					this.goodOnes++;
-			} else
-				if(tile.buildingData.structName == this.requiredCrop && !tile.buildingData.isWithered)
-					this.goodOnes++;
-		}
-	}
+  this.goodOnes = 0;
+  this.totalOnes = 0;
 
-	this.calculateEffectivity = function(){
-		this.goodOnes = 0;
-		this.totalOnes = 0;
+  this.forEachTileInRadius = function (tile) {
+    if (tile.terrainLevel >= PLAINS && tile.buildingData !== this) {
+      if (tile.buildingData == null) {
+        if (this.requiredCrop == null) this.goodOnes++;
+      } else if (tile.buildingData.structName == this.requiredCrop && !tile.buildingData.isWithered)
+        this.goodOnes++;
+    }
+  };
 
-		var radius = Math.ceil(this.harvestRadius);
+  this.calculateEffectivity = function () {
+    this.goodOnes = 0;
+    this.totalOnes = 0;
 
-		var checked = {};
-		for(var k = 0; k < this.tilesUnder.length; k++){
-			var underTile = this.tilesUnder[k];
+    var radius = Math.ceil(this.harvestRadius);
 
-			for(var i = -radius; i <= radius; i++){
-				for(var j = -radius; j <= radius; j++){
-					if(this.harvestRadius < Math.sqrt(i*i + j*j))
-						continue;
+    var checked = {};
+    for (var k = 0; k < this.tilesUnder.length; k++) {
+      var underTile = this.tilesUnder[k];
 
-					if(!tiles.exsist(underTile.x + i, underTile.y + j))
-						continue;
+      for (var i = -radius; i <= radius; i++) {
+        for (var j = -radius; j <= radius; j++) {
+          if (this.harvestRadius < Math.sqrt(i * i + j * j)) continue;
 
-					var tile = tiles[underTile.x + i][underTile.y + j];
+          if (!tiles.exsist(underTile.x + i, underTile.y + j)) continue;
 
-					if(checked[tile.index] == undefined){
-						checked[tile.index] = true;
+          var tile = tiles[underTile.x + i][underTile.y + j];
 
-						if(tile.buildingData !== this)
-							this.totalOnes++;
+          if (checked[tile.index] == undefined) {
+            checked[tile.index] = true;
 
-						this.forEachTileInRadius(tile);
-					}
-				}
-			}
-		}
+            if (tile.buildingData !== this) this.totalOnes++;
 
-		this.effectivity = this.goodOnes / this.totalOnes;
-	};
+            this.forEachTileInRadius(tile);
+          }
+        }
+      }
+    }
 
-	this.calculateProduction = function(delta){
-		this.productionStep += this.baseProduction * this.effectivity * delta;
-		while(this.productionStep >= 1.0){
-			this.storage.add(this.storage.catagories[OUTPUT], 1);
+    this.effectivity = this.goodOnes / this.totalOnes;
+  };
 
-			this.productionStep -= 1.0;
-		}
-	};
+  this.calculateProduction = function (delta) {
+    this.productionStep += this.baseProduction * this.effectivity * delta;
+    while (this.productionStep >= 1.0) {
+      this.storage.add(this.storage.catagories[OUTPUT], 1);
 
-	this.hardUpdate = function(delta, dontCalc){
-		this.super.hardUpdate(delta);
+      this.productionStep -= 1.0;
+    }
+  };
 
-		if(dontCalc == undefined){
-			this.calculateEffectivity();
-			this.calculateProduction(delta);
-		}
-	};
+  this.hardUpdate = function (delta, dontCalc) {
+    this.super.hardUpdate(delta);
+
+    if (dontCalc == undefined) {
+      this.calculateEffectivity();
+      this.calculateProduction(delta);
+    }
+  };
 });

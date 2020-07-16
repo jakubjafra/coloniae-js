@@ -1,283 +1,293 @@
-/*
+import Class from '../extend';
+import $ from 'jquery';
+import _ from 'underscore';
 
-houseGroup.js
+import { INVALID_ID } from './constants';
+import { FOOD_ID } from './gameDefinitions';
+import { haveRequriedResources, useRequiredResources } from './structure';
 
-*/
+export const PIONERS = 0;
+export const SETTLERS = 1;
+export const CITIZENS = 2;
+export const MERCHANTS = 3;
+export const ARISTOCRATS = 4;
 
-PIONERS = 0;
-SETTLERS = 1;
-CITIZENS = 2;
-MERCHANTS = 3;
-ARISTOCRATS = 4;
+export const VERY_WEALTHY = 2;
+export const WEALTHY = 1;
+export const NORMAL = 0;
+export const STARVING = -1;
+export const VERY_STARVING = -1;
 
-VERY_WEALTHY = 2;
-WEALTHY = 1;
-NORMAL = 0;
-STARVING = -1;
-VERY_STARVING = -1;
+export var HouseGroup = Class.extend(function () {
+  // identyfikator typu
+  this.type = 0;
+  // nazwa grupy
+  this.name = '';
+  // domy o danej grupie ludności
+  this.houses = {};
 
-var HouseGroup = Class.extend(function(){
-	// identyfikator typu
-	this.type = 0;
-	// nazwa grupy
-	this.name = "";
-	// domy o danej grupie ludności
-	this.houses = {};
+  // przydatne referencje
+  this.island = null;
+  this.country = null;
 
-	// przydatne referencje
-	this.island = null;
-	this.country = null;
+  // ilość wszystkich ludzi z danej grupy
+  this.totalNumberOfPeople = 0;
 
-	// ilość wszystkich ludzi z danej grupy
-	this.totalNumberOfPeople = 0;
+  // wymagane surowce do wybudowania domu na ten poziom z poziomu minus jeden
+  this.requiredResources = {};
 
-	// wymagane surowce do wybudowania domu na ten poziom z poziomu minus jeden
-	this.requiredResources = {};
+  // wymagany dostęp do budynków użyteczności publicznej
+  this.requiredPublicBuildingsMask = 0;
 
-	// wymagany dostęp do budynków użyteczności publicznej
-	this.requiredPublicBuildingsMask = 0;
+  // dane o konsumpcji, per 100 people per 1 sec
+  this.consumption = {}; // id towaru -> consumption per 100 per 1 sec
+  this.baseConsumptionCount = 0;
 
-	// dane o konsumpcji, per 100 people per 1 sec
-	this.consumption = {}; // id towaru -> consumption per 100 per 1 sec
-	this.baseConsumptionCount = 0;
+  this.peopleNeededToLevelUp = Infinity;
 
-	this.peopleNeededToLevelUp = Infinity;
+  this.contentRaw = 0;
+  this.contentLevel = 0;
+  this.contentTimer = 0;
 
-	this.contentRaw = 0;
-	this.contentLevel = 0;
-	this.contentTimer = 0;
+  this.contentByConsumption = {};
 
-	this.contentByConsumption = {};
+  // postęp w pożeraniu towaru (id towaru -> 0..1)
+  this.step = {};
 
-	// postęp w pożeraniu towaru (id towaru -> 0..1)
-	this.step = {};
+  // bazowa ilość monet generowana przez 1 obywatela danej katagorii
+  this.baseIncome = 0;
+  this.taxDiff = 0; // niby podatek, ale nie działa :P
 
-	// bazowa ilość monet generowana przez 1 obywatela danej katagorii
-	this.baseIncome = 0;
-	this.taxDiff = 0; // niby podatek, ale nie działa :P
+  this.constructor = function (island, country) {
+    this.island = island;
+    this.country = country;
+  };
 
-	this.constructor = function(island, country){
-		this.island = island;
-		this.country = country;
-	};
+  this.addHouse = function (house) {
+    house.type = this.type;
+    this.houses[house.id] = house;
+  };
 
-	this.addHouse = function(house){
-		house.type = this.type;
-		this.houses[house.id] = house;
-	};
+  this.removeHouse = function (house) {
+    house.type = INVALID_ID;
+    delete this.houses[house.id];
+  };
 
-	this.removeHouse = function(house){
-		house.type = INVALID_ID;
-		delete this.houses[house.id];
-	};
+  this.softUpdate = function (delta) {};
 
-	this.softUpdate = function(delta){};
+  this.canUpgrade = function (house) {
+    return true;
+  };
 
-	this.canUpgrade = function(house){
-		return true;
-	};
+  this.hardUpdate = function (delta) {
+    this.totalNumberOfPeople = 0;
 
-	this.hardUpdate = function(delta){
-		this.totalNumberOfPeople = 0;
+    $.each(
+      this.houses,
+      $.proxy(function (i, v) {
+        this.totalNumberOfPeople += v.people;
+      }, this),
+    );
 
-		$.each(this.houses, $.proxy(function(i, v){
-			this.totalNumberOfPeople += v.people;
-		}, this));
+    if (this.totalNumberOfPeople == 0) {
+      this.contentLevel = 0;
+      return;
+    }
 
-		if(this.totalNumberOfPeople == 0){
-			this.contentLevel = 0;
-			return;
-		}
+    var income = this.totalNumberOfPeople * (this.baseIncome + this.taxDiff);
 
-		var income = this.totalNumberOfPeople * (this.baseIncome + this.taxDiff);
+    this.country.coins += (income * delta) / 60;
 
-		this.country.coins += income * delta / 60;
+    if (this.island.income[this.country.id] == undefined) this.island.income[this.country.id] = 0;
 
-		if(this.island.income[this.country.id] == undefined)
-			this.island.income[this.country.id] = 0;
+    this.island.income[this.country.id] += income || 0;
 
-		this.island.income[this.country.id] += income || 0;
+    var storage = this.island.mainMarketplaces[this.country.id].storage;
+    $.each(
+      this.consumption,
+      $.proxy(function (i, v) {
+        i = parseInt(i);
 
-		var storage = this.island.mainMarketplaces[this.country.id].storage;
-		$.each(this.consumption, $.proxy(function(i, v){
-			i = parseInt(i);
+        console.assert(this.consumption[i] != undefined);
 
-			console.assert(this.consumption[i] != undefined);
-
-			if(typeof this.consumption[i] === "boolean"){
-				this.contentByConsumption[i] = (storage.of(i) >= 1 ? 1 : 0);
-				return;
-			}
-
-			if(this.step[i] == undefined)
-				this.step[i] = 0;
-
-			var eaten = (this.totalNumberOfPeople / 100) * this.consumption[i] * delta + this.step[i];
-			this.step[i] = eaten;
+        if (typeof this.consumption[i] === 'boolean') {
+          this.contentByConsumption[i] = storage.of(i) >= 1 ? 1 : 0;
+          return;
+        }
 
-			if(eaten == undefined)
-				return;
+        if (this.step[i] == undefined) this.step[i] = 0;
 
-			console.assert(eaten >= 0);
+        var eaten = (this.totalNumberOfPeople / 100) * this.consumption[i] * delta + this.step[i];
+        this.step[i] = eaten;
 
-			var eatenProduct = Math.floor(eaten);
+        if (eaten == undefined) return;
 
-			// jeśli coś zjedzono:
-			if(eatenProduct >= 1){
-				this.contentByConsumption[i] = 1;
+        console.assert(eaten >= 0);
 
-				// zjedz ile możesz
-				var canEat = storage.of(i);
-				if(eatenProduct >= canEat){
-					this.contentByConsumption[i] = canEat / eatenProduct;
-					eatenProduct = canEat;
-				}
+        var eatenProduct = Math.floor(eaten);
 
-				storage.remove(storage.special(i), eatenProduct);
-				this.country.coins += eatenProduct;
+        // jeśli coś zjedzono:
+        if (eatenProduct >= 1) {
+          this.contentByConsumption[i] = 1;
 
-				this.step[i] = eaten - eatenProduct;
-			}
+          // zjedz ile możesz
+          var canEat = storage.of(i);
+          if (eatenProduct >= canEat) {
+            this.contentByConsumption[i] = canEat / eatenProduct;
+            eatenProduct = canEat;
+          }
 
-			// by zapobiedz choremu stackowaniu głodu
-			if(this.step[i] >= 1)
-				this.step[i] = 1;
-		}, this));
+          storage.remove(storage.special(i), eatenProduct);
+          this.country.coins += eatenProduct;
 
-		var TAX = 1 + (this.taxDiff / (this.type + 1)); // podatki
-		var AVAILABLE_FACTOR = 20; // im mniejszy tym większy udział dostępnych towarów z następnego tieru
+          this.step[i] = eaten - eatenProduct;
+        }
 
-		var content = 0;
+        // by zapobiedz choremu stackowaniu głodu
+        if (this.step[i] >= 1) this.step[i] = 1;
+      }, this),
+    );
 
-		$.each(this.contentByConsumption, $.proxy(function(i, v){
-			if(typeof this.consumption[i] === "boolean"){
-				content += this.contentByConsumption[i] / AVAILABLE_FACTOR;
-			} else
-				content += this.contentByConsumption[i] * (this.consumption[i] * 60);
-		}, this));
+    var TAX = 1 + this.taxDiff / (this.type + 1); // podatki
+    var AVAILABLE_FACTOR = 20; // im mniejszy tym większy udział dostępnych towarów z następnego tieru
 
-		// zadowolenie jest płaskie i natychmiastowe
-		this.contentRaw = (content / (this.baseConsumptionCount * TAX));
+    var content = 0;
 
-		var newContentLevel = (function(raw){
-			if(raw > 1)
-				return VERY_WEALTHY;
-			else if(raw <= 1 && raw > 0.9)
-				return WEALTHY;
-			else if(raw <= 0.9 && raw > 0.5)
-				return NORMAL;
-			else if(raw <= 0.5 && raw > 0.2)
-				return STARVING;
-			else
-				return VERY_STARVING;
-		})(this.contentRaw);
+    $.each(
+      this.contentByConsumption,
+      $.proxy(function (i, v) {
+        if (typeof this.consumption[i] === 'boolean') {
+          content += this.contentByConsumption[i] / AVAILABLE_FACTOR;
+        } else content += this.contentByConsumption[i] * (this.consumption[i] * 60);
+      }, this),
+    );
 
-		if(newContentLevel != this.contentLevel){
-			this.contentLevel = newContentLevel;
-			this.contentTimer = 0;
-		}
+    // zadowolenie jest płaskie i natychmiastowe
+    this.contentRaw = content / (this.baseConsumptionCount * TAX);
 
-		this.contentTimer += delta;
+    var newContentLevel = (function (raw) {
+      if (raw > 1) return VERY_WEALTHY;
+      else if (raw <= 1 && raw > 0.9) return WEALTHY;
+      else if (raw <= 0.9 && raw > 0.5) return NORMAL;
+      else if (raw <= 0.5 && raw > 0.2) return STARVING;
+      else return VERY_STARVING;
+    })(this.contentRaw);
 
-		var CONTENT_INTERVALS = {};
+    if (newContentLevel != this.contentLevel) {
+      this.contentLevel = newContentLevel;
+      this.contentTimer = 0;
+    }
 
-		CONTENT_INTERVALS[VERY_WEALTHY] = 30;
-		CONTENT_INTERVALS[WEALTHY] = 60;
-		CONTENT_INTERVALS[STARVING] = 60;
-		CONTENT_INTERVALS[VERY_STARVING] = 30;
+    this.contentTimer += delta;
 
-		var canUpgrade = true; // czy można sprzedawać materiały budowlane obywatelom
+    var CONTENT_INTERVALS = {};
 
-		// nie upgraduje się jak nie ma żarcia
-		canUpgrade = (storage.of(FOOD_ID) > 0);
+    CONTENT_INTERVALS[VERY_WEALTHY] = 30;
+    CONTENT_INTERVALS[WEALTHY] = 60;
+    CONTENT_INTERVALS[STARVING] = 60;
+    CONTENT_INTERVALS[VERY_STARVING] = 30;
 
-		// dobrobyt
-		if(	this.contentTimer >= CONTENT_INTERVALS[this.contentLevel] &&
-			(this.contentLevel == VERY_WEALTHY || this.contentLevel == WEALTHY)){
-			var housesClone = _.clone(this.houses);
+    var canUpgrade = true; // czy można sprzedawać materiały budowlane obywatelom
 
-			// jeżeli ludzie z danej grupy są zadowoleni to co minutę
-			// rodzi się 1 obywatel LUB 1 dom ma level up
+    // nie upgraduje się jak nie ma żarcia
+    canUpgrade = storage.of(FOOD_ID) > 0;
 
-			do {
-				var keys = Object.keys(housesClone);
-				var rand = Math.floor(Math.random() * (keys.length - 1));
-				var house = housesClone[parseInt(keys[rand])];
+    // dobrobyt
+    if (
+      this.contentTimer >= CONTENT_INTERVALS[this.contentLevel] &&
+      (this.contentLevel == VERY_WEALTHY || this.contentLevel == WEALTHY)
+    ) {
+      var housesClone = _.clone(this.houses);
 
-				if(	house.people == this.peopleNeededToLevelUp &&
-					(house.centerTile().publicBuildingMask & this.requiredPublicBuildingsMask) &&
-					this.canUpgrade(house) &&
-					canUpgrade){
-					// level up
+      // jeżeli ludzie z danej grupy są zadowoleni to co minutę
+      // rodzi się 1 obywatel LUB 1 dom ma level up
 
-					var houseGroups = this.island.houseGroups[this.country.id];
-					var marketplace = this.island.mainMarketplaces[this.country.id];
+      do {
+        var keys = Object.keys(housesClone);
+        var rand = Math.floor(Math.random() * (keys.length - 1));
+        var house = housesClone[parseInt(keys[rand])];
 
-					console.assert(houseGroups[this.type + 1] != undefined);
+        if (
+          house.people == this.peopleNeededToLevelUp &&
+          house.centerTile().publicBuildingMask & this.requiredPublicBuildingsMask &&
+          this.canUpgrade(house) &&
+          canUpgrade
+        ) {
+          // level up
 
-					if(houseGroups[this.type + 1].contentLevel >= NORMAL){
-						var requiredResources = houseGroups[this.type + 1].requiredResources;
+          var houseGroups = this.island.houseGroups[this.country.id];
+          var marketplace = this.island.mainMarketplaces[this.country.id];
 
-						// muszą być wymagane surowce w magazynie
-						if(haveRequriedResources(requiredResources, marketplace)){
-							useRequiredResources(requiredResources, marketplace);
+          console.assert(houseGroups[this.type + 1] != undefined);
 
-							this.removeHouse(house);
-							houseGroups[this.type + 1].addHouse(house);
+          if (houseGroups[this.type + 1].contentLevel >= NORMAL) {
+            var requiredResources = houseGroups[this.type + 1].requiredResources;
 
-							break;
-						}
-					}
-				}
+            // muszą być wymagane surowce w magazynie
+            if (haveRequriedResources(requiredResources, marketplace)) {
+              useRequiredResources(requiredResources, marketplace);
 
-				if(house.people < this.peopleNeededToLevelUp) { // ogranicznik maksymalny
-					// 1 person born
+              this.removeHouse(house);
+              houseGroups[this.type + 1].addHouse(house);
 
-					house.people += 1;
-					break;
-				}
+              break;
+            }
+          }
+        }
 
-				delete housesClone[parseInt(keys[rand])];
-			} while(Object.keys(housesClone).length > 0)
+        if (house.people < this.peopleNeededToLevelUp) {
+          // ogranicznik maksymalny
+          // 1 person born
 
-			this.contentTimer = 0;
+          house.people += 1;
+          break;
+        }
 
-			return;
-		}
+        delete housesClone[parseInt(keys[rand])];
+      } while (Object.keys(housesClone).length > 0);
 
-		// głód
-		if(	this.contentTimer >= CONTENT_INTERVALS[this.contentLevel] &&
-			(this.contentLevel == VERY_STARVING || this.contentLevel == STARVING)){
-			var keys = Object.keys(this.houses);
-			var rand = Math.floor(Math.random() * (keys.length - 1));
-			var house = this.houses[keys[rand]];
-			
-			house.people -= 1;
+      this.contentTimer = 0;
 
-			if(house.people <= 0)
-				house.remove();
+      return;
+    }
 
-			var houseGroups = this.island.houseGroups[this.country.id];
-			if(	houseGroups[this.type - 1] != undefined &&
-				house.people <= houseGroups[this.type - 1].peopleNeededToLevelUp){
-				// level down
+    // głód
+    if (
+      this.contentTimer >= CONTENT_INTERVALS[this.contentLevel] &&
+      (this.contentLevel == VERY_STARVING || this.contentLevel == STARVING)
+    ) {
+      var keys = Object.keys(this.houses);
+      var rand = Math.floor(Math.random() * (keys.length - 1));
+      var house = this.houses[keys[rand]];
 
-				this.removeHouse(house);
-				houseGroups[this.type - 1].addHouse(house);
-			}
+      house.people -= 1;
 
-			this.contentTimer = 0;
+      if (house.people <= 0) house.remove();
 
-			return;
+      var houseGroups = this.island.houseGroups[this.country.id];
+      if (
+        houseGroups[this.type - 1] != undefined &&
+        house.people <= houseGroups[this.type - 1].peopleNeededToLevelUp
+      ) {
+        // level down
 
-		}
-	};
+        this.removeHouse(house);
+        houseGroups[this.type - 1].addHouse(house);
+      }
 
-	this.calcConsumptionCount = function(){
-		this.baseConsumptionCount = 0;
-		$.each(this.consumption, $.proxy(function(i, v){
-			if(typeof v !== "boolean")
-				this.baseConsumptionCount += (v * 60);
-		}, this));
-	}
+      this.contentTimer = 0;
+
+      return;
+    }
+  };
+
+  this.calcConsumptionCount = function () {
+    this.baseConsumptionCount = 0;
+    $.each(
+      this.consumption,
+      $.proxy(function (i, v) {
+        if (typeof v !== 'boolean') this.baseConsumptionCount += v * 60;
+      }, this),
+    );
+  };
 });

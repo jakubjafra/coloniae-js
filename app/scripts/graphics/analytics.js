@@ -1,133 +1,118 @@
-/*
+import { islands } from '../logic/island';
+import { products } from '../logic/product';
+import { goods } from '../logic/gameDefinitions';
 
-alalytic.js
+const TYPE_OK = -1;
+const TYPE_NEED = 0;
+const TYPE_DEMAND = 1;
 
-*/
+function State(productId, msg, type) {
+  this.productId = productId;
+  this.type = type;
 
-define(['../logic'
-		],
-	function(
-	){
+  this.timeSinceLastCall = 0;
+}
 
-	TYPE_OK = -1;
-	TYPE_NEED = 0;
-	TYPE_DEMAND = 1;
+// indeksowanie: [StatesCount * island.id + State.type]
+var states = {};
 
-	function State(productId, msg, type){
-		this.productId = productId;
-		this.type = type;
+function getState(islandId, productId) {
+  return states[goods.length * islandId + productId];
+}
 
-		this.timeSinceLastCall = 0;
-	}
+function setState(islandId, productId, type) {
+  var state;
+  if ((state = getState(islandId, productId)) == undefined)
+    states[goods.length * islandId + productId] = new State(productId, type);
+  else state.type = type;
+}
 
-	// indeksowanie: [StatesCount * island.id + State.type]
-	var states = {};
+function isSomethingMissingInPlayerHouses() {
+  for (var islandId in islands) {
+    var island = islands[islandId];
+    if (island.houseGroups[0] == undefined) continue;
 
-	function getState(islandId, productId){
-		return states[goods.length * islandId + productId];
-	}
+    // Sprawdza się dostępność wszystkich dóbr.
+    for (var i = 0; i < goods.length; i++) {
+      var productId = goods[i];
 
-	function setState(islandId, productId, type){
-		var state;
-		if((state = getState(islandId, productId)) == undefined)
-			states[goods.length * islandId + productId] = new State(productId, type);
-		else
-			state.type = type;
-	}
+      var type = TYPE_OK;
 
-	function isSomethingMissingInPlayerHouses(){
-		for(var islandId in islands){
-			var island = islands[islandId];
-			if(island.houseGroups[0] == undefined)
-				continue;
+      // Przegląda się listę grup od tej najbogatszej - oni zawsze mają
+      // dostęp do większej ilości produktów. Ci biedniejsi będą go więc mieć
+      // automatycznie mniej do podziału - czyli wygenerują jakąś akcję.
+      for (var j = island.houseGroups[0].length - 1; j >= 0; j--) {
+        // <- index=0 is player index
+        var houseGroup = island.houseGroups[0][j];
 
-			// Sprawdza się dostępność wszystkich dóbr.
-			for(var i = 0; i < goods.length; i++){
-				var productId = goods[i];
+        if (houseGroup.totalNumberOfPeople == 0) continue;
 
-				var type = TYPE_OK;
+        // Gdyby arystokraci potrzebowali płótna (CLOTH_ID) można by przy pierwszym
+        // undefiend wyjść z tej pętlni, ale potrzebują więc trzeba kontynuować.
+        if (houseGroup.consumption[productId] == undefined) continue;
 
-				// Przegląda się listę grup od tej najbogatszej - oni zawsze mają
-				// dostęp do większej ilości produktów. Ci biedniejsi będą go więc mieć
-				// automatycznie mniej do podziału - czyli wygenerują jakąś akcję.
-				for(var j = (island.houseGroups[0].length - 1); j >= 0; j--){ // <- index=0 is player index
-					var houseGroup = island.houseGroups[0][j];
+        var breakFor = false;
 
-					if(houseGroup.totalNumberOfPeople == 0)
-						continue;
+        switch (typeof houseGroup.consumption[productId]) {
+          case 'number':
+            // Jeśli jakaś grupa jest niezadowolona z ilości dostawanego towaru
+            // to wygeneruj wiadomość o tym. Przerwij wykonywanie pętli bo ci "niżej"
+            // będa tak samo niezadowoleni - bo są biedniejsi ;)
+            if (houseGroup.contentByConsumption[productId] < 1) {
+              type = TYPE_NEED;
+              breakFor = true;
+            }
+            break;
 
-					// Gdyby arystokraci potrzebowali płótna (CLOTH_ID) można by przy pierwszym
-					// undefiend wyjść z tej pętlni, ale potrzebują więc trzeba kontynuować.
-					if(houseGroup.consumption[productId] == undefined)
-						continue;
+          case 'boolean':
+            // Jeśli nie ma surowca do levelupa to wygeneruj monit. I przerwij wykonywanie
+            // bo (patrz tabelka wymagań) "poniżej" na pewno nikt nie będzie ich potrzebował.
+            if (houseGroup.contentByConsumption[productId] < 1) {
+              type = TYPE_DEMAND;
+              breakFor = true;
+            }
+            break;
 
-					var breakFor = false;
-					
-					switch(typeof houseGroup.consumption[productId]){
-						case "number":
-								// Jeśli jakaś grupa jest niezadowolona z ilości dostawanego towaru
-								// to wygeneruj wiadomość o tym. Przerwij wykonywanie pętli bo ci "niżej"
-								// będa tak samo niezadowoleni - bo są biedniejsi ;)
-								if(houseGroup.contentByConsumption[productId] < 1){
-									type = TYPE_NEED;
-									breakFor = true;
-								}
-							break;
+          default:
+            console.error('incorect type');
+        }
 
-						case "boolean":
-								// Jeśli nie ma surowca do levelupa to wygeneruj monit. I przerwij wykonywanie
-								// bo (patrz tabelka wymagań) "poniżej" na pewno nikt nie będzie ich potrzebował.
-								if(houseGroup.contentByConsumption[productId] < 1){
-									type = TYPE_DEMAND;
-									breakFor = true;
-								}
-							break;
+        if (breakFor) break;
+      }
 
-						default:
-							console.error("incorect type");
-					}
+      setState(island.id, productId, type);
+    }
+  }
+}
 
-					if(breakFor)
-						break;
-				}
+export const Analytics = {
+  update: function (delta) {
+    isSomethingMissingInPlayerHouses();
 
-				setState(island.id, productId, type);
-			}
-		}
-	}
+    for (var stateId in states) {
+      var state = states[stateId];
 
-	return {
-		update: function(delta){
-			isSomethingMissingInPlayerHouses();
+      if (state.type == TYPE_OK) continue;
 
-			for(var stateId in states){
-				var state = states[stateId];
+      state.timeSinceLastCall += delta;
 
-				if(state.type == TYPE_OK)
-					continue;
+      if (state.timeSinceLastCall >= 10) {
+        switch (state.type) {
+          case TYPE_NEED:
+            if (state.productId == FOOD_ID) console.log('Your people are starving!');
+            else console.log('There is not enought ' + products[state.productId].name + '!');
+            break;
 
-				state.timeSinceLastCall += delta;
+          case TYPE_DEMAND:
+            console.log('You should provide ' + products[state.productId].name + '.');
+            break;
 
-				if(state.timeSinceLastCall >= 10){
-					switch(state.type){
-						case TYPE_NEED:
-								if(state.productId == FOOD_ID)
-									console.log("Your people are starving!");
-								else
-									console.log("There is not enought " + products[state.productId].name + "!");
-							break;
+          default:
+            break;
+        }
 
-						case TYPE_DEMAND:
-								console.log("You should provide " + products[state.productId].name + ".");
-							break;
-
-						default:
-							break;
-					}
-					
-					state.timeSinceLastCall = 0;
-				}
-			}
-		}
-	};
-});
+        state.timeSinceLastCall = 0;
+      }
+    }
+  },
+};

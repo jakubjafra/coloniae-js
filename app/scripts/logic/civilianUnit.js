@@ -4,32 +4,40 @@ civilianUnit.js
 
 */
 
-var civilianUnits = [];
+import Class from '../extend';
+import _ from 'underscore';
+import $ from 'jquery';
+
+import { INVALID_ID } from './constants';
+import { tiles } from './tile';
+import { Road, roads } from './gameDefinitions';
+
+export var civilianUnits = [];
 
 // Jednostka cywilna - porusza się z budynku do budynku po drogach.
-var CivilianUnit = Class.extend(function(){
-	// identyfikator
-	this.id = INVALID_ID;
-	// budynek z którego się porusza
-	this.sourceBuilding = null;
-	// budynek do którego się porusza
-	this.destinationBuilding = null;
-	// aktualna pozycja (tile)
-	this.position = tiles.coords(-1, -1);
-	// lista kroków do celu
-	this.steps = [];
-	// czy wykonuje poruszanie
-	this.isBusy = false;
-	// czas od ostatniej zmiany tilesa przy poruszaniu
-	this.lastMoveTime = 0;
+export var CivilianUnit = Class.extend(function () {
+  // identyfikator
+  this.id = INVALID_ID;
+  // budynek z którego się porusza
+  this.sourceBuilding = null;
+  // budynek do którego się porusza
+  this.destinationBuilding = null;
+  // aktualna pozycja (tile)
+  this.position = tiles.coords(-1, -1);
+  // lista kroków do celu
+  this.steps = [];
+  // czy wykonuje poruszanie
+  this.isBusy = false;
+  // czas od ostatniej zmiany tilesa przy poruszaniu
+  this.lastMoveTime = 0;
 
-	this.constructor = function(){
-		this.id = civilianUnits.length;
-		civilianUnits.push(this);
-	};
+  this.constructor = function () {
+    this.id = civilianUnits.length;
+    civilianUnits.push(this);
+  };
 
-	function findRoute(sourceBuilding, targetBuilding){
-		/*
+  function findRoute(sourceBuilding, targetBuilding) {
+    /*
 			Dijkstra
 
 			implementacja algorytmu szukania drogi
@@ -43,176 +51,177 @@ var CivilianUnit = Class.extend(function(){
 			
 			ret -> trasę jeśli istnieje, jeśli nie zwraca false
 		*/
-		function Dijkstra(Graph, source, target, neighborFunc, lengthFunc){
-			var dist = {}; dist[source] = 0;
-			var previous = {};
-			var Q = [];
+    function Dijkstra(Graph, source, target, neighborFunc, lengthFunc) {
+      var dist = {};
+      dist[source] = 0;
+      var previous = {};
+      var Q = [];
 
-			$.each(Graph, function(i,v){
-				if(v != source){
-					dist[v] = Infinity;
-					previous[v] = undefined;
-				}
+      $.each(Graph, function (i, v) {
+        if (v != source) {
+          dist[v] = Infinity;
+          previous[v] = undefined;
+        }
 
-				Q.push(v);
-			});
+        Q.push(v);
+      });
 
-			function source_node_with_min_dist(){
-				var searchArr = [];
-				
-				for(var i = 0; i < Q.length; i++){
-					searchArr.push([Q[i], dist[Q[i]]]);
-				}
+      function source_node_with_min_dist() {
+        var searchArr = [];
 
-				searchArr.sort(function(a, b){
-					return a[1] - b[1];
-				});
-				
-				return searchArr[0][0];
-			}
+        for (var i = 0; i < Q.length; i++) {
+          searchArr.push([Q[i], dist[Q[i]]]);
+        }
 
-			while(Q.length > 0){
-				var u = source_node_with_min_dist();
+        searchArr.sort(function (a, b) {
+          return a[1] - b[1];
+        });
 
-				if(u == target){
-					var S = [];
-					var u_cpy = u;
+        return searchArr[0][0];
+      }
 
-					// find real head
-					while(previous[u] != undefined && lengthFunc(u, previous[u]) == 1)
-						u = previous[u];
+      while (Q.length > 0) {
+        var u = source_node_with_min_dist();
 
-					if(previous[u] == undefined){
-						// skrajny przypadek, budynki stykają się ścianami
-						var u = u_cpy;
+        if (u == target) {
+          var S = [];
+          var u_cpy = u;
 
-						while(previous[u] != undefined){
-							var v = previous[u];
-							if(tiles[tiles.coords(u).x][tiles.coords(u).y].buildingData != tiles[tiles.coords(v).x][tiles.coords(v).y].buildingData){
-								S.push(tiles.coords(u));
-								S.push(tiles.coords(v));
-								S.reverse();
-								return S;
-							}
-							u = v;
-						}
+          // find real head
+          while (previous[u] != undefined && lengthFunc(u, previous[u]) == 1) u = previous[u];
 
-						// skrajny przypadek, szukamy drogi do tego samego pola
-						return false;
-					} else{
-						// push real head
-						S.push(tiles.coords(u));
+          if (previous[u] == undefined) {
+            // skrajny przypadek, budynki stykają się ścianami
+            var u = u_cpy;
 
-						// find body, stop at tail
-						for(; previous[u] != undefined; u = previous[u]){
-							if(lengthFunc(u, previous[u]) == 10)
-								S.push(tiles.coords(previous[u]));
-							else 
-								break;
-						}
+            while (previous[u] != undefined) {
+              var v = previous[u];
+              if (
+                tiles[tiles.coords(u).x][tiles.coords(u).y].buildingData !=
+                tiles[tiles.coords(v).x][tiles.coords(v).y].buildingData
+              ) {
+                S.push(tiles.coords(u));
+                S.push(tiles.coords(v));
+                S.reverse();
+                return S;
+              }
+              u = v;
+            }
 
-						S.reverse();
-						return S;
-					}
-				}
+            // skrajny przypadek, szukamy drogi do tego samego pola
+            return false;
+          } else {
+            // push real head
+            S.push(tiles.coords(u));
 
-				Q.splice(Q.indexOf(u), 1);
+            // find body, stop at tail
+            for (; previous[u] != undefined; u = previous[u]) {
+              if (lengthFunc(u, previous[u]) == 10) S.push(tiles.coords(previous[u]));
+              else break;
+            }
 
-				$.each(neighborFunc(u), function(i, v){
-					var alt = dist[u] + lengthFunc(u, v);
-					if(alt < dist[v]){
-						dist[v] = alt;
-						previous[v] = u;
-					}
-				});
-			}
+            S.reverse();
+            return S;
+          }
+        }
 
-			return false;
-		}
-		
-		function indexAllBuildingTiles(tilesUnderBuilding){
-			var arr = [];
-			
-			$.each(tilesUnderBuilding, function(i,v){
-				arr.push(tiles.index(v));
-			});
+        Q.splice(Q.indexOf(u), 1);
 
-			return arr;
-		}
+        $.each(neighborFunc(u), function (i, v) {
+          var alt = dist[u] + lengthFunc(u, v);
+          if (alt < dist[v]) {
+            dist[v] = alt;
+            previous[v] = u;
+          }
+        });
+      }
 
-		var srcB = indexAllBuildingTiles(sourceBuilding.tilesUnder);
-		var dstB = indexAllBuildingTiles(targetBuilding.tilesUnder);
+      return false;
+    }
 
-		var Q = _.clone(roads);
-		Q = Q.concat(srcB);
-		Q = Q.concat(dstB);
+    function indexAllBuildingTiles(tilesUnderBuilding) {
+      var arr = [];
 
-		function tileNeighbours(ofThisTile){
-			var tile = tiles.coords(ofThisTile);
+      $.each(tilesUnderBuilding, function (i, v) {
+        arr.push(tiles.index(v));
+      });
 
-			var arr = [];
+      return arr;
+    }
 
-			if((tile.x - 1) >= 0) 			arr.push(tiles.index(tile.x - 1, tile.y));
-			if((tile.x + 1) < tiles.size.x) arr.push(tiles.index(tile.x + 1, tile.y));
-			if((tile.y - 1) >= 0) 			arr.push(tiles.index(tile.x, tile.y - 1));
-			if((tile.y + 1) < tiles.size.y) arr.push(tiles.index(tile.x, tile.y + 1));
+    var srcB = indexAllBuildingTiles(sourceBuilding.tilesUnder);
+    var dstB = indexAllBuildingTiles(targetBuilding.tilesUnder);
 
-			return arr;
-		}
+    var Q = _.clone(roads);
+    Q = Q.concat(srcB);
+    Q = Q.concat(dstB);
 
-		function movementCost(tileA, tileB){
-			// jeżeli tileA=buildingTile && tileB=buildingTile to koszt jest znikomy
-			if(	!(tiles.at(tileA).buildingData instanceof Road) &&
-				!(tiles.at(tileB).buildingData instanceof Road) )
-				return 1;
-			// jeżeli nie to zwykły
-			else
-				return 10;
-		}
+    function tileNeighbours(ofThisTile) {
+      var tile = tiles.coords(ofThisTile);
 
-		return Dijkstra(Q, srcB[0], dstB[0], tileNeighbours, movementCost);
-	}
+      var arr = [];
 
-	this.setupRoute = function(source, dest){
-		this.sourceBuilding = source;
-		this.destinationBuilding = dest;
+      if (tile.x - 1 >= 0) arr.push(tiles.index(tile.x - 1, tile.y));
+      if (tile.x + 1 < tiles.size.x) arr.push(tiles.index(tile.x + 1, tile.y));
+      if (tile.y - 1 >= 0) arr.push(tiles.index(tile.x, tile.y - 1));
+      if (tile.y + 1 < tiles.size.y) arr.push(tiles.index(tile.x, tile.y + 1));
 
-		this.steps = findRoute(this.sourceBuilding, this.destinationBuilding);
+      return arr;
+    }
 
-		if(this.steps != false) {
-			this.position = this.steps[0];
-			this.lastMoveTime = 1;
+    function movementCost(tileA, tileB) {
+      // jeżeli tileA=buildingTile && tileB=buildingTile to koszt jest znikomy
+      if (
+        !(tiles.at(tileA).buildingData instanceof Road) &&
+        !(tiles.at(tileB).buildingData instanceof Road)
+      )
+        return 1;
+      // jeżeli nie to zwykły
+      else return 10;
+    }
 
-			this.isBusy = true;
-			this.onStart();
+    return Dijkstra(Q, srcB[0], dstB[0], tileNeighbours, movementCost);
+  }
 
-			return true;
-		}
+  this.setupRoute = function (source, dest) {
+    this.sourceBuilding = source;
+    this.destinationBuilding = dest;
 
-		return false;
-	};
+    this.steps = findRoute(this.sourceBuilding, this.destinationBuilding);
 
-	this.onStart = function(){};
-	this.onReach = function(){};
+    if (this.steps != false) {
+      this.position = this.steps[0];
+      this.lastMoveTime = 1;
 
-	this.softUpdate = function(delta){
-		if(!this.isBusy)
-			return;
+      this.isBusy = true;
+      this.onStart();
 
-		this.lastMoveTime += delta;
+      return true;
+    }
 
-		if(this.lastMoveTime >= 0.5){
-			if(this.steps.length == 0 && this.isBusy == true){
-				this.isBusy = false;
-				this.onReach();
-			} else{
-				this.position = this.steps[0];
-				this.steps.splice(0, 1);
-			}
+    return false;
+  };
 
-			this.lastMoveTime = 0;
-		}
-	};
+  this.onStart = function () {};
+  this.onReach = function () {};
 
-	this.hardUpdate = function(delta){};
+  this.softUpdate = function (delta) {
+    if (!this.isBusy) return;
+
+    this.lastMoveTime += delta;
+
+    if (this.lastMoveTime >= 0.5) {
+      if (this.steps.length == 0 && this.isBusy == true) {
+        this.isBusy = false;
+        this.onReach();
+      } else {
+        this.position = this.steps[0];
+        this.steps.splice(0, 1);
+      }
+
+      this.lastMoveTime = 0;
+    }
+  };
+
+  this.hardUpdate = function (delta) {};
 });

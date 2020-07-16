@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+
+    <link href="../../styles/reset.css" rel="stylesheet" media="screen" />
+
+    <title>atlas tool</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.1/min/dropzone.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <script>
+      var images = [];
+      var str = '';
+
+      function selectText(containerid) {
+        if (document.selection) {
+          var range = document.body.createTextRange();
+          range.moveToElementText(document.getElementById(containerid));
+          range.select();
+        } else if (window.getSelection) {
+          var range = document.createRange();
+          range.selectNode(document.getElementById(containerid));
+          window.getSelection().addRange(range);
+        }
+      }
+
+      function redraw() {
+        var canvas = $('#preview222')[0];
+        var ctx = canvas.getContext('2d');
+
+        console.clear();
+
+        canvas.height = parseInt($('#preview222').height());
+        canvas.width = parseInt($('#preview222').width());
+
+        canvas.width = canvas.width;
+
+        images.sort(function (a, b) {
+          return b.height - a.height;
+        });
+
+        var x = 0;
+        var y = 0;
+
+        var max_y_in_this_line = 0;
+
+        var jsondatas = {};
+
+        var key;
+        for (key in images) {
+          var image = images[key].img;
+
+          if (max_y_in_this_line < image.height) max_y_in_this_line = image.height;
+
+          if (x + image.width >= $('#preview222').width()) {
+            y += max_y_in_this_line + 5;
+            max_y_in_this_line = 0;
+
+            if (y >= $('#preview222').height()) {
+              console.log('for width=' + $('#preview222').width() + ' -> height is not enough');
+            }
+
+            x = 0;
+          }
+
+          ctx.drawImage(image, x, y);
+
+          jsondatas[image.__xxx___] = { x: x, y: y, w: image.width, h: image.height };
+
+          x += image.width;
+        }
+
+        str = JSON.stringify(jsondatas);
+        $('#output').html(str);
+      }
+
+      Dropzone.options.myAwesomeDropzone = {
+        accept: function (file, done) {
+          var img = new Image();
+
+          img.onload = function () {
+            images.push({ height: this.height, img: this });
+            redraw();
+          };
+
+          var kkk = /^(.*)\./.exec(file.name);
+
+          img.src = (window.URL || window.webkitURL).createObjectURL(file);
+          img.__xxx___ = kkk[1];
+
+          done('nah');
+        },
+      };
+
+      $(function () {
+        $('#widthbox').keyup(function () {
+          var width = parseInt($(this).val());
+
+          $('#preview222').width(width + 'px');
+
+          redraw();
+        });
+
+        $('#heightbox').keyup(function () {
+          var height = parseInt($(this).val());
+
+          $('#preview222').height(height + 'px');
+
+          redraw();
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    atlas tool<br />
+    <br />
+    width=<input id="widthbox" type="text" value="300" /> height=<input
+      id="heightbox"
+      type="text"
+      value="300"
+    />
+    <br />
+    <a href="#" onclick="selectText('output'); return false">select json to copy</a><br />
+    <canvas
+      id="preview222"
+      style="width: 300px; height: 300px; background-color: pink; border: 1px solid blue;"
+    >
+    </canvas>
+    <br />
+    <div id="output"></div>
+    <br />
+    <form action="none" class="dropzone" id="my-awesome-dropzone"></form>
+  </body>
+</html>

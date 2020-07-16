@@ -1,41 +1,31 @@
-/*
+export var layerManager = new (function () {
+  var layers = {};
 
-layerManager.js
+  this.setBaseLayer = function (baseImage) {
+    layers['base'] = baseImage;
+  };
 
-*/
+  this.createLayer = function (name, callback) {
+    var canvas = this.createNewLayer(name);
+    var context = canvas.getContext('2d');
 
-var layerManager = new function(){
-	var layers = {};
+    callback.call(undefined, context, this.getLayer('base'));
+  };
 
-	this.setBaseLayer = function(baseImage){
-		layers["base"] = baseImage;
-	};
+  this.createNewLayer = function (name) {
+    console.assert(!(name in layers));
 
-	this.createLayer = function(name, callback){
-		var canvas = this.createNewLayer(name);
-		var context = canvas.getContext('2d');
+    layers[name] = document.createElement('canvas');
 
-		callback.call(undefined, context, this.getLayer("base"));
-	}
+    layers[name].width = layers['base'].width;
+    layers[name].height = layers['base'].height;
 
-	this.createNewLayer = function(name){
-		console.assert(!(name in layers));
+    layers[name].getContext('2d').drawImage(layers['base'], 0, 0);
 
-		layers[name] = document.createElement('canvas');
+    return layers[name];
+  };
 
-		layers[name].width = layers["base"].width;
-		layers[name].height = layers["base"].height;
-
-		layers[name].getContext('2d').drawImage(layers["base"], 0, 0);
-
-		return layers[name];
-	}
-
-	this.getLayer = function(name){
-		return layers[name];
-	};
-};
-
-define([], function(){
-	return layerManager;
-});
+  this.getLayer = function (name) {
+    return layers[name];
+  };
+})();

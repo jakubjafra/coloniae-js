@@ -1,266 +1,301 @@
-/*
+import _ from 'underscore';
+import atlas from '../../imgs/atlas.json';
+import { Logic } from '../logic';
+import { INVALID_ID } from '../logic/constants';
+import { tiles, SEA, SHALLOW, COAST, PLAINS, HILLSIDE, MOUTAIN } from '../logic/tile';
+import { civilianUnits } from '../logic/civilianUnit';
+import { militaryUnits } from '../logic/militaryUnit';
+import { Porter, FieldPlant, House, Road, Marketplace } from '../logic/gameDefinitions';
+import { gameplayState } from '../graphics/gameplayState';
 
-draw.js
+var flagProgress = {};
 
-*/
+function getFlagForTile(tile, delta) {
+  if (flagProgress[tile.index] == undefined) flagProgress[tile.index] = 0;
 
-define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState', '../graphics/layerManager'], function(atlasJSON, Logic, gameplayState, layerManager){
-	var atlas = JSON.parse(atlasJSON);
+  flagProgress[tile.index] += delta * Logic.timeFlowSpeed * 4;
+  var flagNum = Math.floor((flagProgress[tile.index] % 8) + 1);
 
-	var flagProgress = {};
+  return 'redflag' + flagNum;
+}
 
-	function getFlagForTile(tile, delta){
-		if(flagProgress[tile.index] == undefined)
-			flagProgress[tile.index] = 0;
+export function drawMethod(delta, ctx, cameraPosition, getSourceImage, isColorpicking) {
+  // TODO: przepisać to
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-		flagProgress[tile.index] += delta * Logic.timeFlowSpeed * 4;
-		var flagNum = Math.floor((flagProgress[tile.index] % 8) + 1);
+  var porters = {}; // [porterPosition] -> porterType
 
-		return "redflag" + flagNum;
-	}
+  // update porters positions to display
+  for (var i = 0; i < civilianUnits.length; i++) {
+    var porter = civilianUnits[i];
 
-	return function(delta, ctx, cameraPosition, getSourceImage, isColorpicking){ // TODO: przepisać to
-		ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    if (!(porter instanceof Porter)) continue;
 
-		var porters = {}; // [porterPosition] -> porterType
+    if (porter.position.x != -1 && porter.position.y != -1 && porter.isBusy)
+      porters[tiles.index(porter.position)] = porter.origin instanceof Marketplace ? 1 : 2;
+  }
 
-		// update porters positions to display
-		for(var i = 0; i < civilianUnits.length; i++){
-			var porter = civilianUnits[i];
+  var screenSize = tiles.coords(ctx.canvas.width, ctx.canvas.height);
+  var screenMarginSize = 100;
 
-			if(!(porter instanceof Porter))
-				continue;
+  var toDrawArray = [];
 
-			if(porter.position.x != -1 && porter.position.y != -1 && porter.isBusy)
-				porters[tiles.index(porter.position)] = (porter.origin instanceof Marketplace ? 1 : 2);
-		}
+  var toDrawBuildings = {};
+  var toDrawMoutains = {};
 
-		var screenSize = tiles.coords(ctx.canvas.width, ctx.canvas.height);
-		var screenMarginSize = 100;
+  var margin = 0;
+  if (isColorpicking) margin = 0;
 
-		var toDrawArray = [];
+  var posX, posY;
+  function calculateTilePosition(x, y) {
+    posX = cameraPosition.x + x * -32 + y * 32;
+    posY = cameraPosition.y + y * 16 + x * 16;
+  }
 
-		var toDrawBuildings = {};
-		var toDrawMoutains = {};
+  function drawRawAtlasTile(atlasName, modeName) {
+    toDrawArray.push({
+      atlasName: atlasName,
+      x: x,
+      y: y,
+      screenX: posX,
+      screenY: posY,
+      isVisible: !outOfScreen,
+      specialMode: modeName,
+    });
+  }
 
-		var margin = 0;
-		if(isColorpicking)
-			margin = 0;
+  function drawAtlasTile(atlasName, tile, mode) {
+    drawRawAtlasTile(atlasName, mode);
 
-		var posX, posY;
-		function calculateTilePosition(x, y){
-			posX = cameraPosition.x + x * -32 + y * 32;
-			posY = cameraPosition.y + y * 16 + x * 16;
-		}
+    if (tile != undefined) {
+      if (!outOfScreen && tile.buildingData != null)
+        toDrawBuildings[tile.buildingData.structureId] = true;
 
-		// TODO: rysować tylko widoczne tilesy...
-		for(var x = -margin; x < tiles.size.x + margin; x++){
-			for(var y = -margin; y < tiles.size.y + margin; y++){
-				calculateTilePosition.call(this, x, y);
+      if (!outOfScreen && tile.terrainLevel >= HILLSIDE && tile.terrainType != undefined)
+        toDrawMoutains[tiles.index(tile.terrainType)] = true;
+    }
+  }
 
-				var outOfScreen = (posX < -screenMarginSize || posY < -screenMarginSize || posX > (screenSize.x + screenMarginSize) || posY > (screenSize.y + screenMarginSize));
+  // TODO: rysować tylko widoczne tilesy...
+  for (var x = -margin; x < tiles.size.x + margin; x++) {
+    for (var y = -margin; y < tiles.size.y + margin; y++) {
+      calculateTilePosition.call(this, x, y);
 
-				function drawRawAtlasTile(atlasName, modeName){
-					toDrawArray.push({
-						atlasName: atlasName,
-						x: x,
-						y: y,
-						screenX: posX,
-						screenY: posY,
-						isVisible: !outOfScreen,
-						specialMode: modeName
-					});
-				}
+      var outOfScreen =
+        posX < -screenMarginSize ||
+        posY < -screenMarginSize ||
+        posX > screenSize.x + screenMarginSize ||
+        posY > screenSize.y + screenMarginSize;
 
-				function drawAtlasTile(atlasName, tile, mode){
-					drawRawAtlasTile(atlasName, mode);
+      // ~~~
 
-					if(tile != undefined){
-						if(!outOfScreen && tile.buildingData != null)
-							toDrawBuildings[tile.buildingData.structureId] = true;
+      if (!tiles.exsist(x, y)) {
+        if (!outOfScreen) drawAtlasTile('sea1', undefined);
 
-						if(!outOfScreen && tile.terrainLevel >= HILLSIDE && tile.terrainType != undefined)
-							toDrawMoutains[tiles.index(tile.terrainType)] = true;
-					}
-				}
+        continue;
+      }
 
-				// ~~~
+      var tile = tiles[x][y];
+      var tileImage = '';
 
-				if(!tiles.exsist(x, y)){
-					if(!outOfScreen)
-						drawAtlasTile("sea1", undefined);
+      if (outOfScreen) {
+        if (
+          !(
+            tile.terrainLevel >= HILLSIDE ||
+            (tile.buildingData != undefined &&
+              tile.buildingData.width > 1 &&
+              tile.buildingData.height > 1)
+          )
+        )
+          continue;
+      }
 
-					continue;
-				}
+      // (1) teren:
 
-				var tile = tiles[x][y];
-				var tileImage = "";
+      function buildSpecialTileName(name, hash) {
+        function getTile(x, y) {
+          if (tiles[x] == undefined || tiles[x][y] == undefined) return new Tile();
 
-				if(outOfScreen){
-					if(!(tile.terrainLevel >= HILLSIDE ||
-						(tile.buildingData != undefined && tile.buildingData.width > 1 && tile.buildingData.height > 1)))
-						continue;
-				}
+          return tiles[x][y];
+        }
 
-				// (1) teren:
+        return (
+          name +
+          '_' +
+          hash(getTile(x + 1, y)) +
+          '_' +
+          hash(getTile(x, y + 1)) +
+          '_' +
+          hash(getTile(x - 1, y)) +
+          '_' +
+          hash(getTile(x, y - 1))
+        );
+      }
 
-				function buildSpecialTileName(name, hash){
-					function getTile(x, y){
-						if(tiles[x] == undefined || tiles[x][y] == undefined)
-							return (new Tile());
+      switch (tile.terrainLevel) {
+        case SEA:
+          tileImage = 'sea1';
+          break;
 
-						return tiles[x][y];
-					}
+        case SHALLOW:
+          tileImage = buildSpecialTileName('shallow1', function (tile) {
+            switch (tile.terrainLevel) {
+              case 0:
+                return 'h';
+              case 1:
+                return 'c';
+              default:
+                return 's';
+            }
+          });
+          break;
 
-					return name +	"_" + hash(getTile(x + 1, y)) +
-									"_" + hash(getTile(x, y + 1)) +
-									"_" + hash(getTile(x - 1, y)) +
-									"_" + hash(getTile(x, y - 1));
-				}
+        case COAST:
+          tileImage = buildSpecialTileName('coast1', function (tile) {
+            switch (tile.terrainLevel) {
+              case 0:
+                return 's';
+              case 1:
+                return 'c';
+              default:
+                return 'i';
+            }
+          });
+          break;
 
-				switch(tile.terrainLevel){
-					case SEA:
-							tileImage = "sea1";
-						break;
+        case PLAINS:
+          tileImage = 'grassland1';
+          break;
 
-					case SHALLOW:
-							tileImage = buildSpecialTileName("shallow1", function(tile){
-								switch(tile.terrainLevel){
-									case 0: return 'h';
-									case 1: return 'c';
-									default: return 's';
-								}
-							});
-						break;
+        case HILLSIDE:
+          tileImage = buildSpecialTileName('hillside1', function (tile) {
+            switch (tile.terrainLevel) {
+              case 3:
+                return 'h';
+              case 4:
+                return 'm';
+              default:
+                return 'i';
+            }
+          });
+          break;
 
-					case COAST:
-							tileImage = buildSpecialTileName("coast1", function(tile){
-								switch(tile.terrainLevel){
-									case 0: return 's';
-									case 1: return 'c';
-									default: return 'i';
-								}
-							});
-						break;
+        case MOUTAIN:
+          var localX = x - tile.terrainType.x;
+          var localY = y - tile.terrainType.y;
 
-					case PLAINS:
-							tileImage = "grassland1";
-						break;
+          tileImage = 'moutain1_' + localX + '_' + localY;
+          break;
+      }
 
-					case HILLSIDE:
-							tileImage = buildSpecialTileName("hillside1", function(tile){
-								switch(tile.terrainLevel){
-									case 3: return 'h';
-									case 4: return 'm';
-									default: return 'i';
-								}
-							});
-						break;
+      // tilesy wyspy są na wyższym poziomie niż reszta :)
+      if (tile.terrainLevel >= PLAINS) posY -= 20;
 
-					case MOUTAIN:
-							var localX = x - tile.terrainType.x;
-							var localY = y - tile.terrainType.y;
+      // (2) budynek:
 
-							tileImage = "moutain1_" + localX + "_" + localY;
-						break;
-				}
+      function getBuildingImage(building, offset) {
+        var name = _.clone(building.structName).replace(/\s/g, '');
+        name = name.toLowerCase();
 
-				// tilesy wyspy są na wyższym poziomie niż reszta :)
-				if(tile.terrainLevel >= PLAINS)
-					posY -= 20;
+        if (building instanceof FieldPlant) name = name + (building.isWithered ? 'withered' : '');
 
-				// (2) budynek:
+        if (building instanceof House) name = name + (building.type + 1).toString();
+        // house<level>_...
+        else name = name + Math.floor(building.rotation / 10); // <buildingname><side>
 
-				function getBuildingImage(building, offset){
-					var name = _.clone(building.structName).replace(/\s/g, '');
-					name = name.toLowerCase();
+        switch (building.structName) {
+          case 'Road':
+            return buildSpecialTileName(name, function (tile) {
+              return tile.buildingData instanceof Road ? 'r' : 'n';
+            });
 
-					if(building instanceof FieldPlant)
-						name = name + (building.isWithered ? "withered" : "");
+          default:
+            return name + '_' + offset.x + '_' + offset.y;
+        }
+      }
 
-					if(building instanceof House)
-						name = name + (building.type + 1).toString(); // house<level>_...
-					else
-						name = name + Math.floor(building.rotation / 10); // <buildingname><side>
+      var canBeOverwritten = true;
 
-					switch(building.structName){
-						case "Road":
-							return buildSpecialTileName(name, function(tile){
-								return (tile.buildingData instanceof Road ? 'r' : 'n');
-							});
+      if (tile.buildingData != null) {
+        tileImage = getBuildingImage(tile.buildingData, tile.buildingData.isUnder(tile));
+        canBeOverwritten = tile.buildingData.canBeOverwritten;
+      }
 
-						default:
-							return name + "_" + offset.x + "_" + offset.y;
-					}
-				}
+      // (3) ew. budynek testowego (budowanie budynku):
 
-				var canBeOverwritten = true;
+      var wasOverwrittenByTestBuilding = false;
 
-				if(tile.buildingData != null){
-					tileImage = getBuildingImage(tile.buildingData, tile.buildingData.isUnder(tile));
-					canBeOverwritten = tile.buildingData.canBeOverwritten;
-				}
+      if (!isColorpicking) {
+        if (
+          gameplayState.buildMode &&
+          gameplayState.testBuilding != undefined &&
+          gameplayState.hoveredTile != undefined &&
+          canBeOverwritten &&
+          tile.islandId != INVALID_ID
+        ) {
+          for (var i = 0; i < gameplayState.buildingsToPlacement.length; i++) {
+            var buildingCoords = gameplayState.buildingsToPlacement[i];
 
-				// (3) ew. budynek testowego (budowanie budynku):
+            var offsetX = Math.floor((gameplayState.testBuilding.width - 1) / 2);
+            var offsetY = Math.floor((gameplayState.testBuilding.height - 1) / 2);
 
-				var wasOverwrittenByTestBuilding = false;
+            var localX = x - buildingCoords.x + offsetX;
+            var localY = y - buildingCoords.y + offsetY;
 
-				if(!isColorpicking){
-					if( gameplayState.buildMode && gameplayState.testBuilding != undefined &&
-						gameplayState.hoveredTile != undefined && canBeOverwritten && tile.islandId != INVALID_ID ){
+            if (
+              localX >= 0 &&
+              localX < gameplayState.testBuilding.width &&
+              localY >= 0 &&
+              localY < gameplayState.testBuilding.height
+            ) {
+              tileImage = getBuildingImage(
+                gameplayState.testBuilding,
+                tiles.coords(localX, localY),
+              );
+              wasOverwrittenByTestBuilding = true;
+            }
+          }
+        }
+      }
 
-						for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++){
-							var buildingCoords = gameplayState.buildingsToPlacement[i];
+      // ~~~
 
-							var offsetX = Math.floor((gameplayState.testBuilding.width - 1) / 2);
-							var offsetY = Math.floor((gameplayState.testBuilding.height - 1) / 2);
+      if (tileImage != undefined) {
+        // special drawing for special modes:
 
-							var localX = x - buildingCoords.x + offsetX;
-							var localY = y - buildingCoords.y + offsetY;
+        var mode = 'base';
 
-							if( localX >= 0 && localX < gameplayState.testBuilding.width &&
-								localY >= 0 && localY < gameplayState.testBuilding.height ){
-								tileImage = getBuildingImage(gameplayState.testBuilding, tiles.coords(localX, localY));
-								wasOverwrittenByTestBuilding = true;
-							}
-						}
-					}
-				}
+        if ((gameplayState.buildMode || gameplayState.removeMode) && tile.countryId != 0)
+          mode = 'darkner';
 
-				// ~~~
+        if (
+          gameplayState.hoveredTile != undefined &&
+          tiles.at_mayRetEmpty(gameplayState.hoveredTile).buildingData != undefined &&
+          tiles.at_mayRetEmpty(gameplayState.hoveredTile).buildingData == tile.buildingData
+        )
+          mode = 'lighter_1';
 
-				if(tileImage != undefined){
-					// special drawing for special modes:
+        if (gameplayState.buildMode && wasOverwrittenByTestBuilding) mode = 'oranger';
 
-					var mode = "base";
+        if (gameplayState.removeMode) {
+          // TODO: przepisać gameplayState.buildingsToPlacement by wyeliminować tą funkcję
+          // ona zżera masę czasu procesora.
+          for (var i = 0; i < gameplayState.buildingsToPlacement.length; i++)
+            if (
+              tile.buildingData ===
+              tiles.at_mayRetEmpty(gameplayState.buildingsToPlacement[i]).buildingData
+            )
+              mode = 'red';
+        }
 
-					if((gameplayState.buildMode || gameplayState.removeMode) && tile.countryId != 0)
-						mode = "darkner";
+        drawAtlasTile(tileImage, tile, mode);
+      }
 
-					if(gameplayState.hoveredTile != undefined &&
-					   tiles.at_mayRetEmpty(gameplayState.hoveredTile).buildingData != undefined &&
-					   tiles.at_mayRetEmpty(gameplayState.hoveredTile).buildingData == tile.buildingData)
-						mode = "lighter_1";
-					
-					if(gameplayState.buildMode && wasOverwrittenByTestBuilding)
-							mode = "oranger";
+      // draw porter, if any
+      if (porters[tile.index] != undefined)
+        drawRawAtlasTile('placeholder_porter' + porters[tile.index]);
 
-					if(gameplayState.removeMode){
-						// TODO: przepisać gameplayState.buildingsToPlacement by wyeliminować tą funkcję
-						// ona zżera masę czasu procesora.
-						for(var i = 0; i < gameplayState.buildingsToPlacement.length; i++)
-							if(tile.buildingData === tiles.at_mayRetEmpty(gameplayState.buildingsToPlacement[i]).buildingData)
-								mode = "red";
-					}
-					
-					drawAtlasTile(tileImage, tile, mode);
-				}
-
-				// draw porter, if any
-				if(porters[tile.index] != undefined)
-					drawRawAtlasTile("placeholder_porter" + porters[tile.index]);
-
-				/*
+      /*
 				// draw flag, if any
 				if(tile.buildingData != null && tile.buildingData instanceof Port &&
 					tiles.index(tile.buildingData.southTile()) == tiles.index(tile)){
@@ -279,78 +314,87 @@ define(['text!../../imgs/atlas.json', '../logic', '../graphics/gameplayState', '
 					drawRawAtlasTile(getFlagForTile(tile, delta));
 				}
 				*/
-			}
-		}
+    }
+  }
 
-		for(var j = 0; j < militaryUnits.length; j++){
-			var ship = militaryUnits[j];
+  for (var j = 0; j < militaryUnits.length; j++) {
+    var ship = militaryUnits[j];
 
-			if(ship == undefined)
-				continue;
+    if (ship == undefined) continue;
 
-			calculateTilePosition.call(this, ship.position.x, ship.position.y);
+    calculateTilePosition.call(this, ship.position.x, ship.position.y);
 
-			var shipXMovement = ship.rotationVector.x * ((ship.lastMoveTime) / 1);
-			var shipYMovement = ship.rotationVector.y * ((ship.lastMoveTime) / 1);
+    var shipXMovement = ship.rotationVector.x * (ship.lastMoveTime / 1);
+    var shipYMovement = ship.rotationVector.y * (ship.lastMoveTime / 1);
 
-			posX += (shipXMovement * -32 + shipYMovement * 32);
-			posY += (shipYMovement * 16 + shipXMovement * 16);
+    posX += shipXMovement * -32 + shipYMovement * 32;
+    posY += shipYMovement * 16 + shipXMovement * 16;
 
-			var x = ship.position.x;
-			var y = ship.position.y;
+    var x = ship.position.x;
+    var y = ship.position.y;
 
-			drawRawAtlasTile("ship_smalltrade_" + ship.rotation);
+    drawRawAtlasTile('ship_smalltrade_' + ship.rotation);
 
-			// zaznacz jakoś że statek jest zaznaczony
-			if(ship === gameplayState.choosedSth && !isColorpicking){
-				drawAtlasTile("ship_smalltrade_" + ship.rotation, tile, "lighter_3");
-			}
+    // zaznacz jakoś że statek jest zaznaczony
+    if (ship === gameplayState.choosedSth && !isColorpicking) {
+      drawAtlasTile('ship_smalltrade_' + ship.rotation, tile, 'lighter_3');
+    }
 
-			posY -= 64;
-			posX += 0;
+    posY -= 64;
+    posX += 0;
 
-			drawRawAtlasTile(getFlagForTile(tiles.at(ship.position), delta));
-		}
+    drawRawAtlasTile(getFlagForTile(tiles.at(ship.position), delta));
+  }
 
-		// faktyczne wyświetlanie
-		for(var i = 0; i < toDrawArray.length; i++){
-			var item = toDrawArray[i];
+  // faktyczne wyświetlanie
+  for (var i = 0; i < toDrawArray.length; i++) {
+    var item = toDrawArray[i];
 
-			// aby narysować budynek trzeba sprawdzić czy którykolwiek z jego tilesów
-			// znajduje sie na iloście obiektów do narysowania (by go nie rysować gdy jest poza planszą)
-			if(tiles.exsist(item.x, item.y)){
-				var tile = tiles[item.x][item.y];
+    // aby narysować budynek trzeba sprawdzić czy którykolwiek z jego tilesów
+    // znajduje sie na iloście obiektów do narysowania (by go nie rysować gdy jest poza planszą)
+    if (tiles.exsist(item.x, item.y)) {
+      var tile = tiles[item.x][item.y];
 
-				if(tile != undefined){
-					if(tile.buildingData != null &&
-						!(tile.buildingData.structureId in toDrawBuildings))
-						continue;
+      if (tile != undefined) {
+        if (tile.buildingData != null && !(tile.buildingData.structureId in toDrawBuildings))
+          continue;
 
-					if(tile.terrainLevel >= HILLSIDE && tile.terrainType != undefined &&
-						!(tiles.index(tile.terrainType) in toDrawMoutains))
-						continue;
-				}
-			}
+        if (
+          tile.terrainLevel >= HILLSIDE &&
+          tile.terrainType != undefined &&
+          !(tiles.index(tile.terrainType) in toDrawMoutains)
+        )
+          continue;
+      }
+    }
 
-			var coords = atlas[item.atlasName];
+    var coords = atlas[item.atlasName];
 
-			if(coords == undefined)
-				continue;
+    if (coords == undefined) continue;
 
-			// rysuje się zawsze od początku tilesa
-			var x = item.screenX - Math.floor(coords.w / 2);
-			var y = item.screenY - coords.h;
+    // rysuje się zawsze od początku tilesa
+    var x = item.screenX - Math.floor(coords.w / 2);
+    var y = item.screenY - coords.h;
 
-			function drawImage(item, coords, layerName){
-				ctx.drawImage(
-					getSourceImage(layerName, item),
-					coords.x, coords.y, coords.w, coords.h,
-					x, y, coords.w, coords.h
-				);
-			};
+    function drawImage(item, coords, layerName) {
+      ctx.drawImage(
+        getSourceImage(layerName, item),
+        coords.x,
+        coords.y,
+        coords.w,
+        coords.h,
+        x,
+        y,
+        coords.w,
+        coords.h,
+      );
+    }
 
-			// nie używa się specjalnych operacji podczas colorpickingu
-			drawImage(item, coords, (item.specialMode != undefined && !isColorpicking ? item.specialMode : "base"));
-		}
-	};
-});
+    // nie używa się specjalnych operacji podczas colorpickingu
+    drawImage(
+      item,
+      coords,
+      item.specialMode != undefined && !isColorpicking ? item.specialMode : 'base',
+    );
+  }
+}
