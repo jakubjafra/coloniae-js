@@ -14,6 +14,7 @@ function initFpsCounter() {
 
   // Align top-left
   stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = null;
   stats.domElement.style.right = '100px';
   stats.domElement.style.top = '0px';
 

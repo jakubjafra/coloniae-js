@@ -7,7 +7,7 @@ gameplayState.js
 export var gameplayState = {
   // aktualna pozycja kamery
   cameraPosition: {
-    x: 500,
+    x: 1200,
     y: 0,
   },
 
