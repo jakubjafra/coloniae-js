@@ -7,7 +7,7 @@ This game is clone of old strategy Anno 1602. Copyrights for graphics, design an
 
 ## Play
 
-[Click here to play in your browser](https://jakubjafra.github.io/coloniae/app/). It takes a while to load ;)
+[Click here to play in your browser](https://jakubjafra.github.io/coloniae/app/build/index.html). It takes a while to load ;)
 
 ### Running locally
 
