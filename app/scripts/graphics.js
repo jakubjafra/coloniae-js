@@ -32,7 +32,7 @@ define([
   { INVALID_ID },
   { Ship },
   { countries },
-  { OCEAN, SEA, SHALLOW, COAST, PLAINS, HILLSIDE, MOUTAIN, tiles },
+  { SHALLOW, tiles },
   { structsClass, canBeBuild },
   { militaryUnits },
   { framework },
