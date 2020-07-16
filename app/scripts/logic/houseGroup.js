@@ -8,7 +8,9 @@ import Class from '../extend';
 import $ from 'jquery';
 import _ from 'underscore';
 
+import { INVALID_ID } from './constants';
 import { FOOD_ID } from './gameDefinitions';
+import { haveRequriedResources, useRequiredResources } from './structure';
 
 export const PIONERS = 0;
 export const SETTLERS = 1;

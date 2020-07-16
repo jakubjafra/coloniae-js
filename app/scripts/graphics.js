@@ -40,7 +40,7 @@ define([
   draw,
   picker,
   layerManager,
-  analyticModule,
+  { Analytics },
 ) {
   var wasAnyAction = false;
 
@@ -330,7 +330,7 @@ define([
 
       this.onUpdate = function (delta) {
         Logic.update(delta);
-        analyticModule.update(delta);
+        Analytics.update(delta);
       };
 
       this.onLoadResources = function (resources) {

@@ -6,7 +6,7 @@ country.js
 
 import Class from '../extend';
 
-import { INVALID_ID, INVALID_TYPE } from './constants';
+import { INVALID_ID } from './constants';
 
 export var countries = [];
 
@@ -18,7 +18,7 @@ export var Country = Class.extend(function () {
   // identyfikator
   this.id = INVALID_ID;
   // kto tym krajem zarządza
-  this.type = INVALID_TYPE;
+  this.type = INVALID_ID;
   // ilość monet w skarbcu
   this.coins = 0;
 

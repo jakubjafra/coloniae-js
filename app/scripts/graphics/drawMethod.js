@@ -14,7 +14,6 @@ define([
   '../logic/militaryUnit',
   '../logic/gameDefinitions',
   '../graphics/gameplayState',
-  '../graphics/layerManager',
 ], function (
   _,
   atlas,
@@ -23,9 +22,8 @@ define([
   { tiles, SEA, SHALLOW, COAST, PLAINS, HILLSIDE, MOUTAIN },
   { civilianUnits },
   { militaryUnits },
-  { Porter, FieldPlant, House },
+  { Porter, FieldPlant, House, Road, Marketplace },
   { gameplayState },
-  layerManager,
 ) {
   var flagProgress = {};
 

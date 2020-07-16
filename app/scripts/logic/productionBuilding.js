@@ -8,6 +8,7 @@ import { INVALID_ID } from './constants';
 import { OUTPUT, INPUT_1 } from './storage';
 import { StorageBuilding } from './storageBuilding';
 import { Porter } from './gameDefinitions';
+import { tiles, PLAINS } from './tile';
 
 export var ProductionBuilding = StorageBuilding.extend(function () {
   this.baseProduction = 0; // per second

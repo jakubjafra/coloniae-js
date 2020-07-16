@@ -6,9 +6,11 @@ civilianUnit.js
 
 import Class from '../extend';
 import _ from 'underscore';
+import $ from 'jquery';
 
 import { INVALID_ID } from './constants';
 import { tiles } from './tile';
+import { Road, roads } from './gameDefinitions';
 
 export var civilianUnits = [];
 

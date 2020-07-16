@@ -5,6 +5,7 @@ publicBuilding.js
 */
 
 import { Building } from './building';
+import { tiles } from './tile';
 
 export var PublicBuilding = Building.extend(function () {
   this.operatingRadius = 0;
