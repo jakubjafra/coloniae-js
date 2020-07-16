@@ -4,7 +4,7 @@ layerManager.js
 
 */
 
-var layerManager = new (function () {
+export var layerManager = new (function () {
   var layers = {};
 
   this.setBaseLayer = function (baseImage) {
@@ -35,7 +35,3 @@ var layerManager = new (function () {
     return layers[name];
   };
 })();
-
-define([], function () {
-  return layerManager;
-});

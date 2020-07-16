@@ -7,7 +7,7 @@ main.js
 import $ from 'jquery';
 
 import { Logic } from './logic';
-import Graphics from './graphics';
+import { Graphics } from './graphics';
 import { Gui } from './graphics/gui/gui';
 
 // ~~~
