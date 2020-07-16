@@ -13,7 +13,7 @@
   "author": "Jakub Jafra",
   "license": "MIT",
   "dependencies": {
-    "angular": "^1.2.32",
+    "angular": "^1.8.0",
     "dropzone": "^5.7.1",
     "finalhandler": "^1.1.2",
     "jquery": "^2.1.4",
