@@ -111,7 +111,15 @@ export function canBeBuild(x, y, building) {
 
       if (building.requiredTerrainMap[i][j] != tile.terrainLevel) return false;
 
-      if (tile.buildingData != null) if (tile.buildingData.canBeOverwritten == false) return false;
+      if (tile.buildingData != null) {
+        if (tile.buildingData.canBeOverwritten == false) {
+          return false;
+        }
+
+        if (tile.buildingData.structName == building.structName) {
+          return false;
+        }
+      }
     }
   }
 
